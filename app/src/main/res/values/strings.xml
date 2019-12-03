@@ -1,0 +1,23 @@
+<resources>
+    <string name="app_name">DiabetesMeganotes</string>
+    <string name="diabetes_meganotes">Diabetes Meganotes</string>
+    <string name="text_dont_let_it_waste">Reprenez votre vie en main !</string>
+    <string name="connexion">Connexion classique</string>
+    <string name="password_hint">Mot de passe</string>
+    <string name="username_hint">Identifiant</string>
+    <string name="pin_connect_ET">Connexion par PIN</string>
+    <string name="pin_code_ET">Code PIN</string>
+    <string name="lets_go">En avant!</string>
+    <string name="menu">MENU</string>
+    <string name="stats_short">Stats rapides</string>
+    <string name="notes">Notes</string>
+    <string name="stats_60d">60J : 1,74g/l</string>
+    <string name="stats_7d">7J : 1,51g/l</string>
+    <string name="stats_15d">15J : 1,59g/l</string>
+    <string name="stats_30d">30J : 1,65g/l</string>
+    <string name="fast_note">Il faut que je fasses plus de sport du 5 au 15 décembre \n\nRDV endocrino le 8/12</string>
+    <string name="my_objectives">Mes objectifs</string>
+    <string name="my_glycemy_diary">Mes glycémies</string>
+    <string name="good_to_know_part">Informations utiles</string>
+    <string name="my_alerts">Mes alertes</string>
+</resources>
