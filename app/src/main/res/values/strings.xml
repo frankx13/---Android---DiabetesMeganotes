@@ -11,13 +11,16 @@
     <string name="menu">MENU</string>
     <string name="stats_short">Stats rapides</string>
     <string name="notes">Notes</string>
-    <string name="stats_60d">60J : 1,74g/l</string>
-    <string name="stats_7d">7J : 1,51g/l</string>
-    <string name="stats_15d">15J : 1,59g/l</string>
-    <string name="stats_30d">30J : 1,65g/l</string>
+    <string name="stats_60d">60J : x,xx g/l</string>
+    <string name="stats_7d">7J : x,xx g/l</string>
+    <string name="stats_15d">15J : x,xx g/l</string>
+    <string name="stats_30d">30J : x,xx g/l</string>
     <string name="fast_note">Il faut que je fasses plus de sport du 5 au 15 décembre \n\nRDV endocrino le 8/12</string>
     <string name="my_objectives">Mes objectifs</string>
     <string name="my_glycemy_diary">Mes glycémies</string>
     <string name="good_to_know_part">Informations utiles</string>
     <string name="my_alerts">Mes alertes</string>
+    <string name="glycemies">Glycémies</string>
+    <string name="seven_days_average">Moyenne des 7 derniers jours : x,xx g/l</string>
+    <string name="insulin_average_seven_days">Moyenne d\'insuline rapide des 7 derniers jours : xxx unités</string>
 </resources>

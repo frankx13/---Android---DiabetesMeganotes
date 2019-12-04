@@ -18,4 +18,11 @@ public class SQliteDatabase {
         public static final String COLUMN_NAME_GLYCEMY = "Glycemy";
         public static final String COLUMN_NAME_EXTRA_INFOS = "Extras";
     }
+
+    public static class InsulinUnits implements BaseColumns {
+        public static final String TABLE_NAME = "Insulin";
+        public static final String COLUMN_NAME_DATE = "Date";
+        public static final String COLUMN_NAME_UNITS = "Units";
+        public static final String COLUMN_NAME_EXTRA_INFOS = "Extras";
+    }
 }
