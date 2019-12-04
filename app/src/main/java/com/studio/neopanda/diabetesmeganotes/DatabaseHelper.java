@@ -18,7 +18,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES_GLYCEMIES =
             "CREATE TABLE " + SQliteDatabase.Glycemies.TABLE_NAME + " (" +
                     SQliteDatabase.Glycemies._ID + " INTEGER PRIMARY KEY," +
-                    SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY + " DOUBLE," +
+                    SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY + " TEXT," +
                     SQliteDatabase.Glycemies.COLUMN_NAME_EXTRA_INFOS + " TEXT," +
                     SQliteDatabase.Glycemies.COLUMN_NAME_DATE + " TEXT)";
     private static final String SQL_DELETE_ENTRIES_GLYCEMIES =

@@ -1,13 +1,25 @@
 package com.studio.neopanda.diabetesmeganotes;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.widget.Button;
+import android.widget.CalendarView;
+import android.widget.DatePicker;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,10 +35,28 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     TextView weekGlycemyAverage;
     @BindView(R.id.seven_days_average_insulin_TV)
     TextView weekInsulinAverage;
+    @BindView(R.id.title_app_TV_glycemies)
+    TextView titleGlycemyScreen;
+    @BindView(R.id.add_entry_glycemy)
+    Button addGlycemyBtn;
+    @BindView(R.id.new_entry_container)
+    LinearLayout containerAddEntryPart;
+    @BindView(R.id.datepicker_new_entry_glycemy)
+    CalendarView calendarView;
+    @BindView(R.id.glycemy_level_input_ET)
+    EditText glycemyInputLevel;
+    @BindView(R.id.level_glycemy_new_entry_TV)
+    TextView glycemyInputTV;
+    @BindView(R.id.date_glycemy_new_entry_TV)
+    TextView dateGlycemyInputTV;
+    @BindView(R.id.validate_new_entry_btn)
+    Button validateNewEntryBtn;
 
     //DATA
-    DatabaseHelper dbHelper = new DatabaseHelper(this);
-    List itemIds;
+    private DatabaseHelper dbHelper = new DatabaseHelper(this);
+    private List itemIds;
+    private String newEntryGlycemyDate;
+    private String newEntryGlycemyLevel;
 
 
     @Override
@@ -36,76 +66,44 @@ public class MyGlycemiesActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         itemIds = new ArrayList<>();
-        String sevenDaysAgoDate = calculateDateFromToday(7);
+
+        String sevenDaysAgoDate = DateUtils.calculateDateFromToday(7);
+
+        addGlycemyBtn.setOnClickListener(v -> containerAddEntryPart.setVisibility(View.VISIBLE));
+
+        calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
+            newEntryGlycemyDate = year + "-" + month + "-" + dayOfMonth;
+            calendarView.setVisibility(View.GONE);
+            dateGlycemyInputTV.setVisibility(View.GONE);
+            glycemyInputTV.setVisibility(View.VISIBLE);
+            glycemyInputLevel.setVisibility(View.VISIBLE);
+            validateNewEntryBtn.setVisibility(View.VISIBLE);
+        });
+
+        validateNewEntryBtn.setOnClickListener(v -> {
+            newEntryGlycemyLevel = glycemyInputLevel.getEditableText().toString();
+            writeAuthInDB(newEntryGlycemyDate, newEntryGlycemyLevel);
+            Toast.makeText(this, "Your entry has successfully been added !", Toast.LENGTH_SHORT).show();
+            containerAddEntryPart.setVisibility(View.GONE);
+        });
     }
 
-    public String calculateDateFromToday(int daysFromToday){
+    public long writeAuthInDB(String date, String glycemy) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        long millis=System.currentTimeMillis();
-        java.sql.Date todayDate=new java.sql.Date(millis);
-        java.sql.Time nowTime = new java.sql.Time(millis);
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(SQliteDatabase.Glycemies.COLUMN_NAME_DATE, date);
+        values.put(SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY, glycemy);
 
-        String[] todayDateSplit = todayDate.toString().trim().split("-", 3);
+        Log.e("CREATECOLUMN2", " " + values.getAsString(SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY));
 
-        int year = Integer.valueOf(todayDateSplit[0]);
-        int month = Integer.valueOf(todayDateSplit[1]);
-        int day = Integer.valueOf(todayDateSplit[2]);
+        // Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(SQliteDatabase.Glycemies.TABLE_NAME, null, values);
+        db.insert(SQliteDatabase.Glycemies.TABLE_NAME, null, values);
 
-        int yearsToReach;
-        int monthsToReach;
-        int daysToReach;
-
-        int daysCounter = daysFromToday;
-        int monthsCounter = 0;
-        int yearsCounter = 0;
-
-        if (daysFromToday >= 365){
-            yearsCounter = daysFromToday / 365;
-            daysCounter = daysCounter - (365 * yearsCounter);
-            daysFromToday = daysFromToday - (365 * yearsCounter);
-        }
-        if (daysFromToday > 30){
-            monthsCounter = daysCounter / 30;
-            daysCounter = daysCounter - (30 * monthsCounter);
-        }
-
-        if (yearsCounter > 0){
-            yearsToReach = Integer.valueOf(year) - yearsCounter;
-        } else {
-            yearsToReach = year;
-        }
-        if (monthsCounter > 0){
-            monthsToReach = Integer.valueOf(month) - monthsCounter;
-            if (monthsToReach < 0){
-                monthsToReach = monthsToReach + 12;
-            }
-        } else {
-            monthsToReach = month;
-        }
-        if (daysCounter > 0){
-            daysToReach = day - daysCounter;
-            if (daysToReach < 0){
-                daysToReach = daysToReach + 30;
-            }
-        } else {
-            daysToReach = day;
-        }
-
-        String result;
-
-        if (monthsToReach < 10){
-            if (daysToReach < 10){
-                result = yearsToReach + "-" + 0 + monthsToReach + "-" + 0 + daysToReach;
-            } else {
-                result = yearsToReach + "-" + 0 + monthsToReach + "-" + daysToReach;
-            }
-        } else if (daysToReach < 10){
-            result = yearsToReach + "-" + monthsToReach + "-" + 0 + daysToReach;
-        } else {
-            result = yearsToReach + "-" + monthsToReach + "-" + daysToReach;
-        }
-
-        return result;
+        return newRowId;
     }
 
     public void readAuthInDB(String date) {

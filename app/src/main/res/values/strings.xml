@@ -23,4 +23,10 @@
     <string name="glycemies">Glycémies</string>
     <string name="seven_days_average">Moyenne des 7 derniers jours : x,xx g/l</string>
     <string name="insulin_average_seven_days">Moyenne d\'insuline rapide des 7 derniers jours : xxx unités</string>
+    <string name="add_entry_text">Ajouter une entrée</string>
+    <string name="new_entry">Nouvelle entrée</string>
+    <string name="date">Date :</string>
+    <string name="level_glycemy">Glycemy level :</string>
+    <string name="hint_digit_glycemy">Add the digits of your glycemy here</string>
+    <string name="validate">Valider</string>
 </resources>
