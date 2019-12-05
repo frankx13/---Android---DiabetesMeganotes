@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 1;
+    public static final int DATABASE_VERSION = 2;
     public static final String DATABASE_NAME = "MeganotesReader.db";
     private static final String SQL_CREATE_ENTRIES_CREDENTIALS =
             "CREATE TABLE " + SQliteDatabase.Credentials.TABLE_NAME + " (" +
@@ -31,6 +31,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE + " TEXT)";
     private static final String SQL_DELETE_ENTRIES_INSULIN =
             "DROP TABLE IF EXISTS " + SQliteDatabase.InsulinUnits.TABLE_NAME;
+
+    private static final String SQL_READ_ENTRIES_BETWEEN_DATES =
+            "SELECT COLUMN FROM TABLE WHERE COLUMNDATE BETWEEN '2012-07-01' AND '2012-07-07'\n";
+
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

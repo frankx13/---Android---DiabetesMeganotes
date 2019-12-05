@@ -1,28 +1,23 @@
 package com.studio.neopanda.diabetesmeganotes;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
 import android.util.Log;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
-import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
+import androidx.appcompat.app.AppCompatActivity;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import butterknife.BindView;
@@ -51,13 +46,16 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     TextView dateGlycemyInputTV;
     @BindView(R.id.validate_new_entry_btn)
     Button validateNewEntryBtn;
+    @BindView(R.id.view_entries_glycemy)
+    Button viewAllEntriesBtn;
+    @BindView(R.id.container_journal)
+    FrameLayout journalContainer;
 
     //DATA
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
     private List itemIds;
     private String newEntryGlycemyDate;
     private String newEntryGlycemyLevel;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +65,31 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         itemIds = new ArrayList<>();
 
-        String sevenDaysAgoDate = DateUtils.calculateDateFromToday(7);
+        addGlycemyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickAddEntryBtn();
+            }
+        });
+        viewAllEntriesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickViewEntriesBtn();
+            }
+        });
+    }
 
-        addGlycemyBtn.setOnClickListener(v -> containerAddEntryPart.setVisibility(View.VISIBLE));
+    private void onClickViewEntriesBtn(){
+
+    }
+
+    private void onClickAddEntryBtn() {
+        glycemyInputTV.setVisibility(View.GONE);
+        glycemyInputLevel.setVisibility(View.GONE);
+        validateNewEntryBtn.setVisibility(View.GONE);
+        containerAddEntryPart.setVisibility(View.VISIBLE);
+        calendarView.setVisibility(View.VISIBLE);
+        dateGlycemyInputTV.setVisibility(View.VISIBLE);
 
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             newEntryGlycemyDate = year + "-" + month + "-" + dayOfMonth;
@@ -82,13 +102,19 @@ public class MyGlycemiesActivity extends AppCompatActivity {
 
         validateNewEntryBtn.setOnClickListener(v -> {
             newEntryGlycemyLevel = glycemyInputLevel.getEditableText().toString();
-            writeAuthInDB(newEntryGlycemyDate, newEntryGlycemyLevel);
-            Toast.makeText(this, "Your entry has successfully been added !", Toast.LENGTH_SHORT).show();
-            containerAddEntryPart.setVisibility(View.GONE);
+            if (newEntryGlycemyLevel.length() < 4) {
+                Toast.makeText(this, "Trop peu de nombres rentrés. Veuillez utiliser ce modèle et recommencer : x.xx.", Toast.LENGTH_LONG).show();
+            } else if (newEntryGlycemyLevel.length() == 4) {
+                writeAuthInDB(newEntryGlycemyDate, newEntryGlycemyLevel);
+                Toast.makeText(this, "Your entry has successfully been added !", Toast.LENGTH_SHORT).show();
+                containerAddEntryPart.setVisibility(View.GONE);
+            } else {
+                Toast.makeText(this, "Impossible d'ajouter cette entrée. Veuillez utiliser ce modèle et recommencer : x.xx.", Toast.LENGTH_LONG).show();
+            }
         });
     }
 
-    public long writeAuthInDB(String date, String glycemy) {
+    public void writeAuthInDB(String date, String glycemy) {
         // Gets the data repository in write mode
         SQLiteDatabase db = dbHelper.getWritableDatabase();
 
@@ -100,10 +126,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         Log.e("CREATECOLUMN2", " " + values.getAsString(SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY));
 
         // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(SQliteDatabase.Glycemies.TABLE_NAME, null, values);
-        db.insert(SQliteDatabase.Glycemies.TABLE_NAME, null, values);
-
-        return newRowId;
+        db.insertOrThrow(SQliteDatabase.Glycemies.TABLE_NAME, null, values);
     }
 
     public void readAuthInDB(String date) {

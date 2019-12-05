@@ -68,6 +68,24 @@
         android:textSize="22sp"
         android:textStyle="bold" />
 
+    <Button
+        android:id="@+id/view_entries_glycemy"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/add_entry_glycemy"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/btn_classic"
+        android:drawableStart="@drawable/ic_pageview_black_24dp"
+        android:drawableEnd="@drawable/ic_pageview_black_24dp"
+        android:padding="15dp"
+        android:text="@string/view_all_entries"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="22sp"
+        android:textStyle="bold" />
+
     <LinearLayout
         android:id="@+id/new_entry_container"
         android:layout_width="match_parent"
@@ -142,5 +160,11 @@
             android:textStyle="bold"
             android:visibility="gone" />
     </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/container_journal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
 
 </RelativeLayout>

@@ -6,8 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.provider.BaseColumns;
-import android.util.Log;
-import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -33,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     //DATA
     DatabaseHelper dbHelper = new DatabaseHelper(this);
     List itemIds;
-    ContentValues valies = new ContentValues();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,12 +40,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         itemIds = new ArrayList<>();
 
-        validateAuthBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickValidateAuthBtn();
-            }
-        });
+        validateAuthBtn.setOnClickListener(v -> onClickValidateAuthBtn());
     }
 
     public void onClickValidateAuthBtn() {
@@ -57,11 +49,10 @@ public class MainActivity extends AppCompatActivity {
 
         readAuthInDB(username);
         if (itemIds.size() < 1) {
-            long newRodId = writeAuthInDB(username, pwd);
-            Log.e("CREATECOLUMN", String.valueOf(newRodId));
-            Log.e("CREATECOLUMN", " " + valies.getAsString(SQliteDatabase.Credentials.COLUMN_NAME_USERNAME));
-            Toast.makeText(this, "You successfully added your account", Toast.LENGTH_SHORT).show();
+            writeAuthInDB(username, pwd);
+            Toast.makeText(this, "Le compte a bien été créé", Toast.LENGTH_SHORT).show();
         } else {
+            Toast.makeText(this, "Connexion en cours", Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(this, DashboardActivity.class);
             startActivity(intent);
             finish();
@@ -76,10 +67,6 @@ public class MainActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put(SQliteDatabase.Credentials.COLUMN_NAME_USERNAME, username);
         values.put(SQliteDatabase.Credentials.COLUMN_NAME_PASSWORD, password);
-        valies.put(SQliteDatabase.Credentials.COLUMN_NAME_PASSWORD, username);
-        valies.put(SQliteDatabase.Credentials.COLUMN_NAME_PASSWORD, password);
-
-        Log.e("CREATECOLUMN2", " " + valies.getAsString(SQliteDatabase.Credentials.COLUMN_NAME_USERNAME));
 
         // Insert the new row, returning the primary key value of the new row
         long newRowId = db.insert(SQliteDatabase.Credentials.TABLE_NAME, null, values);
