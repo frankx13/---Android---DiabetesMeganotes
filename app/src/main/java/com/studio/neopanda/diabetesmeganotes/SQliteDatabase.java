@@ -3,7 +3,9 @@ package com.studio.neopanda.diabetesmeganotes;
 import android.provider.BaseColumns;
 
 public class SQliteDatabase {
-    private SQliteDatabase() {}
+    private SQliteDatabase() {
+
+    }
 
     /* Inner class that defines the table contents */
     public static class Credentials implements BaseColumns {

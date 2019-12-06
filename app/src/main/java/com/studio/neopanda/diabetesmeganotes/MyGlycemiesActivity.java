@@ -56,6 +56,10 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     private List itemIds;
     private String newEntryGlycemyDate;
     private String newEntryGlycemyLevel;
+    private String todayDate;
+    private String targetDate;
+    private int numberDaysQueried = 15000;
+    private String[] queriesResult;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +84,15 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     }
 
     private void onClickViewEntriesBtn(){
+        getDatesBetween();
+    }
 
+    private void getDatesBetween(){
+        todayDate = DateUtils.calculateDateOfToday();
+        targetDate = DateUtils.calculateDateFromToday(numberDaysQueried);
+        queriesResult = dbHelper.getWeekCount(todayDate, targetDate);
+
+        Log.e("DATABAZE", "getDatesBetween: " + queriesResult);
     }
 
     private void onClickAddEntryBtn() {
@@ -92,7 +104,17 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         dateGlycemyInputTV.setVisibility(View.VISIBLE);
 
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
-            newEntryGlycemyDate = year + "-" + month + "-" + dayOfMonth;
+            if (month < 10){
+                newEntryGlycemyDate = year + "-" + 0 + month + "-" + dayOfMonth;
+                if (dayOfMonth < 10){
+                    newEntryGlycemyDate = year + "-" + 0 + month + "-" + 0 + dayOfMonth;
+                }
+            } else if (dayOfMonth < 10){
+                newEntryGlycemyDate = year + "-" + month + "-" + 0 + dayOfMonth;
+            }
+            else {
+                newEntryGlycemyDate = year + "-" + month + "-" + dayOfMonth;
+            }
             calendarView.setVisibility(View.GONE);
             dateGlycemyInputTV.setVisibility(View.GONE);
             glycemyInputTV.setVisibility(View.VISIBLE);
@@ -122,8 +144,6 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         ContentValues values = new ContentValues();
         values.put(SQliteDatabase.Glycemies.COLUMN_NAME_DATE, date);
         values.put(SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY, glycemy);
-
-        Log.e("CREATECOLUMN2", " " + values.getAsString(SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY));
 
         // Insert the new row, returning the primary key value of the new row
         db.insertOrThrow(SQliteDatabase.Glycemies.TABLE_NAME, null, values);

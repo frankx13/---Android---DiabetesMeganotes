@@ -1,6 +1,15 @@
 package com.studio.neopanda.diabetesmeganotes;
 
+import java.sql.Date;
+
 public class DateUtils {
+
+    public static String calculateDateOfToday() {
+        long millis = System.currentTimeMillis();
+        Date todayDate = new Date(millis);
+        return String.valueOf(todayDate);
+    }
+
     public static String calculateDateFromToday(int daysFromToday) {
         long millis = System.currentTimeMillis();
         java.sql.Date todayDate = new java.sql.Date(millis);
@@ -45,7 +54,7 @@ public class DateUtils {
         }
         if (daysCounter > 0) {
             daysToReach = day - daysCounter;
-            if (daysToReach < 0) {
+            if (daysToReach <= 0) {
                 monthsToReach = monthsToReach - 1;
                 daysToReach = daysToReach + 30;
             }
