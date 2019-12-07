@@ -1,6 +1,7 @@
 package com.studio.neopanda.diabetesmeganotes;
 
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -84,7 +87,11 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     }
 
     private void onClickViewEntriesBtn(){
-        getDatesBetween();
+        journalContainer.setVisibility(View.VISIBLE);
+        EntriesDiaryFragment fragment = new EntriesDiaryFragment();
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction transaction = manager.beginTransaction();
+        transaction.replace(R.id.container_journal, fragment).commit();
     }
 
     private void getDatesBetween(){
@@ -105,15 +112,15 @@ public class MyGlycemiesActivity extends AppCompatActivity {
 
         calendarView.setOnDateChangeListener((view, year, month, dayOfMonth) -> {
             if (month < 10){
-                newEntryGlycemyDate = year + "-" + 0 + month + "-" + dayOfMonth;
+                newEntryGlycemyDate = year + "-" + 0 + (month+1) + "-" + dayOfMonth;
                 if (dayOfMonth < 10){
-                    newEntryGlycemyDate = year + "-" + 0 + month + "-" + 0 + dayOfMonth;
+                    newEntryGlycemyDate = year + "-" + 0 + (month+1) + "-" + 0 + dayOfMonth;
                 }
             } else if (dayOfMonth < 10){
-                newEntryGlycemyDate = year + "-" + month + "-" + 0 + dayOfMonth;
+                newEntryGlycemyDate = year + "-" + (month+1) + "-" + 0 + dayOfMonth;
             }
             else {
-                newEntryGlycemyDate = year + "-" + month + "-" + dayOfMonth;
+                newEntryGlycemyDate = year + "-" + (month+1) + "-" + dayOfMonth;
             }
             calendarView.setVisibility(View.GONE);
             dateGlycemyInputTV.setVisibility(View.GONE);

@@ -91,10 +91,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="25dp"
-        android:visibility="gone"
         android:background="@android:color/white"
         android:elevation="3dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
 
         <TextView
             android:layout_width="match_parent"
@@ -165,6 +165,9 @@
         android:id="@+id/container_journal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:layout_margin="10dp"
+        android:background="@drawable/bg_simple"
+        android:elevation="4dp"
+        android:visibility="gone" />
 
 </RelativeLayout>
