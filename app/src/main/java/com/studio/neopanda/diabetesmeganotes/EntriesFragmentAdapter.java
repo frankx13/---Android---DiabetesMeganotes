@@ -33,6 +33,8 @@ public class EntriesFragmentAdapter extends RecyclerView.Adapter<EntriesFragment
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+//        double gLevel = Double.parseDouble(mData.get(position).glycemyLevel);
+
         holder.dateTV.setText("Date : " + mData.get(position).date);
         holder.levelGlycemyTV.setText("Glycémie : " + mData.get(position).glycemyLevel);
         holder.idDiary.setText("Analyse n° : " + mData.get(position).getIdEntry());

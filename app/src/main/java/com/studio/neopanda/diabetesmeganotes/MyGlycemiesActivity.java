@@ -21,6 +21,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import butterknife.BindView;
@@ -63,6 +64,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     private String targetDate;
     private int numberDaysQueried = 15000;
     private String[] queriesResult;
+    private List<String> listResults;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +86,15 @@ public class MyGlycemiesActivity extends AppCompatActivity {
                 onClickViewEntriesBtn();
             }
         });
+
+//        calculateAverageOneWeek();
+    }
+
+    private void calculateAverageOneWeek() {
+        String targetDate = DateUtils.calculateDateFromToday(7);
+        String todayDate = DateUtils.calculateDateOfToday();
+
+        getDatesBetweenOneWeek(todayDate, targetDate);
     }
 
     private void onClickViewEntriesBtn(){
@@ -94,12 +105,10 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         transaction.replace(R.id.container_journal, fragment).commit();
     }
 
-    private void getDatesBetween(){
-        todayDate = DateUtils.calculateDateOfToday();
-        targetDate = DateUtils.calculateDateFromToday(numberDaysQueried);
-        queriesResult = dbHelper.getWeekCount(todayDate, targetDate);
+    private void getDatesBetweenOneWeek(String todayDate, String targetDate){
+        listResults = dbHelper.getWeekCount(todayDate, targetDate);
 
-        Log.e("DATABAZE", "getDatesBetween: " + queriesResult);
+        Log.e("DATABAZE", "getDatesBetween: " + (listResults.toString()));
     }
 
     private void onClickAddEntryBtn() {

@@ -5,9 +5,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class DatabaseHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 1;
 
     public static final String DATABASE_NAME = "MeganotesReader.db";
 
@@ -68,32 +71,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public String[] getWeekCount(String start, String end)
-    {
-        int i=0;
-        String[] text=null;
-        String selectQuery ="SELECT * FROM Glycemies WHERE Date BETWEEN '"+start+"' AND '"+end+"'";
+    public List<String> getWeekCount(String today, String target) {
+
+        int i = 0;
+        List<String> text = new ArrayList<>();
+        String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
         SQLiteDatabase db = this.getReadableDatabase();
 
-        try
-        {
+        try {
             Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor!= null && cursor.getCount() > 0 && cursor.moveToFirst())
-            {
-                do
-                {
-                    text[i]= cursor.getString(0);
-                    i++;
-                }while (cursor.moveToNext());
-            }
-            else
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    text.add(cursor.getString(3));
+                }
+                while (cursor.moveToNext());
+            } else
                 return null;
             db.close();
             cursor.close();
-        }
-        catch (Exception e)
-        {
-            System.out.println("Exception throw in SQLiteDBHandler"+e);
+        } catch (Exception e) {
+            System.out.println("Exception throw in SQLiteDBHandler" + e);
         }
         return text;
     }
