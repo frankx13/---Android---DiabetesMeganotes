@@ -28,4 +28,18 @@ public class AverageGlycemyUtils {
         bd = bd.setScale(places, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
+
+    public static int calculateAverageInsulinUnits(List<Integer> entriesList) {
+        int nbElements = entriesList.size();
+        int sum = 0;
+        if (nbElements > 0) {
+            for (int i = 0; i < entriesList.size(); i++) {
+                sum = sum + entriesList.get(i);
+            }
+            int result = sum / nbElements;
+            return result;
+        } else {
+            return 0;
+        }
+    }
 }

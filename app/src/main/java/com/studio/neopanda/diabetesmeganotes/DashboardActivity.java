@@ -1,17 +1,18 @@
 package com.studio.neopanda.diabetesmeganotes;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.View;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.widget.Button;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -34,9 +35,13 @@ public class DashboardActivity extends AppCompatActivity {
     //DATA
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
     private String[] queriesResult;
-    private List<String> listResults;
+    private List<String> listDates;
+    private List<String> listGlycemies;
+    private List<Double> listGlycemiesDouble;
     private String targetDate;
     private String todayDate;
+    private int glycemyColor;
+    private int statsTurns = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,21 +49,133 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         ButterKnife.bind(this);
-        listResults = new ArrayList<>();
+        listDates = new ArrayList<>();
+        listGlycemies = new ArrayList<>();
+        listGlycemiesDouble = new ArrayList<>();
         toGlycemiesBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), MyGlycemiesActivity.class);
             startActivity(intent);
             finish();
         });
 
-        loadAverageStats();
+        loadAverageStats(0);
     }
 
-    private void loadAverageStats() {
+    private void loadAverageStats(int statTurn) {
         todayDate = DateUtils.calculateDateOfToday();
-        targetDate = DateUtils.calculateDateFromToday(7);
 
-        listResults = dbHelper.getWeekCount(todayDate, targetDate);
-        Log.e("gzrgrz", "loadAverageStats: " + (listResults));
+        switch (statsTurns) {
+            case 0:
+                targetDate = DateUtils.calculateDateFromToday(7);
+                break;
+            case 1:
+                targetDate = DateUtils.calculateDateFromToday(15);
+                break;
+            case 2:
+                targetDate = DateUtils.calculateDateFromToday(30);
+                break;
+            case 3:
+                targetDate = DateUtils.calculateDateFromToday(60);
+                break;
+        }
+
+        listDates = dbHelper.getWeekCount(todayDate, targetDate);
+
+        if (!listGlycemies.isEmpty()) {
+            listGlycemies = dbHelper.getAverageGlycemies(todayDate, targetDate);
+            for (String s : listGlycemies) {
+                listGlycemiesDouble.add(Double.valueOf(s));
+            }
+
+            double averageGlycemyLevel = AverageGlycemyUtils.calculateAverageGlycemyAllResults(listGlycemiesDouble);
+            if (averageGlycemyLevel < 0.80 || averageGlycemyLevel > 2.50) {
+                glycemyColor = 3;
+            } else if (averageGlycemyLevel > 1.80) {
+                glycemyColor = 2;
+            } else if (averageGlycemyLevel > 1.40) {
+                glycemyColor = 1;
+            } else {
+                glycemyColor = 0;
+            }
+            paintAverageChars(averageGlycemyLevel, glycemyColor);
+        } else {
+            statsSixtyDays.setText("Pas assez d'entrées pour faire une moyenne...");
+            statsThirtyDays.setText("");
+            statsFifteenDays.setText("");
+            statsSevenDays.setText("");
+        }
+    }
+
+    private void paintAverageChars(double averageGlycemyLevel, int color) {
+        String preText = "";
+
+        switch (statsTurns) {
+            case 0:
+                preText = "7J : ";
+                break;
+            case 1:
+                preText = "14J : ";
+                break;
+            case 2:
+                preText = "30J : ";
+                break;
+            case 3:
+                preText = "60J : ";
+                break;
+        }
+
+        final SpannableStringBuilder sb = new SpannableStringBuilder(preText + averageGlycemyLevel + " g/l");
+        int red;
+        int green;
+        int blue;
+
+        if (color == 0) {
+            red = 184;
+            green = 233;
+            blue = 134;
+        } else if (color == 1) {
+            red = 233;
+            green = 231;
+            blue = 89;
+        } else if (color == 2) {
+            red = 233;
+            green = 166;
+            blue = 89;
+        } else {
+            red = 255;
+            green = 0;
+            blue = 0;
+        }
+
+        final ForegroundColorSpan fcs = new ForegroundColorSpan(Color.rgb(red, green, blue));
+
+        final StyleSpan bss = new StyleSpan(android.graphics.Typeface.BOLD);
+        if (statsTurns == 0) {
+            sb.setSpan(fcs, 5, 9, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            sb.setSpan(bss, 5, 9, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        } else {
+            sb.setSpan(fcs, 6, 10, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+            sb.setSpan(bss, 6, 10, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        }
+
+        switch (statsTurns) {
+            case 0:
+                statsSevenDays.setText(sb);
+                break;
+            case 1:
+                statsFifteenDays.setText(sb);
+                break;
+            case 2:
+                statsThirtyDays.setText(sb);
+                break;
+            case 3:
+                statsSixtyDays.setText(sb);
+                break;
+        }
+
+        if (statsTurns <= 2) {
+            statsTurns += 1;
+            loadAverageStats(statsTurns);
+        }
     }
 }

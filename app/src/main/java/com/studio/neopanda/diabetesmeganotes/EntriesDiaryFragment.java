@@ -9,10 +9,14 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -20,12 +24,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+
 public class EntriesDiaryFragment extends Fragment {
 
     private static final String KEY_Date = "Date";
     private static final String KEY_Level = "Glycemy";
     private static final String TABLE_NAME = "Glycemies";
 
+    private LinearLayout containerDiary;
     private RecyclerView recyclerView;
     private TextView averageGlycemyLevel;
 
@@ -58,6 +66,7 @@ public class EntriesDiaryFragment extends Fragment {
 
         recyclerView = getActivity().findViewById(R.id.recyclerview_diary_entries);
         averageGlycemyLevel = getActivity().findViewById(R.id.average_level_glycemy_TV);
+        containerDiary = getActivity().findViewById(R.id.container_diary_journal);
         glycemies = new ArrayList<>();
         glycemyLevels = new ArrayList<>();
 
@@ -65,8 +74,18 @@ public class EntriesDiaryFragment extends Fragment {
         sortingList();
         addingIds();
         loadingTextViewAverage();
+        antiUIBreakthrough();
 
         onLoadRecyclerView();
+    }
+
+    private void antiUIBreakthrough() {
+        containerDiary.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
     }
 
     private double calculateAverageGlycemyLevel() {

@@ -65,14 +65,32 @@
         android:text="@string/add_entry_text"
         android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:textSize="22sp"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/add_entry_insulin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/add_entry_glycemy"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/btn_classic"
+        android:drawableStart="@drawable/ic_needle_24dp"
+        android:drawableEnd="@drawable/ic_needle_24dp"
+        android:padding="15dp"
+        android:text="@string/add_entry_insulin"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <Button
         android:id="@+id/view_entries_glycemy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/add_entry_glycemy"
+        android:layout_below="@id/add_entry_insulin"
         android:layout_marginStart="20dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="20dp"
@@ -83,7 +101,25 @@
         android:text="@string/view_all_entries"
         android:textAlignment="center"
         android:textColor="@android:color/black"
-        android:textSize="22sp"
+        android:textSize="20sp"
+        android:textStyle="bold" />
+
+    <Button
+        android:id="@+id/view_entries_insulin_units"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/view_entries_glycemy"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/btn_classic"
+        android:drawableStart="@drawable/ic_present_to_all_black_24dp"
+        android:drawableEnd="@drawable/ic_present_to_all_black_24dp"
+        android:padding="15dp"
+        android:text="@string/history_insulin"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="20sp"
         android:textStyle="bold" />
 
     <LinearLayout
@@ -165,9 +201,77 @@
         android:id="@+id/container_journal"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_margin="10dp"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginBottom="75dp"
         android:background="@drawable/bg_simple"
         android:elevation="4dp"
         android:visibility="gone" />
+
+    <ImageButton
+        android:id="@+id/exit_diary_journal_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/btn_classic"
+        android:src="@drawable/ic_close_black_24dp"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/container_new_units_insulin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:background="@drawable/bg_simple"
+        android:elevation="5dp"
+        android:orientation="vertical"
+        android:padding="10dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:text="@string/number_units_text"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/input_insulin_units_new_entry"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@null"
+            android:hint="@string/_0"
+            android:inputType="number"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+        <Button
+            android:id="@+id/validate_new_insulin_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:background="@drawable/btn_simple"
+            android:padding="10dp"
+            android:text="@string/validate"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+
+    </LinearLayout>
 
 </RelativeLayout>

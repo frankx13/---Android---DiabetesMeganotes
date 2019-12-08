@@ -72,8 +72,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public List<String> getWeekCount(String today, String target) {
-
-        int i = 0;
         List<String> text = new ArrayList<>();
         String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -95,4 +93,29 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
         return text;
     }
+
+    public List<String> getAverageGlycemies(String today, String target) {
+        int i = 0;
+        List<String> text = new ArrayList<>();
+        String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        try {
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    text.add(cursor.getString(1));
+                }
+                while (cursor.moveToNext());
+            } else
+                return null;
+            db.close();
+            cursor.close();
+        } catch (Exception e) {
+            System.out.println("Exception throw in SQLiteDBHandler" + e);
+        }
+        return text;
+    }
+
 }

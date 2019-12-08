@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/container_diary_journal"
+    android:id="@+id/container_diary_journal_insulin"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".EntriesDiaryFragment">
+    tools:context=".EntriesInsulinFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerview_diary_entries"
+        android:id="@+id/recyclerview_insulin_entries"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="6" />
 
-        <TextView
-            android:id="@+id/average_level_glycemy_TV"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:layout_gravity="center"
-            android:gravity="center"/>
+    <TextView
+        android:id="@+id/average_level_insulin_TV"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="3"
+        android:layout_gravity="center"
+        android:gravity="center"/>
 
 </LinearLayout>

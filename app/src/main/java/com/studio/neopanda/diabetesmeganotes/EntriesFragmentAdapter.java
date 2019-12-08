@@ -38,12 +38,6 @@ public class EntriesFragmentAdapter extends RecyclerView.Adapter<EntriesFragment
         holder.dateTV.setText("Date : " + mData.get(position).date);
         holder.levelGlycemyTV.setText("Glycémie : " + mData.get(position).glycemyLevel);
         holder.idDiary.setText("Analyse n° : " + mData.get(position).getIdEntry());
-        holder.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(mContext, "Hey BRO", Toast.LENGTH_SHORT).show();
-            }
-        });
     }
 
     @Override
@@ -56,7 +50,6 @@ public class EntriesFragmentAdapter extends RecyclerView.Adapter<EntriesFragment
         TextView dateTV;
         TextView levelGlycemyTV;
         TextView idDiary;
-        LinearLayout container;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -64,7 +57,6 @@ public class EntriesFragmentAdapter extends RecyclerView.Adapter<EntriesFragment
             dateTV = itemView.findViewById(R.id.date_diary_entry_TV);
             levelGlycemyTV = itemView.findViewById(R.id.level_diary_entry_TV);
             idDiary = itemView.findViewById(R.id.id_diary_entry_TV);
-            container = itemView.findViewById(R.id.entry_diary_item_container);
         }
     }
 }
