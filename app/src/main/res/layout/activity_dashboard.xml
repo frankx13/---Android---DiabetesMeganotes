@@ -133,6 +133,40 @@
                 android:textSize="16sp"
                 android:textStyle="normal" />
 
+            <EditText
+                android:id="@+id/fast_note_EV"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="5dp"
+                android:layout_marginEnd="20dp"
+                android:visibility="gone"
+                android:background="@null"
+                android:hint="@string/write_your_note_here"
+                android:inputType="text"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+            <Button
+                android:id="@+id/fast_note_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/btn_classic"
+                android:padding="10dp"
+                android:text="@string/save"
+                android:visibility="gone"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="16sp"
+                android:textStyle="normal" />
+
+
         </LinearLayout>
 
     </LinearLayout>

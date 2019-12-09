@@ -15,7 +15,7 @@
     <string name="stats_7d">7J : x,xx g/l</string>
     <string name="stats_15d">15J : x,xx g/l</string>
     <string name="stats_30d">30J : x,xx g/l</string>
-    <string name="fast_note">Il faut que je fasses plus de sport du 5 au 15 décembre \n\nRDV endocrino le 8/12</string>
+    <string name="fast_note">Cliquez pour enregistrer une note :)</string>
     <string name="my_objectives">Mes objectifs</string>
     <string name="my_glycemy_diary">Mes glycémies</string>
     <string name="good_to_know_part">Informations utiles</string>
@@ -38,4 +38,8 @@
     <string name="_0">0</string>
     <string name="number_units_text">Nombre d\'unités d\'insuline :</string>
     <string name="history_insulin">Carnet: Insuline</string>
+    <string name="save">Enregistrer</string>
+    <string name="write_your_note_here">Écrivez ici ! :)</string>
+    <string name="empty_note_text">Notes vides. Cliquez ici pour en ajouter :)</string>
+    <string name="not_enough_entries">Pas assez d\'entrées pour faire une moyenne...</string>
 </resources>

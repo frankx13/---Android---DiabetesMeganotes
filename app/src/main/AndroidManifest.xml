@@ -9,7 +9,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/NoBarTheme">
-        <activity android:name=".MyGlycemiesActivity"></activity>
+        <activity android:name=".ObjectivesActivity"></activity>
+        <activity android:name=".MyGlycemiesActivity" />
         <activity android:name=".DashboardActivity" />
         <activity android:name=".MainActivity">
             <intent-filter>

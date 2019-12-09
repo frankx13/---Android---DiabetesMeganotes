@@ -27,4 +27,9 @@ public class SQliteDatabase {
         public static final String COLUMN_NAME_UNITS = "Units";
         public static final String COLUMN_NAME_EXTRA_INFOS = "Extras";
     }
+
+    public static class Note implements BaseColumns {
+        public static final String TABLE_NAME = "Note";
+        public static final String COLUMN_NAME_TEXT = "Text";
+    }
 }

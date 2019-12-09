@@ -10,7 +10,7 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 2;
+    public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CREDENTIALS =
@@ -42,10 +42,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES_INSULIN =
             "DROP TABLE IF EXISTS " + SQliteDatabase.InsulinUnits.TABLE_NAME;
 
-//    private static final String SQL_READ_ENTRIES_BETWEEN_DATES =
-//            "SELECT COLUMN FROM " + SQliteDatabase.Glycemies.TABLE_NAME +
-//                    " WHERE" + SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE +
-//                    "BETWEEN '2012-07-01' + AND '2012-07-07'\n";
+    private static final String SQL_CREATE_ENTRIES_NOTE =
+            "CREATE TABLE " + SQliteDatabase.Note.TABLE_NAME + " (" +
+                    SQliteDatabase.Note._ID + " INTEGER PRIMARY KEY," +
+                    SQliteDatabase.Note.COLUMN_NAME_TEXT + " TEXT)";
+
+    private static final String SQL_DELETE_ENTRIES_NOTE =
+            "DROP TABLE IF EXISTS " + SQliteDatabase.Note.TABLE_NAME;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -55,6 +58,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_ENTRIES_CREDENTIALS);
         db.execSQL(SQL_CREATE_ENTRIES_GLYCEMIES);
         db.execSQL(SQL_CREATE_ENTRIES_INSULIN);
+        db.execSQL(SQL_CREATE_ENTRIES_NOTE);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -63,6 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_ENTRIES_CREDENTIALS);
         db.execSQL(SQL_DELETE_ENTRIES_GLYCEMIES);
         db.execSQL(SQL_DELETE_ENTRIES_INSULIN);
+        db.execSQL(SQL_DELETE_ENTRIES_NOTE);
         onCreate(db);
     }
 
@@ -117,4 +122,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return text;
     }
 
+    public String getNote() {
+        String note;
+
+        String selectQuery = "SELECT * FROM Note";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery(selectQuery, null);
+        if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToLast();
+            note = cursor.getString(1);
+            cursor.close();
+            return note;
+        } else {
+            return "Vous pouvez ajouter une note en cliquant ici :)";
+        }
+    }
 }

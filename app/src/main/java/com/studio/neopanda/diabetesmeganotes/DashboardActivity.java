@@ -1,14 +1,19 @@
 package com.studio.neopanda.diabetesmeganotes;
 
+import android.content.ContentValues;
 import android.content.Intent;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,6 +36,12 @@ public class DashboardActivity extends AppCompatActivity {
     TextView statsFifteenDays;
     @BindView(R.id.fast_stats_7d_TV)
     TextView statsSevenDays;
+    @BindView(R.id.fast_note_TV)
+    TextView fastNoteTV;
+    @BindView(R.id.fast_note_EV)
+    EditText fastNoteEV;
+    @BindView(R.id.fast_note_btn)
+    Button fastNoteBtn;
 
     //DATA
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -42,6 +53,7 @@ public class DashboardActivity extends AppCompatActivity {
     private String todayDate;
     private int glycemyColor;
     private int statsTurns = 0;
+    private String note = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +71,51 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
         loadAverageStats(0);
+        loadNotes();
+    }
+
+    private void loadNotes() {
+        String noteInDB = dbHelper.getNote();
+        if (!noteInDB.equals("")) {
+            fastNoteTV.setText(noteInDB);
+        } else {
+            fastNoteTV.setText(getResources().getString(R.string.empty_note_text));
+        }
+        fastNoteTV.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                fastNoteTV.setVisibility(View.GONE);
+                fastNoteEV.setVisibility(View.VISIBLE);
+                fastNoteBtn.setVisibility(View.VISIBLE);
+                fastNoteBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        note = fastNoteEV.getEditableText().toString() + " \n\n (Cliquer pour modifier)";
+                        writeNoteInDB(note);
+                        Toast.makeText(DashboardActivity.this,
+                                "Note enregistrée avec succès !",
+                                Toast.LENGTH_SHORT).show();
+
+                        fastNoteTV.setText(note);
+                        fastNoteEV.setVisibility(View.GONE);
+                        fastNoteBtn.setVisibility(View.GONE);
+                        fastNoteTV.setVisibility(View.VISIBLE);
+                    }
+                });
+            }
+        });
+    }
+
+    public void writeNoteInDB(String note) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(SQliteDatabase.Note.COLUMN_NAME_TEXT, note);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insert(SQliteDatabase.Note.TABLE_NAME, null, values);
     }
 
     private void loadAverageStats(int statTurn) {
@@ -99,7 +156,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
             paintAverageChars(averageGlycemyLevel, glycemyColor);
         } else {
-            statsSixtyDays.setText("Pas assez d'entrées pour faire une moyenne...");
+            statsSixtyDays.setText(getResources().getString(R.string.not_enough_entries));
             statsThirtyDays.setText("");
             statsFifteenDays.setText("");
             statsSevenDays.setText("");
