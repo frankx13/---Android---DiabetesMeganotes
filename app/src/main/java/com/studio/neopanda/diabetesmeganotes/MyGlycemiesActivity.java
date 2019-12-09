@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.BaseColumns;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CalendarView;
@@ -111,12 +110,12 @@ public class MyGlycemiesActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Fragment fragment = null;
-                if (fragmentID == 1){
+                if (fragmentID == 1) {
                     fragment = new EntriesDiaryFragment();
-                } else if (fragmentID == 2){
+                } else if (fragmentID == 2) {
                     fragment = new EntriesInsulinFragment();
                 }
-                
+
                 FragmentManager manager = getSupportFragmentManager();
                 FragmentTransaction transaction = manager.beginTransaction();
                 transaction.remove(fragment).commit();
@@ -127,13 +126,18 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     }
 
     private void onClickViewInsulinBtn() {
-        fragmentID = 2;
-        EntriesInsulinFragment fragment = new EntriesInsulinFragment();
-        journalContainer.setVisibility(View.VISIBLE);
-        exitDiaryJournalBtn.setVisibility(View.VISIBLE);
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.container_journal, fragment).commit();
+        boolean tableNotEmpty = isAnyGlycemyInDB("Insulin");
+        if (tableNotEmpty){
+            fragmentID = 2;
+            EntriesInsulinFragment fragment = new EntriesInsulinFragment();
+            journalContainer.setVisibility(View.VISIBLE);
+            exitDiaryJournalBtn.setVisibility(View.VISIBLE);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.container_journal, fragment).commit();
+        } else {
+            Toast.makeText(this, "Aucune entrée, essayez d'ajouter des unités d'insuline.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void onClickAddInsulinBtn() {
@@ -179,13 +183,18 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     }
 
     public void onClickViewEntriesBtn() {
-        fragmentID = 1;
-        EntriesDiaryFragment fragment = new EntriesDiaryFragment();
-        journalContainer.setVisibility(View.VISIBLE);
-        exitDiaryJournalBtn.setVisibility(View.VISIBLE);
-        FragmentManager manager = getSupportFragmentManager();
-        FragmentTransaction transaction = manager.beginTransaction();
-        transaction.replace(R.id.container_journal, fragment).commit();
+        boolean tableNotEmpty = isAnyGlycemyInDB("Glycemies");
+        if (tableNotEmpty){
+            fragmentID = 1;
+            EntriesDiaryFragment fragment = new EntriesDiaryFragment();
+            journalContainer.setVisibility(View.VISIBLE);
+            exitDiaryJournalBtn.setVisibility(View.VISIBLE);
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            transaction.replace(R.id.container_journal, fragment).commit();
+        } else {
+            Toast.makeText(this, "Aucune entrée, essayez d'ajouter des glycémies.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void onClickAddEntryBtn() {
@@ -241,43 +250,19 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         db.insertOrThrow(SQliteDatabase.Glycemies.TABLE_NAME, null, values);
     }
 
-    public void readAuthInDB(String date) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                BaseColumns._ID,
-                SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE,
-                SQliteDatabase.InsulinUnits.COLUMN_NAME_UNITS,
-                SQliteDatabase.InsulinUnits.COLUMN_NAME_EXTRA_INFOS
-        };
+    public boolean isAnyGlycemyInDB(String tableName) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        // Filter results WHERE "title" = 'My Title'
-        String selection = SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE;
-        String[] selectionArgs = {date};
-
-        // How you want the results sorted in the resulting Cursor
-        String sortOrder =
-                SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE + " DESC";
-
-        Cursor cursor = db.query(
-                SQliteDatabase.InsulinUnits.TABLE_NAME,   // The table to query
-                projection,             // The array of columns to return (pass null to get all)
-                selection,              // The columns for the WHERE clause
-                selectionArgs,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                sortOrder               // The sort order
-        );
-
-        //This part is adding all valid results to the itemIds List
-//        List itemIds = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            long itemId = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(SQliteDatabase.Credentials._ID));
-            itemIds.add(itemId);
+        String count = "SELECT count(*) FROM " + tableName;
+        Cursor mcursor = db.rawQuery(count, null);
+        mcursor.moveToFirst();
+        int icount = mcursor.getInt(0);
+        mcursor.close();
+        if (icount > 0) {
+            return true;
+        } else {
+            return false;
         }
-        cursor.close();
     }
 
     @Override

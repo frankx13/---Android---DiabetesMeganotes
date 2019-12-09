@@ -9,23 +9,18 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import butterknife.ButterKnife;
-import butterknife.OnClick;
 
 public class EntriesDiaryFragment extends Fragment {
 
@@ -71,12 +66,16 @@ public class EntriesDiaryFragment extends Fragment {
         glycemyLevels = new ArrayList<>();
 
         glycemies = getGlycemies();
-        sortingList();
-        addingIds();
-        loadingTextViewAverage();
-        antiUIBreakthrough();
 
-        onLoadRecyclerView();
+        if (glycemies.size() > 0) {
+            sortingList();
+            addingIds();
+            loadingTextViewAverage();
+            antiUIBreakthrough();
+            onLoadRecyclerView();
+        } else {
+            Toast.makeText(getActivity(), "Aucune entrée trouvée, essayez d'en ajouter !", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void antiUIBreakthrough() {
@@ -92,7 +91,6 @@ public class EntriesDiaryFragment extends Fragment {
         for (Glycemy g : glycemies) {
             glycemyLevels.add(Double.parseDouble(g.glycemyLevel));
         }
-
         return AverageGlycemyUtils.calculateAverageGlycemyAllResults(glycemyLevels);
     }
 
@@ -102,7 +100,7 @@ public class EntriesDiaryFragment extends Fragment {
             averageGlycemyLevel.setTextColor(getResources().getColor(android.R.color.holo_green_light));
             averageGlycemyLevel.setCompoundDrawablesRelativeWithIntrinsicBounds
                     (getResources().getDrawable(R.drawable.ic_warning_red_24dp),
-                    null, null, null);
+                            null, null, null);
         } else if (average < 0.80) {
             averageGlycemyLevel.setTextColor(getResources().getColor(android.R.color.holo_red_light));
         } else if (average > 1.5 && average <= 1.8) {
@@ -113,7 +111,7 @@ public class EntriesDiaryFragment extends Fragment {
             averageGlycemyLevel.setTextColor(getResources().getColor(android.R.color.holo_red_dark));
             averageGlycemyLevel.setCompoundDrawablesRelativeWithIntrinsicBounds
                     (getResources().getDrawable(R.drawable.ic_warning_red_24dp),
-                    null, null, null);
+                            null, null, null);
         }
         averageGlycemyLevel.setText("≈" + average);
     }
@@ -129,6 +127,7 @@ public class EntriesDiaryFragment extends Fragment {
     }
 
     private void onLoadRecyclerView() {
+        Toast.makeText(getActivity(), "Aucune entrée présente, essayez d'en ajouter!", Toast.LENGTH_SHORT).show();
         Log.e("LOADINGRV", "onClickViewEntriesBtn: " + glycemies + "firstItem" + glycemies.get(0).getDate());
         EntriesFragmentAdapter adapter = new EntriesFragmentAdapter(getContext(), glycemies);
         recyclerView.setAdapter(adapter);

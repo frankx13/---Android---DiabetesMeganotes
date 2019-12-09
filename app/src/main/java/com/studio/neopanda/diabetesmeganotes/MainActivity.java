@@ -39,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         itemIds = new ArrayList<>();
-
         validateAuthBtn.setOnClickListener(v -> onClickValidateAuthBtn());
     }
 
