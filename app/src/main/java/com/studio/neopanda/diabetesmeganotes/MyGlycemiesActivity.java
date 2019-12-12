@@ -159,13 +159,15 @@ public class MyGlycemiesActivity extends AppCompatActivity {
                     Toast.makeText(MyGlycemiesActivity.this, "Trop de chiffres, veuillez réessayer.", Toast.LENGTH_SHORT).show();
                 } else if (newInsulinUnits.length() == 1 || newInsulinUnits.length() == 2) {
                     writeInsulinUnitsInDB(newInsulinUnits);
-                    containerInsulinUnitsInput.setVisibility(View.GONE);
                     Toast.makeText(MyGlycemiesActivity.this, "Unités renseignées avec succès !", Toast.LENGTH_SHORT).show();
+                    UIUtils.hideKeyboard(MyGlycemiesActivity.this);
+                    containerInsulinUnitsInput.setVisibility(View.GONE);
                 } else {
                     Toast.makeText(MyGlycemiesActivity.this, "Le nombre d'unités ne peut pas être nul, veuillez réessayer.", Toast.LENGTH_SHORT).show();
                 }
             }
         });
+
     }
 
     public void writeInsulinUnitsInDB(String units) {
@@ -230,6 +232,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
             } else if (newEntryGlycemyLevel.length() == 4) {
                 writeAuthInDB(newEntryGlycemyDate, newEntryGlycemyLevel);
                 Toast.makeText(this, "L'entrée a bien été enregistrée !", Toast.LENGTH_SHORT).show();
+                UIUtils.hideKeyboard(this);
                 containerAddEntryPart.setVisibility(View.GONE);
             } else {
                 Toast.makeText(this, "Impossible d'ajouter cette entrée. Veuillez utiliser ce modèle et recommencer : x.xx", Toast.LENGTH_LONG).show();

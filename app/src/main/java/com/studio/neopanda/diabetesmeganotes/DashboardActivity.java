@@ -136,9 +136,9 @@ public class DashboardActivity extends AppCompatActivity {
                 break;
         }
 
-        listDates = dbHelper.getWeekCount(todayDate, targetDate);
+        listDates = dbHelper.getGlycemiesInTimePeriod(todayDate, targetDate);
 
-        if (!listGlycemies.isEmpty()) {
+        if (!listDates.isEmpty()) {
             listGlycemies = dbHelper.getAverageGlycemies(todayDate, targetDate);
             for (String s : listGlycemies) {
                 listGlycemiesDouble.add(Double.valueOf(s));
@@ -187,9 +187,9 @@ public class DashboardActivity extends AppCompatActivity {
         int blue;
 
         if (color == 0) {
-            red = 184;
-            green = 233;
-            blue = 134;
+            red = 16;
+            green = 122;
+            blue = 11;
         } else if (color == 1) {
             red = 233;
             green = 231;
@@ -199,7 +199,7 @@ public class DashboardActivity extends AppCompatActivity {
             green = 166;
             blue = 89;
         } else {
-            red = 255;
+            red = 166;
             green = 0;
             blue = 0;
         }

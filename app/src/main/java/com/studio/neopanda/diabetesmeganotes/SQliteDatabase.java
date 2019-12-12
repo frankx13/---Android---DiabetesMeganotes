@@ -2,6 +2,7 @@ package com.studio.neopanda.diabetesmeganotes;
 
 import android.provider.BaseColumns;
 
+@SuppressWarnings("ALL")
 public class SQliteDatabase {
     private SQliteDatabase() {
 
@@ -31,5 +32,13 @@ public class SQliteDatabase {
     public static class Note implements BaseColumns {
         public static final String TABLE_NAME = "Note";
         public static final String COLUMN_NAME_TEXT = "Text";
+    }
+
+    public static class Objectives implements BaseColumns {
+        public static final String TABLE_NAME = "Objectives";
+        public static final String COLUMN_NAME_DATE = "Date";
+        public static final String COLUMN_NAME_TITLE = "Title";
+        public static final String COLUMN_NAME_DESC = "Desc";
+
     }
 }

@@ -75,7 +75,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public List<String> getWeekCount(String today, String target) {
+    public List<String> getGlycemiesInTimePeriod(String today, String target) {
         List<String> text = new ArrayList<>();
         String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
         SQLiteDatabase db = this.getReadableDatabase();
