@@ -2,8 +2,6 @@ package com.studio.neopanda.diabetesmeganotes;
 
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,10 +21,6 @@ import java.util.Collections;
 import java.util.List;
 
 public class EntriesDiaryFragment extends Fragment {
-
-    private static final String KEY_Date = "Date";
-    private static final String KEY_Level = "Glycemy";
-    private static final String TABLE_NAME = "Glycemies";
 
     private LinearLayout containerDiary;
     private RecyclerView recyclerView;
@@ -65,7 +59,7 @@ public class EntriesDiaryFragment extends Fragment {
         glycemies = new ArrayList<>();
         glycemyLevels = new ArrayList<>();
 
-        glycemies = getGlycemies();
+        glycemies = dbHelper.getGlycemies();
 
         if (glycemies.size() > 0) {
             sortingList();
@@ -136,25 +130,5 @@ public class EntriesDiaryFragment extends Fragment {
         adapter.notifyDataSetChanged();
     }
 
-    private List<Glycemy> getGlycemies() {
-        List<Glycemy> glycemiesList = new ArrayList<>();
-        SQLiteDatabase sQliteDatabase = dbHelper.getReadableDatabase();
-        String[] field = {KEY_Date, KEY_Level};
-        Cursor c = sQliteDatabase.query(TABLE_NAME, field, null, null, null, null, null);
 
-        int date = c.getColumnIndex(KEY_Date);
-        int level = c.getColumnIndex(KEY_Level);
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            String dateData = c.getString(date);
-            String levelData = c.getString(level);
-
-            glycemiesList.add(new Glycemy(dateData, levelData));
-        }
-
-        dbHelper.close();
-        c.close();
-
-        return glycemiesList;
-    }
 }

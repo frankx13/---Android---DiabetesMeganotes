@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
+    //CONSTANTS
     // If you change the database schema, you must increment the database version.
     public static final int DATABASE_VERSION = 4;
     public static final String DATABASE_NAME = "MeganotesReader.db";
@@ -230,6 +231,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values,
                 selection,
                 selectionArgs);
+    }
+
+    public List<InsulinInjection> getInsulinInjections() {
+        List<InsulinInjection> glycemiesList = new ArrayList<>();
+        SQLiteDatabase sQliteDatabase = getReadableDatabase();
+        String[] field = {SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE, SQliteDatabase.InsulinUnits.COLUMN_NAME_UNITS};
+        Cursor c = sQliteDatabase.query(SQliteDatabase.InsulinUnits.TABLE_NAME, field, null, null, null, null, null);
+
+        int date = c.getColumnIndex(SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE);
+        int insulinUnits = c.getColumnIndex(SQliteDatabase.InsulinUnits.COLUMN_NAME_UNITS);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            String dateData = c.getString(date);
+            String insulinData = c.getString(insulinUnits);
+
+            glycemiesList.add(new InsulinInjection(dateData, insulinData));
+        }
+
+        getReadableDatabase().close();
+        c.close();
+
+        return glycemiesList;
+    }
+
+    public List<Glycemy> getGlycemies() {
+        List<Glycemy> glycemiesList = new ArrayList<>();
+        SQLiteDatabase sQliteDatabase = getReadableDatabase();
+        String[] field = {SQliteDatabase.Glycemies.COLUMN_NAME_DATE, SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY};
+        Cursor c = sQliteDatabase.query(SQliteDatabase.Glycemies.TABLE_NAME, field, null, null, null, null, null);
+
+        int date = c.getColumnIndex(SQliteDatabase.Glycemies.COLUMN_NAME_DATE);
+        int level = c.getColumnIndex(SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            String dateData = c.getString(date);
+            String levelData = c.getString(level);
+
+            glycemiesList.add(new Glycemy(dateData, levelData));
+        }
+
+        getReadableDatabase().close();
+        c.close();
+
+        return glycemiesList;
     }
 
 }

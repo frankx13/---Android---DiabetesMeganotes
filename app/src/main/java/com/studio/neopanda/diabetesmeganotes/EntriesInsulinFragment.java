@@ -24,11 +24,6 @@ import java.util.List;
 
 public class EntriesInsulinFragment extends Fragment {
 
-    //CONSTANTS
-    private static final String KEY_Date = "Date";
-    private static final String KEY_Insulin = "Units";
-    private static final String TABLE_NAME = "Insulin";
-
     //UI
     private LinearLayout containerInsulin;
     private RecyclerView recyclerViewInsulin;
@@ -69,7 +64,7 @@ public class EntriesInsulinFragment extends Fragment {
         insulinUnits = new ArrayList<>();
         insulinInjections = new ArrayList<>();
 
-        insulinInjections = getInsulinInjections();
+        insulinInjections = dbHelper.getInsulinInjections();
         sortingList();
         addingIds();
         loadingTextViewAverage();
@@ -111,27 +106,7 @@ public class EntriesInsulinFragment extends Fragment {
         averageInsulinLevel.setText("≈ " + average + "unités par injection");
     }
 
-    private List<InsulinInjection> getInsulinInjections() {
-        List<InsulinInjection> glycemiesList = new ArrayList<>();
-        SQLiteDatabase sQliteDatabase = dbHelper.getReadableDatabase();
-        String[] field = {KEY_Date, KEY_Insulin};
-        Cursor c = sQliteDatabase.query(TABLE_NAME, field, null, null, null, null, null);
 
-        int date = c.getColumnIndex(KEY_Date);
-        int insulinUnits = c.getColumnIndex(KEY_Insulin);
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            String dateData = c.getString(date);
-            String insulinData = c.getString(insulinUnits);
-
-            glycemiesList.add(new InsulinInjection(dateData, insulinData));
-        }
-
-        dbHelper.close();
-        c.close();
-
-        return glycemiesList;
-    }
 
     private void onLoadRecyclerView() {
         Log.e("LOADINGRV", "onClickViewEntriesBtn: " + insulinInjections + "firstItem" + insulinInjections.get(0).getDate());
