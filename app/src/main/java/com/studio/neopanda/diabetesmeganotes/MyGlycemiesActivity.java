@@ -1,6 +1,5 @@
 package com.studio.neopanda.diabetesmeganotes;
 
-import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -126,8 +125,8 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     }
 
     private void onClickViewInsulinBtn() {
-        boolean tableNotEmpty = isAnyGlycemyInDB("Insulin");
-        if (tableNotEmpty){
+        boolean tableNotEmpty = dbHelper.isTableNotEmpty("Insulin");
+        if (tableNotEmpty) {
             fragmentID = 2;
             EntriesInsulinFragment fragment = new EntriesInsulinFragment();
             journalContainer.setVisibility(View.VISIBLE);
@@ -158,7 +157,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
                 if (newInsulinUnits.length() > 2) {
                     Toast.makeText(MyGlycemiesActivity.this, "Trop de chiffres, veuillez réessayer.", Toast.LENGTH_SHORT).show();
                 } else if (newInsulinUnits.length() == 1 || newInsulinUnits.length() == 2) {
-                    writeInsulinUnitsInDB(newInsulinUnits);
+                    dbHelper.writeInsulinUnitsInDB(newInsulinUnits);
                     Toast.makeText(MyGlycemiesActivity.this, "Unités renseignées avec succès !", Toast.LENGTH_SHORT).show();
                     UIUtils.hideKeyboard(MyGlycemiesActivity.this);
                     containerInsulinUnitsInput.setVisibility(View.GONE);
@@ -170,23 +169,9 @@ public class MyGlycemiesActivity extends AppCompatActivity {
 
     }
 
-    public void writeInsulinUnitsInDB(String units) {
-        // Gets the data repository in write mode
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String todayDate = DateUtils.calculateDateOfToday();
-
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE, todayDate);
-        values.put(SQliteDatabase.InsulinUnits.COLUMN_NAME_UNITS, units);
-
-        // Insert the new row, returning the primary key value of the new row
-        db.insertOrThrow(SQliteDatabase.InsulinUnits.TABLE_NAME, null, values);
-    }
-
     public void onClickViewEntriesBtn() {
-        boolean tableNotEmpty = isAnyGlycemyInDB("Glycemies");
-        if (tableNotEmpty){
+        boolean tableNotEmpty = dbHelper.isTableNotEmpty("Glycemies");
+        if (tableNotEmpty) {
             fragmentID = 1;
             EntriesDiaryFragment fragment = new EntriesDiaryFragment();
             journalContainer.setVisibility(View.VISIBLE);
@@ -230,7 +215,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
             if (newEntryGlycemyLevel.length() < 4) {
                 Toast.makeText(this, "Trop peu de nombres rentrés. Veuillez utiliser ce modèle et recommencer : x.xx", Toast.LENGTH_LONG).show();
             } else if (newEntryGlycemyLevel.length() == 4) {
-                writeAuthInDB(newEntryGlycemyDate, newEntryGlycemyLevel);
+                dbHelper.writeGlycemyInDB(newEntryGlycemyDate, newEntryGlycemyLevel);
                 Toast.makeText(this, "L'entrée a bien été enregistrée !", Toast.LENGTH_SHORT).show();
                 UIUtils.hideKeyboard(this);
                 containerAddEntryPart.setVisibility(View.GONE);
@@ -240,33 +225,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         });
     }
 
-    public void writeAuthInDB(String date, String glycemy) {
-        // Gets the data repository in write mode
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
 
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Glycemies.COLUMN_NAME_DATE, date);
-        values.put(SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY, glycemy);
-
-        // Insert the new row, returning the primary key value of the new row
-        db.insertOrThrow(SQliteDatabase.Glycemies.TABLE_NAME, null, values);
-    }
-
-    public boolean isAnyGlycemyInDB(String tableName) {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        String count = "SELECT count(*) FROM " + tableName;
-        Cursor mcursor = db.rawQuery(count, null);
-        mcursor.moveToFirst();
-        int icount = mcursor.getInt(0);
-        mcursor.close();
-        if (icount > 0) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
     @Override
     protected void onDestroy() {

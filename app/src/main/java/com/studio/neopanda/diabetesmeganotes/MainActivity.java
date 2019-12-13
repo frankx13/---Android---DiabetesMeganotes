@@ -48,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         readAuthInDB(username);
         if (itemIds.size() < 1) {
-            writeAuthInDB(username, pwd);
+            dbHelper.setCredentialsInDB(username, pwd);
             Toast.makeText(this, "Le compte a bien été créé", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Connexion en cours", Toast.LENGTH_SHORT).show();
@@ -56,22 +56,6 @@ public class MainActivity extends AppCompatActivity {
             startActivity(intent);
             finish();
         }
-    }
-
-    public long writeAuthInDB(String username, String password) {
-        // Gets the data repository in write mode
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Credentials.COLUMN_NAME_USERNAME, username);
-        values.put(SQliteDatabase.Credentials.COLUMN_NAME_PASSWORD, password);
-
-        // Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(SQliteDatabase.Credentials.TABLE_NAME, null, values);
-        db.insert(SQliteDatabase.Credentials.TABLE_NAME, null, values);
-
-        return newRowId;
     }
 
     public void readAuthInDB(String username) {
@@ -110,36 +94,6 @@ public class MainActivity extends AppCompatActivity {
             itemIds.add(itemId);
         }
         cursor.close();
-    }
-
-    public void deleteAuthInDB() {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        // Define 'where' part of query.
-        String selection = SQliteDatabase.Credentials.COLUMN_NAME_USERNAME + " LIKE ?";
-        // Specify arguments in placeholder order.
-        String[] selectionArgs = {"Josef"};
-        // Issue SQL statement => indicate the numbers of rows deleted
-        int deletedRows = db.delete(SQliteDatabase.Credentials.TABLE_NAME, selection, selectionArgs);
-    }
-
-    public void updateAuthInDB() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        // New value for one column
-        String title = "Joseff";
-        ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Credentials.COLUMN_NAME_USERNAME, title);
-
-        // Which row to update, based on the title
-        String selection = SQliteDatabase.Credentials.COLUMN_NAME_USERNAME + " LIKE ?";
-        String[] selectionArgs = {"Joseph"};
-
-        //Return the numbers of updated rows
-        int count = db.update(
-                SQliteDatabase.Credentials.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs);
     }
 
     //Close database connection ondestroy

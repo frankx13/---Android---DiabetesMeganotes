@@ -42,10 +42,11 @@ public class DashboardActivity extends AppCompatActivity {
     EditText fastNoteEV;
     @BindView(R.id.fast_note_btn)
     Button fastNoteBtn;
+    @BindView(R.id.my_objectives_btn)
+    Button objectivesBtn;
 
     //DATA
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
-    private String[] queriesResult;
     private List<String> listDates;
     private List<String> listGlycemies;
     private List<Double> listGlycemiesDouble;
@@ -70,6 +71,16 @@ public class DashboardActivity extends AppCompatActivity {
             finish();
         });
 
+        objectivesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), ObjectivesActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+
         loadAverageStats(0);
         loadNotes();
     }
@@ -91,7 +102,7 @@ public class DashboardActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         note = fastNoteEV.getEditableText().toString() + " \n\n (Cliquer pour modifier)";
-                        writeNoteInDB(note);
+                        dbHelper.setNoteInDB(note);
                         Toast.makeText(DashboardActivity.this,
                                 "Note enregistrée avec succès !",
                                 Toast.LENGTH_SHORT).show();
@@ -104,18 +115,6 @@ public class DashboardActivity extends AppCompatActivity {
                 });
             }
         });
-    }
-
-    public void writeNoteInDB(String note) {
-        // Gets the data repository in write mode
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Note.COLUMN_NAME_TEXT, note);
-
-        // Insert the new row, returning the primary key value of the new row
-        db.insert(SQliteDatabase.Note.TABLE_NAME, null, values);
     }
 
     private void loadAverageStats(int statTurn) {

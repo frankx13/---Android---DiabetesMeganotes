@@ -1,5 +1,6 @@
 package com.studio.neopanda.diabetesmeganotes;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -99,7 +100,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public List<String> getAverageGlycemies(String today, String target) {
-        int i = 0;
         List<String> text = new ArrayList<>();
         String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
         SQLiteDatabase db = this.getReadableDatabase();
@@ -137,4 +137,99 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             return "Vous pouvez ajouter une note en cliquant ici :)";
         }
     }
+
+    public void setNoteInDB(String note) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(SQliteDatabase.Note.COLUMN_NAME_TEXT, note);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insert(SQliteDatabase.Note.TABLE_NAME, null, values);
+    }
+
+    public void setCredentialsInDB(String username, String password) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(SQliteDatabase.Credentials.COLUMN_NAME_USERNAME, username);
+        values.put(SQliteDatabase.Credentials.COLUMN_NAME_PASSWORD, password);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insert(SQliteDatabase.Credentials.TABLE_NAME, null, values);
+    }
+
+    public void writeInsulinUnitsInDB(String units) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = getWritableDatabase();
+        String todayDate = DateUtils.calculateDateOfToday();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE, todayDate);
+        values.put(SQliteDatabase.InsulinUnits.COLUMN_NAME_UNITS, units);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insertOrThrow(SQliteDatabase.InsulinUnits.TABLE_NAME, null, values);
+    }
+
+    public void writeGlycemyInDB(String date, String glycemy) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(SQliteDatabase.Glycemies.COLUMN_NAME_DATE, date);
+        values.put(SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY, glycemy);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insertOrThrow(SQliteDatabase.Glycemies.TABLE_NAME, null, values);
+    }
+
+    //Checking if table is null
+    public boolean isTableNotEmpty(String tableName) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        String count = "SELECT count(*) FROM " + tableName;
+        Cursor mcursor = db.rawQuery(count, null);
+        mcursor.moveToFirst();
+        int icount = mcursor.getInt(0);
+        mcursor.close();
+        return icount > 0;
+    }
+
+    public void deleteAuthInDB() {
+        SQLiteDatabase db = getReadableDatabase();
+        // Define 'where' part of query.
+        String selection = SQliteDatabase.Credentials.COLUMN_NAME_USERNAME + " LIKE ?";
+        // Specify arguments in placeholder order.
+        String[] selectionArgs = {"Josef"};
+        // Issue SQL statement => indicate the numbers of rows deleted
+        int deletedRows = db.delete(SQliteDatabase.Credentials.TABLE_NAME, selection, selectionArgs);
+    }
+
+    public void updateAuthInDB() {
+        SQLiteDatabase db = getWritableDatabase();
+
+        // New value for one column
+        String title = "Joseff";
+        ContentValues values = new ContentValues();
+        values.put(SQliteDatabase.Credentials.COLUMN_NAME_USERNAME, title);
+
+        // Which row to update, based on the title
+        String selection = SQliteDatabase.Credentials.COLUMN_NAME_USERNAME + " LIKE ?";
+        String[] selectionArgs = {"Joseph"};
+
+        //Return the numbers of updated rows
+        int count = db.update(
+                SQliteDatabase.Credentials.TABLE_NAME,
+                values,
+                selection,
+                selectionArgs);
+    }
+
 }
