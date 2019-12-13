@@ -137,7 +137,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         listDates = dbHelper.getGlycemiesInTimePeriod(todayDate, targetDate);
 
-        if (!listDates.isEmpty()) {
+        if (listDates!=null && !listDates.isEmpty()) {
             listGlycemies = dbHelper.getAverageGlycemies(todayDate, targetDate);
             for (String s : listGlycemies) {
                 listGlycemiesDouble.add(Double.valueOf(s));

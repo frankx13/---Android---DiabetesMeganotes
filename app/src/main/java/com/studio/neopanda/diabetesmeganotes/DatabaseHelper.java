@@ -12,7 +12,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 4;
+    public static final int DATABASE_VERSION = 5;
     public static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CREDENTIALS =
@@ -52,6 +52,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES_NOTE =
             "DROP TABLE IF EXISTS " + SQliteDatabase.Note.TABLE_NAME;
 
+    private static final String SQL_CREATE_ENTRIES_OBJECTIVES =
+            "CREATE TABLE " + SQliteDatabase.Objectives.TABLE_NAME + " (" +
+                    SQliteDatabase.Objectives._ID + " INTEGER PRIMARY KEY," +
+                    SQliteDatabase.Objectives.COLUMN_NAME_DESC + " TEXT," +
+                    SQliteDatabase.Objectives.COLUMN_NAME_DURATION + " INTEGER," +
+                    SQliteDatabase.Objectives.COLUMN_NAME_TYPE + " TEXT," +
+                    SQliteDatabase.Objectives.COLUMN_NAME_DATE + " TEXT)";
+
+    private static final String SQL_DELETE_ENTRIES_OBJECTIVES =
+            "DROP TABLE IF EXISTS " + SQliteDatabase.Objectives.TABLE_NAME;
+
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
@@ -61,6 +72,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_ENTRIES_GLYCEMIES);
         db.execSQL(SQL_CREATE_ENTRIES_INSULIN);
         db.execSQL(SQL_CREATE_ENTRIES_NOTE);
+        db.execSQL(SQL_CREATE_ENTRIES_OBJECTIVES);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -70,6 +82,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_ENTRIES_GLYCEMIES);
         db.execSQL(SQL_DELETE_ENTRIES_INSULIN);
         db.execSQL(SQL_DELETE_ENTRIES_NOTE);
+        db.execSQL(SQL_DELETE_ENTRIES_OBJECTIVES);
         onCreate(db);
     }
 
@@ -277,4 +290,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return glycemiesList;
     }
 
+    public void writeObjectiveInDB(String date, String duration, String type, String description) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(SQliteDatabase.Objectives.COLUMN_NAME_DATE, date);
+        values.put(SQliteDatabase.Objectives.COLUMN_NAME_DURATION, duration);
+        values.put(SQliteDatabase.Objectives.COLUMN_NAME_TYPE, type);
+        values.put(SQliteDatabase.Objectives.COLUMN_NAME_DESC, description);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insertOrThrow(SQliteDatabase.Objectives.TABLE_NAME, null, values);
+    }
 }

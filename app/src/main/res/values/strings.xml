@@ -45,4 +45,14 @@
     <string name="diabetes_objectives">Mes Objectifs</string>
     <string name="defined_objectives">Objectifs définis :</string>
     <string name="add_entry_objectives">Ajouter un objectif</string>
+    <string name="new_objective">Nouvel objectif</string>
+    <string name="objective_duration_text">Durée (en jours)</string>
+    <string name="objective_type_text">Type (sélectionnez-en un)</string>
+    <string name="type_objective_food">Nourriture</string>
+    <string name="type_objective_insulin">Dosage</string>
+    <string name="type_objective_sport">Sport</string>
+    <string name="type_objective_glycemy">Glycémie</string>
+    <string name="description_objective_text">Décrire l\'objectif</string>
+    <string name="short_desc_of_objective_hint_input">Brève description</string>
+    <string name="days_number_max_hint">Nombre de jours (60 max)</string>
 </resources>

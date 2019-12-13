@@ -37,8 +37,8 @@ public class SQliteDatabase {
     public static class Objectives implements BaseColumns {
         public static final String TABLE_NAME = "Objectives";
         public static final String COLUMN_NAME_DATE = "Date";
-        public static final String COLUMN_NAME_TITLE = "Title";
+        public static final String COLUMN_NAME_DURATION = "Durée";
+        public static final String COLUMN_NAME_TYPE = "Type";
         public static final String COLUMN_NAME_DESC = "Desc";
-
     }
 }
