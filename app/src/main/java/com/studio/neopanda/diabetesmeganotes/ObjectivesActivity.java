@@ -10,6 +10,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -37,6 +43,8 @@ public class ObjectivesActivity extends AppCompatActivity {
     TextView typeInsulin;
     @BindView(R.id.type_glycemy_tv)
     TextView typeGlycemy;
+    @BindView(R.id.recyclerView_objectives)
+    RecyclerView recyclerViewObjectives;
 
     private String deadlineObjective = "";
     private String typeObjective = "";
@@ -44,6 +52,9 @@ public class ObjectivesActivity extends AppCompatActivity {
     private String todayDate = "";
     private int typeObjectiveSelector = 0;
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
+    private List<Objective> objectives;
+    private boolean isTableNotEmpty = false;
+    private int idEntry = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +62,17 @@ public class ObjectivesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_objectives);
 
         ButterKnife.bind(this);
+
+        objectives = new ArrayList<>();
+
+        dbHelper.isTableNotEmpty("Objectives");
+        if (!isTableNotEmpty){
+            sortingList();
+            addingIds();
+            objectives = dbHelper.getObjectives();
+
+            loadDataInRV(objectives);
+        }
 
         addObjectiveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +127,22 @@ public class ObjectivesActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void sortingList() {
+        Collections.sort(objectives, (obj1, obj2) -> obj2.getDate().compareToIgnoreCase(obj1.getDate()));
+    }
+
+    private void addingIds() {
+        for (Objective o : objectives) {
+            o.setIdEntry(idEntry += 1);
+        }
+    }
+
+    private void loadDataInRV(List<Objective> objectivesList){
+        ObjectivesAdapter adapter = new ObjectivesAdapter(this, objectivesList);
+        recyclerViewObjectives.setAdapter(adapter);
+        recyclerViewObjectives.setLayoutManager(new LinearLayoutManager(this));
     }
 
     @OnClick(R.id.type_food_tv)

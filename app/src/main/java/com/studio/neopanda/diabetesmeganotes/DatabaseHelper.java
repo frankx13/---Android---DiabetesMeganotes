@@ -304,4 +304,35 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Insert the new row, returning the primary key value of the new row
         db.insertOrThrow(SQliteDatabase.Objectives.TABLE_NAME, null, values);
     }
+
+    public List<Objective> getObjectives() {
+        List<Objective> objectiveList = new ArrayList<>();
+        SQLiteDatabase sQliteDatabase = getReadableDatabase();
+        String[] field = {
+                SQliteDatabase.Objectives.COLUMN_NAME_DATE,
+                SQliteDatabase.Objectives.COLUMN_NAME_TYPE,
+                SQliteDatabase.Objectives.COLUMN_NAME_DURATION,
+                SQliteDatabase.Objectives.COLUMN_NAME_DESC};
+        Cursor c = sQliteDatabase.query(SQliteDatabase.Objectives.TABLE_NAME, field,
+                null, null, null, null, null);
+
+        int date = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_DATE);
+        int type = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_TYPE);
+        int duration = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_DURATION);
+        int desc = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_DESC);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            String dateData = c.getString(date);
+            String typeData = c.getString(type);
+            String durationData = c.getString(duration);
+            String descData = c.getString(desc);
+
+            objectiveList.add(new Objective(dateData, typeData, durationData, descData));
+        }
+
+        getReadableDatabase().close();
+        c.close();
+
+        return objectiveList;
+    }
 }

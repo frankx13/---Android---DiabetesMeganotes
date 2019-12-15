@@ -55,4 +55,8 @@
     <string name="description_objective_text">Décrire l\'objectif</string>
     <string name="short_desc_of_objective_hint_input">Brève description</string>
     <string name="days_number_max_hint">Nombre de jours (60 max)</string>
+    <string name="objective_template">Objective</string>
+    <string name="type_template">Type</string>
+    <string name="duration_prototype">Duration</string>
+    <string name="desc_prototype">Description</string>
 </resources>
