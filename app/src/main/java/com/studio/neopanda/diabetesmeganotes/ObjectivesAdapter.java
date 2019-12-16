@@ -31,9 +31,9 @@ public class ObjectivesAdapter extends RecyclerView.Adapter<ObjectivesAdapter.My
 
     @Override
     public void onBindViewHolder(@NonNull ObjectivesAdapter.MyViewHolder holder, int position) {
-        holder.numberTV.setText("Objective " + mData.get(position).idEntry);
+        holder.numberTV.setText("Objectif " + mData.get(position).idEntry);
         holder.typeTV.setText("Type d'objectif : " + mData.get(position).type);
-        holder.durationTV.setText("Durée : " + mData.get(position).duration);
+        holder.durationTV.setText("Durée : " + mData.get(position).duration + "J");
         holder.descriptionTV.setText(mData.get(position).getDescription());
     }
 

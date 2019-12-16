@@ -67,9 +67,12 @@ public class ObjectivesActivity extends AppCompatActivity {
 
         dbHelper.isTableNotEmpty("Objectives");
         if (!isTableNotEmpty){
+            objectives = dbHelper.getObjectives();
+            //TODO define number max of objectives
+//            objectives = objectives.subList(0, 3);
+
             sortingList();
             addingIds();
-            objectives = dbHelper.getObjectives();
 
             loadDataInRV(objectives);
         }
@@ -77,6 +80,7 @@ public class ObjectivesActivity extends AppCompatActivity {
         addObjectiveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                addObjectiveBtn.setVisibility(View.GONE);
                 newObjectiveContainer.setVisibility(View.VISIBLE);
                 exitEntryBtn.setVisibility(View.VISIBLE);
                 validateNewEntryBtn.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +117,7 @@ public class ObjectivesActivity extends AppCompatActivity {
 
                         newObjectiveContainer.setVisibility(View.GONE);
                         exitEntryBtn.setVisibility(View.GONE);
+                        addObjectiveBtn.setVisibility(View.VISIBLE);
 
                         Toast.makeText(ObjectivesActivity.this, "Objectif ajouté avec succès!", Toast.LENGTH_SHORT).show();
                     }
@@ -123,6 +128,7 @@ public class ObjectivesActivity extends AppCompatActivity {
                     public void onClick(View v) {
                         newObjectiveContainer.setVisibility(View.GONE);
                         exitEntryBtn.setVisibility(View.GONE);
+                        addObjectiveBtn.setVisibility(View.VISIBLE);
                     }
                 });
             }

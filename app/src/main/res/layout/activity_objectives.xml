@@ -1,273 +1,283 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/scroller_objective"
+    android:background="@android:color/transparent"
     tools:context=".ObjectivesActivity">
 
-    <View
-        android:id="@+id/bg_view_objectives"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:alpha="0.4"
-        android:background="@drawable/bg_objectives_reduced"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <TextView
-        android:id="@+id/title_app_TV"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="15dp"
-        android:layout_marginStart="131dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="131dp"
-        android:text="@string/diabetes_objectives"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="24sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/defined_objective_tv"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
-        android:text="@string/defined_objectives"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:textStyle="normal"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView_objectives"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/defined_objective_tv" />
-
-    <Button
-        android:id="@+id/add_entry_objective"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/btn_classic"
-        android:drawableStart="@drawable/ic_add_circle_black_24dp"
-        android:drawableEnd="@drawable/ic_add_circle_black_24dp"
-        android:padding="15dp"
-        android:text="@string/add_entry_objectives"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="20sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/recyclerView_objectives" />
-
-    <LinearLayout
-        android:id="@+id/container_add_objective"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="25dp"
-        android:layout_marginBottom="75dp"
-        android:background="@drawable/bg_simple"
-        android:visibility="gone"
-        android:elevation="3dp"
-        android:orientation="vertical"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/bg_view_objectives"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_height="wrap_content"
+        android:elevation="5dp">
+
+        <View
+            android:id="@+id/bg_view_objectives"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:alpha="0.4"
+            android:background="@drawable/bg_objectives_reduced"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
 
         <TextView
-            android:id="@+id/title_add_objective_tv"
-            android:layout_width="match_parent"
+            android:id="@+id/title_app_TV"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:text="@string/new_objective"
+            android:layout_margin="15dp"
+            android:layout_marginStart="131dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="131dp"
+            android:text="@string/diabetes_objectives"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/defined_objective_tv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="60dp"
+            android:text="@string/defined_objectives"
             android:textAlignment="center"
             android:textColor="@android:color/black"
             android:textSize="20sp"
-            android:textStyle="bold" />
+            android:textStyle="normal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/days_to_reach_objective"
-            android:layout_width="match_parent"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView_objectives"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="25dp"
-            android:text="@string/objective_duration_text"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="17sp" />
-
-        <EditText
-            android:id="@+id/input_objective_number_days"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:inputType="number"
-            android:background="@null"
-            android:hint="@string/days_number_max_hint"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="17sp" />
-
-        <TextView
-            android:id="@+id/type_to_reach_objective"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="@string/objective_type_text"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="17sp" />
-
-        <LinearLayout
-            android:id="@+id/container_entry_new_objective_type_LL"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/type_food_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="70dp"
-                android:layout_marginEnd="70dp"
-                android:drawableStart="@drawable/ic_local_pizza_black_24dp"
-                android:drawableEnd="@drawable/ic_local_pizza_black_24dp"
-                android:padding="8dp"
-                android:text="@string/type_objective_food"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/type_sport_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="70dp"
-                android:drawableStart="@drawable/ic_fitness_center_black_24dp"
-                android:drawableEnd="@drawable/ic_fitness_center_black_24dp"
-                android:padding="8dp"
-                android:text="@string/type_objective_sport"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/type_insulin_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="70dp"
-                android:drawableStart="@drawable/ic_needle_24dp"
-                android:drawableEnd="@drawable/ic_needle_24dp"
-                android:padding="8dp"
-                android:text="@string/type_objective_insulin"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="17sp" />
-
-            <TextView
-                android:id="@+id/type_glycemy_tv"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="70dp"
-                android:layout_marginTop="6dp"
-                android:layout_marginEnd="70dp"
-                android:drawableStart="@drawable/ic_pageview_black_24dp"
-                android:drawableEnd="@drawable/ic_pageview_black_24dp"
-                android:padding="8dp"
-                android:text="@string/type_objective_glycemy"
-                android:textAlignment="center"
-                android:textColor="@android:color/black"
-                android:textSize="17sp" />
-
-        </LinearLayout>
-
-        <TextView
-            android:id="@+id/description_objective_tv"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="25dp"
-            android:text="@string/description_objective_text"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="17sp" />
-
-        <EditText
-            android:id="@+id/input_objective_description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
-            android:background="@null"
-            android:hint="@string/short_desc_of_objective_hint_input"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="17sp"
-            android:inputType="text" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/defined_objective_tv" />
 
         <Button
-            android:id="@+id/validate_new_objective_btn"
-            android:layout_width="match_parent"
+            android:id="@+id/add_entry_objective"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="30dp"
-            android:layout_marginEnd="40dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="20dp"
             android:background="@drawable/btn_classic"
-            android:text="@string/validate"
+            android:drawableStart="@drawable/ic_add_circle_black_24dp"
+            android:drawableEnd="@drawable/ic_add_circle_black_24dp"
+            android:padding="15dp"
+            android:text="@string/add_entry_objectives"
             android:textAlignment="center"
             android:textColor="@android:color/black"
-            android:textSize="17sp" />
-    </LinearLayout>
+            android:textSize="20sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/recyclerView_objectives" />
 
-    <ImageButton
-        android:id="@+id/exit_entry_objectives_btn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_classic"
-        android:src="@drawable/ic_close_black_24dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@+id/bg_view_objectives"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        <LinearLayout
+            android:id="@+id/container_add_objective"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="25dp"
+            android:layout_marginTop="25dp"
+            android:layout_marginEnd="25dp"
+            android:layout_marginBottom="75dp"
+            android:background="@drawable/bg_simple"
+            android:elevation="3dp"
+            android:orientation="vertical"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/bg_view_objectives"
+            app:layout_constraintTop_toTopOf="parent">
 
-    <FrameLayout
-        android:id="@+id/container_fragment_objectives"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+            <TextView
+                android:id="@+id/title_add_objective_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:text="@string/new_objective"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-    </FrameLayout>
+            <TextView
+                android:id="@+id/days_to_reach_objective"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="@string/objective_duration_text"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="17sp" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <EditText
+                android:id="@+id/input_objective_number_days"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                android:hint="@string/days_number_max_hint"
+                android:inputType="number"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/type_to_reach_objective"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="@string/objective_type_text"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="17sp" />
+
+            <LinearLayout
+                android:id="@+id/container_entry_new_objective_type_LL"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/type_food_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginEnd="70dp"
+                    android:drawableStart="@drawable/ic_local_pizza_black_24dp"
+                    android:drawableEnd="@drawable/ic_local_pizza_black_24dp"
+                    android:padding="8dp"
+                    android:text="@string/type_objective_food"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/type_sport_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="70dp"
+                    android:drawableStart="@drawable/ic_fitness_center_black_24dp"
+                    android:drawableEnd="@drawable/ic_fitness_center_black_24dp"
+                    android:padding="8dp"
+                    android:text="@string/type_objective_sport"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/type_insulin_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="70dp"
+                    android:drawableStart="@drawable/ic_needle_24dp"
+                    android:drawableEnd="@drawable/ic_needle_24dp"
+                    android:padding="8dp"
+                    android:text="@string/type_objective_insulin"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="17sp" />
+
+                <TextView
+                    android:id="@+id/type_glycemy_tv"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_marginStart="70dp"
+                    android:layout_marginTop="6dp"
+                    android:layout_marginEnd="70dp"
+                    android:drawableStart="@drawable/ic_pageview_black_24dp"
+                    android:drawableEnd="@drawable/ic_pageview_black_24dp"
+                    android:padding="8dp"
+                    android:text="@string/type_objective_glycemy"
+                    android:textAlignment="center"
+                    android:textColor="@android:color/black"
+                    android:textSize="17sp" />
+
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/description_objective_tv"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:text="@string/description_objective_text"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="17sp" />
+
+            <EditText
+                android:id="@+id/input_objective_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@null"
+                android:hint="@string/short_desc_of_objective_hint_input"
+                android:inputType="text"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="17sp" />
+
+            <Button
+                android:id="@+id/validate_new_objective_btn"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="30dp"
+                android:layout_marginEnd="40dp"
+                android:elevation="5dp"
+                android:background="@drawable/btn_classic"
+                android:text="@string/validate"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="17sp" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/exit_entry_objectives_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_classic"
+            android:src="@drawable/ic_close_black_24dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@+id/bg_view_objectives"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <FrameLayout
+            android:id="@+id/container_fragment_objectives"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>
