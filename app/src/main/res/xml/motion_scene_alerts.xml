@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene
+    xmlns:motion="http://schemas.android.com/apk/res-auto">
+
+    <Transition
+        motion:constraintSetStart="@layout/activity_alerts_motion_start"
+        motion:constraintSetEnd="@layout/activity_alerts_motion_end"
+        motion:duration="1000">
+
+        <OnClick
+            motion:targetId="@id/toggle_alert_btn"
+            motion:clickAction="toggle"/>
+
+    </Transition>
+
+</MotionScene>

@@ -44,6 +44,8 @@ public class DashboardActivity extends AppCompatActivity {
     Button fastNoteBtn;
     @BindView(R.id.my_objectives_btn)
     Button objectivesBtn;
+    @BindView(R.id.my_alerts_btn)
+    Button alertsBtn;
 
     //DATA
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -75,6 +77,15 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ObjectivesActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        alertsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MyAlertsActivity.class);
                 startActivity(intent);
                 finish();
             }

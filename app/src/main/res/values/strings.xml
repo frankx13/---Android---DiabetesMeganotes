@@ -59,4 +59,7 @@
     <string name="type_template">Type</string>
     <string name="duration_prototype">Duration</string>
     <string name="desc_prototype">Description</string>
+    <string name="trans_out_motion_text">Désactiver l\'alerte</string>
+    <string name="add_new_alert_text">Ajouter une alerte</string>
+    <string name="trans_in_motion_text">Activer l\'alerte</string>
 </resources>
