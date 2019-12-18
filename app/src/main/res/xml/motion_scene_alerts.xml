@@ -1,16 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<MotionScene
-    xmlns:motion="http://schemas.android.com/apk/res-auto">
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--    UP-->
     <Transition
-        motion:constraintSetStart="@layout/activity_alerts_motion_start"
-        motion:constraintSetEnd="@layout/activity_alerts_motion_end"
-        motion:duration="1000">
-
-        <OnClick
-            motion:targetId="@id/toggle_alert_btn"
-            motion:clickAction="toggle"/>
-
+        app:constraintSetEnd="@id/endUp"
+        app:constraintSetStart="@id/startUp"
+        app:duration="1000">
+        <OnSwipe
+            app:dragDirection="dragUp"
+            app:touchAnchorId="@+id/man_iv_selector_alerts"
+            app:touchAnchorSide="top" />
     </Transition>
 
+    <ConstraintSet android:id="@+id/startUp" />
+
+    <ConstraintSet android:id="@+id/endUp">
+        <Constraint
+            android:id="@id/man_iv_selector_alerts"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:background="@drawable/ic_man_selected_selector_24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/pizza_selection_alerts"
+            app:layout_constraintEnd_toEndOf="@+id/bg_alerts"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </ConstraintSet>
+
+
+    <!--    DOWN-->
+    <Transition
+        app:constraintSetEnd="@id/endDown"
+        app:constraintSetStart="@id/startDown"
+        app:duration="1000">
+        <OnSwipe
+            app:dragDirection="dragDown"
+            app:touchAnchorId="@+id/man_iv_selector_alerts"
+            app:touchAnchorSide="bottom" />
+    </Transition>
+
+    <ConstraintSet android:id="@+id/startDown" />
+
+    <ConstraintSet android:id="@+id/endDown">
+        <Constraint
+            android:id="@id/man_iv_selector_alerts"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_marginTop="150dp"
+            android:background="@drawable/ic_man_selected_selector_24dp"
+            app:layout_constraintEnd_toEndOf="@+id/bg_alerts"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/glycemy_selection_alerts"/>
+    </ConstraintSet>
 </MotionScene>

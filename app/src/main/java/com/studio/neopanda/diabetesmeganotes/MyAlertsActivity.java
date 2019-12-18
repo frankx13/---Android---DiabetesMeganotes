@@ -9,7 +9,10 @@ public class MyAlertsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_alerts_motion_start);
+        setContentView(R.layout.activity_alerts_motion);
+    }
+
+    private void animate(){
 
 
     }
