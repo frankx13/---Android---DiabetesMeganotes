@@ -62,4 +62,7 @@
     <string name="trans_out_motion_text">Désactiver l\'alerte</string>
     <string name="add_new_alert_text">Ajouter une alerte</string>
     <string name="trans_in_motion_text">Activer l\'alerte</string>
+    <string name="choose_alert_type_tv">Cliquer sur l\'icone du type d\'alerte pour le sélectionner.</string>
+    <string name="previous">Précédent</string>
+    <string name="next">Suivant</string>
 </resources>
