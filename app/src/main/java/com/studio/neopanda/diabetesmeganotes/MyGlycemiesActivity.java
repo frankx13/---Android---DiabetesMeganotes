@@ -223,7 +223,6 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         });
     }
 
-
     @Override
     protected void onDestroy() {
         dbHelper.close();

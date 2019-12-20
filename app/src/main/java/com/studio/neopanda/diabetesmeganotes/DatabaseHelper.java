@@ -365,4 +365,38 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Insert the new row, returning the primary key value of the new row
         db.insertOrThrow(SQliteDatabase.Alerts.TABLE_NAME, null, values);
     }
+
+    public List<Alert> getAlerts() {
+        List<Alert> alertList = new ArrayList<>();
+        SQLiteDatabase sQliteDatabase = getReadableDatabase();
+        String[] field = {
+                SQliteDatabase.Alerts.COLUMN_NAME_START_DATE,
+                SQliteDatabase.Alerts.COLUMN_NAME_END_DATE,
+                SQliteDatabase.Alerts.COLUMN_NAME_TYPE,
+                SQliteDatabase.Alerts.COLUMN_NAME_NAME,
+                SQliteDatabase.Alerts.COLUMN_NAME_DESCRIPTION};
+        Cursor c = sQliteDatabase.query(SQliteDatabase.Alerts.TABLE_NAME, field,
+                null, null, null, null, null);
+
+        int sdate = c.getColumnIndex(SQliteDatabase.Alerts.COLUMN_NAME_START_DATE);
+        int edate = c.getColumnIndex(SQliteDatabase.Alerts.COLUMN_NAME_END_DATE);
+        int type = c.getColumnIndex(SQliteDatabase.Alerts.COLUMN_NAME_TYPE);
+        int name = c.getColumnIndex(SQliteDatabase.Alerts.COLUMN_NAME_NAME);
+        int description = c.getColumnIndex(SQliteDatabase.Alerts.COLUMN_NAME_DESCRIPTION);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            String sdateData = c.getString(sdate);
+            String edateData = c.getString(edate);
+            String typeData = c.getString(type);
+            String nameData = c.getString(name);
+            String descData = c.getString(description);
+
+            alertList.add(new Alert(nameData, descData, typeData, sdateData, edateData));
+        }
+
+        getReadableDatabase().close();
+        c.close();
+
+        return alertList;
+    }
 }

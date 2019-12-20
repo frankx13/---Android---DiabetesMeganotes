@@ -74,6 +74,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="65dp"
         android:clickable="true"
+        android:elevation="1dp"
         android:focusable="true"
         android:src="#0000"
         android:tag="unselected"
@@ -90,6 +91,7 @@
         android:layout_marginTop="65dp"
         android:background="@null"
         android:clickable="true"
+        android:elevation="1dp"
         android:focusable="true"
         android:src="#0000"
         android:tag="unselected"
@@ -105,6 +107,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="65dp"
         android:clickable="true"
+        android:elevation="1dp"
         android:focusable="true"
         android:src="#0000"
         android:tag="unselected"
@@ -120,6 +123,7 @@
         android:layout_height="50dp"
         android:layout_marginTop="65dp"
         android:clickable="true"
+        android:elevation="1dp"
         android:focusable="true"
         android:src="#0000"
         android:tag="unselected"
@@ -227,6 +231,7 @@
             android:background="@drawable/btn_classic"
             android:drawableStart="@drawable/ic_add_circle_black_24dp"
             android:drawableEnd="@drawable/ic_add_circle_black_24dp"
+            android:elevation="5dp"
             android:padding="10dp"
             android:text="@string/add_entry_alert"
             android:textAlignment="center"
@@ -240,6 +245,7 @@
             android:background="@drawable/btn_classic"
             android:drawableStart="@drawable/ic_notifications_active_black_24dp"
             android:drawableEnd="@drawable/ic_notifications_active_black_24dp"
+            android:elevation="3dp"
             android:padding="10dp"
             android:text="@string/see_all_alerts"
             android:textAlignment="center"
@@ -247,6 +253,55 @@
             android:textSize="18sp" />
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/rv_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="10dp"
+        android:orientation="vertical"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="75dp"
+        android:clickable="false"
+        android:focusable="false"
+        android:padding="5dp"
+        app:layout_constraintBottom_toTopOf="@+id/container_add_alert_nav_choice"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/title_app_alerts_TV">
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/alerts_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_simple"
+            android:visibility="gone"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/container_exit_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <ImageButton
+            android:id="@+id/exit_alert_entries_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btn_classic"
+            android:visibility="gone"
+            android:src="@drawable/ic_close_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </LinearLayout>
+
+
+
 
 
 </androidx.constraintlayout.motion.widget.MotionLayout>

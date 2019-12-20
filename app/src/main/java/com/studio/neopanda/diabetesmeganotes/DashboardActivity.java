@@ -245,4 +245,11 @@ public class DashboardActivity extends AppCompatActivity {
             loadAverageStats(statsTurns);
         }
     }
+
+    //Close database connection ondestroy
+    @Override
+    protected void onDestroy() {
+        dbHelper.close();
+        super.onDestroy();
+    }
 }
