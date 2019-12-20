@@ -4,15 +4,22 @@ import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.DatePicker;
+import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.motion.widget.MotionLayout;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class MyAlertsActivity extends AppCompatActivity {
 
@@ -38,14 +45,35 @@ public class MyAlertsActivity extends AppCompatActivity {
     ImageView cubeSelection;
     @BindView(R.id.tv_alert_selection)
     TextView textHelper;
+    @BindView(R.id.name_alert_input)
+    EditText alertNameInput;
+    @BindView(R.id.desc_alert_input)
+    EditText alertDescInput;
+    @BindView(R.id.sdate_alert_input)
+    DatePicker dateInput;
+    @BindView(R.id.container_input_name_alert)
+    LinearLayout containerAddAlert;
+    @BindView(R.id.container_add_alert_nav_choice)
+    LinearLayout containerAddAlertNavigation;
+    @BindView(R.id.add_new_alert_btn)
+    Button addNewAlertBtn;
+    @BindView(R.id.see_all_alerts_btn)
+    Button seeAllAlertsBtn;
 
     //DATA
-    String typeAlert = "";
-    boolean foodSelected = false;
-    boolean sportSelected = false;
-    boolean insulinSelected = false;
-    boolean glycemySelected = false;
-    boolean isConfirmed = false;
+    private String typeAlert = "";
+    private String nameAlert = "";
+    private String descAlert = "";
+    private String sdateAlert = "";
+    private String edateAlert = "";
+    private List<Alert> alerts;
+    private DatabaseHelper dbHelper = new DatabaseHelper(this);
+    private int btnCounterSteps = 0;
+    private boolean foodSelected = false;
+    private boolean sportSelected = false;
+    private boolean insulinSelected = false;
+    private boolean glycemySelected = false;
+    private boolean isNameConfirmed = false;
 
 
     @Override
@@ -54,21 +82,65 @@ public class MyAlertsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_alerts_motion);
 
         ButterKnife.bind(this);
+        alerts = new ArrayList<>();
 
         nextBtnMecanic();
         previousBtnMecanic();
+    }
+
+    private void showMotionViews() {
+        foodSelectionIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_local_pizza_black_24dp));
+        sportSelectionIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_fitness_center_black_24dp));
+        insulinSelectionIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_needle_24dp));
+        glycemySelectionIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_glycemy_blood_24dp));
+    }
+
+    @OnClick({R.id.add_new_alert_btn})
+    public void onClickAddAlertBtn(){
+        hideMainBtns();
+        showMotionViews();
+        containerAddAlertNavigation.setAlpha(1.0f);
+        textHelper.setAlpha(1.0f);
+        showTypeViews();
+    }
+
+    private void hideMainBtns(){
+        addNewAlertBtn.setVisibility(View.GONE);
+        seeAllAlertsBtn.setVisibility(View.GONE);
+    }
+
+    private void showMainBtns(){
+        addNewAlertBtn.setVisibility(View.VISIBLE);
+        seeAllAlertsBtn.setVisibility(View.VISIBLE);
+    }
+
+
+    @OnClick({R.id.see_all_alerts_btn})
+    public void onClickSeeAllAlertsBtn(){
+
     }
 
     private void previousBtnMecanic() {
         addAlertPreviousBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                typeAlert = "";
-                isConfirmed = false;
-                addAlertNextBtn.setText(getResources().getString(R.string.confirm));
-                cubeSelection.setBackground(getResources().getDrawable(R.drawable.btn_simple));
-                addAlertPreviousBtn.setVisibility(View.GONE);
-                showTypeViews();
+                if (btnCounterSteps == 1) {
+                    typeAlert = "";
+                    isNameConfirmed = false;
+                    textHelper.setText(getResources().getString(R.string.choose_alert_type_tv));
+                    addAlertNextBtn.setText(getResources().getString(R.string.confirm));
+                    cubeSelection.setBackground(getResources().getDrawable(R.drawable.btn_simple));
+                    addAlertPreviousBtn.setVisibility(View.GONE);
+                    showTypeViews();
+                    isNameConfirmed = false;
+                    btnCounterSteps = 0;
+                }
+                if (btnCounterSteps == 2) {
+                    alertDescInput.setVisibility(View.GONE);
+                    textHelper.setText(getResources().getString(R.string.choose_alert_text));
+                    alertNameInput.setVisibility(View.VISIBLE);
+                    btnCounterSteps = 1;
+                }
             }
         });
     }
@@ -77,43 +149,127 @@ public class MyAlertsActivity extends AppCompatActivity {
         addAlertNextBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkOverlappingViews();
-                setDescText();
-                checkTypeSelection();
+                if (btnCounterSteps == 0) {
+                    checkOverlappingViews();
+                    setDescText();
+                    checkTypeSelection();
 
-                if (typeAlert.equals("")) {
-                    Toast.makeText(MyAlertsActivity.this, "Vous devez choisir un type d'alerte!", Toast.LENGTH_SHORT).show();
-                } else {
-                    if (isConfirmed) {
-                        addAlertPreviousBtn.setVisibility(View.VISIBLE);
+                    if (typeAlert.equals("")) {
+                        Toast.makeText(MyAlertsActivity.this, "Vous devez choisir un type d'alerte!", Toast.LENGTH_SHORT).show();
                     } else {
-                        isConfirmed = true;
-                        addAlertNextBtn.setText(getResources().getString(R.string.next));
-                        cubeSelection.setBackground(getResources().getDrawable(R.drawable.btn_simple_green));
-                        textHelper.setText(getResources().getString(R.string.choose_alert_text));
-                        hideTypeViews();
+                        if (isNameConfirmed && btnCounterSteps == 0) {
+                            textHelper.setText(getResources().getString(R.string.choose_alert_text));
+                            addAlertPreviousBtn.setVisibility(View.VISIBLE);
+                            hideTypeViews();
+                            btnCounterSteps = 1;
+                            isNameConfirmed = false;
+                        } else {
+                            isNameConfirmed = true;
+                            addAlertNextBtn.setText(getResources().getString(R.string.next));
+                        }
                     }
+                } else if (btnCounterSteps == 1) {
+                    getInputName();
+
+                    if (nameAlert.equals("")) {
+                        Toast.makeText(MyAlertsActivity.this, "Vous devez entrer un nom!", Toast.LENGTH_SHORT).show();
+                    } else if (nameAlert.length() > 15) {
+                        Toast.makeText(MyAlertsActivity.this, "Nom trop long, le maximum est de 15 caractères.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        alertNameInput.setVisibility(View.GONE);
+                        textHelper.setText(getResources().getString(R.string.choose_alert_desc_tv));
+                        alertDescInput.setVisibility(View.VISIBLE);
+                        btnCounterSteps = 2;
+                    }
+                } else if (btnCounterSteps == 2) {
+                    getInputDesc();
+
+                    if (descAlert.equals("")) {
+                        Toast.makeText(MyAlertsActivity.this, "Vous devez entrer une description!", Toast.LENGTH_SHORT).show();
+                    } else if (nameAlert.length() > 75) {
+                        Toast.makeText(MyAlertsActivity.this, "Description trop longue, le maximum est de 75 caractères.", Toast.LENGTH_SHORT).show();
+                    } else {
+                        alertDescInput.setVisibility(View.GONE);
+                        textHelper.setText(getResources().getString(R.string.choose_alert_sdate_tv));
+                        dateInput.setVisibility(View.VISIBLE);
+                        btnCounterSteps = 3;
+                    }
+                } else if (btnCounterSteps == 3) {
+                    getInputSdate();
+
+                    if (sdateAlert.equals("")) {
+                        Toast.makeText(MyAlertsActivity.this, "Vous devez choisir la date de début!", Toast.LENGTH_SHORT).show();
+                    } else {
+                        textHelper.setText(getResources().getString(R.string.choose_alert_edate_tv));
+                        btnCounterSteps = 4;
+                    }
+                } else if (btnCounterSteps == 4) {
+                    getInputEdate();
+                    addAlertNextBtn.setText(getResources().getString(R.string.terminate));
+                    btnCounterSteps = 5;
+                } else if (btnCounterSteps == 5) {
+                    writeAlertInDB();
+                    hideNewAlertSection();
+                    showMainBtns();
                 }
             }
         });
     }
 
-    private void hideTypeViews(){
-        typeAlertSelected.setVisibility(View.GONE);
-        cubeSelection.setVisibility(View.GONE);
-        foodSelectionIV.setVisibility(View.GONE);
-        sportSelectionIV.setVisibility(View.GONE);
-        insulinSelectionIV.setVisibility(View.GONE);
-        glycemySelectionIV.setVisibility(View.GONE);
+    private void writeAlertInDB() {
+        dbHelper.writeAlertInDB(nameAlert, descAlert, typeAlert, sdateAlert, edateAlert);
     }
 
-    private void showTypeViews(){
-        typeAlertSelected.setVisibility(View.VISIBLE);
-        cubeSelection.setVisibility(View.VISIBLE);
-        foodSelectionIV.setVisibility(View.VISIBLE);
-        sportSelectionIV.setVisibility(View.VISIBLE);
-        insulinSelectionIV.setVisibility(View.VISIBLE);
-        glycemySelectionIV.setVisibility(View.VISIBLE);
+    private void hideNewAlertSection() {
+        dateInput.setVisibility(View.GONE);
+        addAlertNextBtn.setVisibility(View.GONE);
+        addAlertPreviousBtn.setVisibility(View.GONE);
+        containerAddAlert.setAlpha(0.0f);
+        textHelper.setAlpha(0.0f);
+    }
+
+    private void getInputEdate() {
+        String day = String.valueOf(dateInput.getDayOfMonth());
+        String month = String.valueOf(dateInput.getMonth());
+        String year = String.valueOf(dateInput.getYear());
+
+        edateAlert = day + "-" + month + "-" + year;
+    }
+
+    private void getInputSdate() {
+        String day = String.valueOf(dateInput.getDayOfMonth());
+        String month = String.valueOf(dateInput.getMonth());
+        String year = String.valueOf(dateInput.getYear());
+
+        sdateAlert = day + "-" + month + "-" + year;
+    }
+
+    private void getInputDesc() {
+        descAlert = alertDescInput.getEditableText().toString();
+    }
+
+    private void getInputName() {
+        nameAlert = alertNameInput.getEditableText().toString();
+    }
+
+    private void hideTypeViews() {
+        typeAlertSelected.setAlpha(0.0f);
+        cubeSelection.setAlpha(0.0f);
+        foodSelectionIV.setAlpha(0.0f);
+        sportSelectionIV.setAlpha(0.0f);
+        insulinSelectionIV.setAlpha(0.0f);
+        glycemySelectionIV.setAlpha(0.0f);
+        alertNameInput.setVisibility(View.VISIBLE);
+    }
+
+    private void showTypeViews() {
+        typeAlertSelected.setAlpha(1.0f);
+        cubeSelection.setAlpha(1.0f);
+        foodSelectionIV.setAlpha(1.0f);
+        sportSelectionIV.setAlpha(1.0f);
+        insulinSelectionIV.setAlpha(1.0f);
+        glycemySelectionIV.setAlpha(1.0f);
+        alertNameInput.setVisibility(View.GONE);
     }
 
     private void checkOverlappingViews() {

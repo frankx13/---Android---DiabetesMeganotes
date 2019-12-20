@@ -6,7 +6,7 @@
     <Transition
         app:constraintSetEnd="@id/leftImg"
         app:constraintSetStart="@id/base"
-        app:duration="1000">
+        app:duration="600">
         <OnClick app:targetId="@id/pizza_selection_alerts" />
     </Transition>
 
@@ -14,14 +14,14 @@
     <Transition
         app:constraintSetEnd="@id/topImg"
         app:constraintSetStart="@id/base"
-        app:duration="1000">
+        app:duration="600">
         <OnClick app:targetId="@id/sport_selection_alerts" />
     </Transition>
     <!--RIGHT-->
     <Transition
         app:constraintSetEnd="@id/rightImg"
         app:constraintSetStart="@id/base"
-        app:duration="1000">
+        app:duration="600">
         <OnClick app:targetId="@id/insulin_selection_alerts" />
     </Transition>
 
@@ -29,7 +29,7 @@
     <Transition
         app:constraintSetEnd="@id/bottomImg"
         app:constraintSetStart="@id/base"
-        app:duration="1000">
+        app:duration="600">
         <OnClick app:targetId="@id/glycemy_selection_alerts" />
     </Transition>
 
@@ -132,8 +132,7 @@
 
             <CustomAttribute
                 app:attributeName="backgroundColor"
-                app:customColorValue="#B8E986"
-                app:customStringValue="selected"/>
+                app:customColorValue="#B8E986"/>
         </Constraint>
 
         <Constraint

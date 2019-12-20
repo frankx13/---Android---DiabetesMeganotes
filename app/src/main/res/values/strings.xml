@@ -68,4 +68,12 @@
     <string name="alert_type_selected">Type d\'alerte : Aucun</string>
     <string name="confirm">Confirmer</string>
     <string name="choose_alert_text">Choisissez un nom pour votre alerte !</string>
+    <string name="alert_name_hint">Nom de l\'alerte</string>
+    <string name="alert_desc_hint">Description de l\'alerte</string>
+    <string name="choose_alert_desc_tv">Créer une description pour votre alerte</string>
+    <string name="choose_alert_sdate_tv">Début de l\'alerte</string>
+    <string name="choose_alert_edate_tv">Fin de l\'alerte</string>
+    <string name="terminate">Terminer</string>
+    <string name="add_entry_alert">Ajouter une alerte</string>
+    <string name="see_all_alerts">Voir toutes les alertes</string>
 </resources>

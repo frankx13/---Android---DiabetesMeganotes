@@ -39,6 +39,15 @@ public class SQliteDatabase {
         public static final String COLUMN_NAME_DATE = "Date";
         public static final String COLUMN_NAME_DURATION = "Durée";
         public static final String COLUMN_NAME_TYPE = "Type";
-        public static final String COLUMN_NAME_DESC = "Desc";
+        public static final String COLUMN_NAME_DESCRIPTION = "Description";
+    }
+
+    public static class Alerts implements BaseColumns {
+        public static final String TABLE_NAME = "Alerts";
+        public static final String COLUMN_NAME_START_DATE = "Sdate";
+        public static final String COLUMN_NAME_END_DATE = "Edate";
+        public static final String COLUMN_NAME_NAME = "Name";
+        public static final String COLUMN_NAME_TYPE = "Type";
+        public static final String COLUMN_NAME_DESCRIPTION = "Description";
     }
 }

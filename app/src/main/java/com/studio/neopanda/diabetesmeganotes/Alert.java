@@ -1,20 +1,19 @@
 package com.studio.neopanda.diabetesmeganotes;
 
 public class Alert {
-    public String name;
-    public String description;
-    public String type;
-    public String startMoment;
-    public String endMoment;
+    public String name;//
+    public String description;//
+    public String type;//
+    public String startMoment;//
+    public String endMoment;//
     public int idEntry;
 
-    public Alert(String name, String description, String type, String startMoment, String endMoment, int idEntry) {
+    public Alert(String name, String description, String type, String startMoment, String endMoment) {
         this.name = name;
         this.description = description;
         this.type = type;
         this.startMoment = startMoment;
         this.endMoment = endMoment;
-        this.idEntry = idEntry;
     }
 
     public String getName() {

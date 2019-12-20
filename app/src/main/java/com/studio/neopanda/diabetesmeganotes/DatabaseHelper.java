@@ -12,7 +12,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 5;
+    public static final int DATABASE_VERSION = 6;
     public static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CREDENTIALS =
@@ -55,13 +55,25 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_CREATE_ENTRIES_OBJECTIVES =
             "CREATE TABLE " + SQliteDatabase.Objectives.TABLE_NAME + " (" +
                     SQliteDatabase.Objectives._ID + " INTEGER PRIMARY KEY," +
-                    SQliteDatabase.Objectives.COLUMN_NAME_DESC + " TEXT," +
+                    SQliteDatabase.Objectives.COLUMN_NAME_DESCRIPTION + " TEXT," +
                     SQliteDatabase.Objectives.COLUMN_NAME_DURATION + " INTEGER," +
                     SQliteDatabase.Objectives.COLUMN_NAME_TYPE + " TEXT," +
                     SQliteDatabase.Objectives.COLUMN_NAME_DATE + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES_OBJECTIVES =
             "DROP TABLE IF EXISTS " + SQliteDatabase.Objectives.TABLE_NAME;
+
+    private static final String SQL_CREATE_ENTRIES_ALERTS =
+            "CREATE TABLE " + SQliteDatabase.Alerts.TABLE_NAME + " (" +
+                    SQliteDatabase.Alerts._ID + " INTEGER PRIMARY KEY," +
+                    SQliteDatabase.Alerts.COLUMN_NAME_START_DATE + " TEXT," +
+                    SQliteDatabase.Alerts.COLUMN_NAME_END_DATE + " TEXT," +
+                    SQliteDatabase.Alerts.COLUMN_NAME_NAME + " TEXT," +
+                    SQliteDatabase.Alerts.COLUMN_NAME_TYPE + " TEXT," +
+                    SQliteDatabase.Alerts.COLUMN_NAME_DESCRIPTION + " TEXT)";
+
+    private static final String SQL_DELETE_ENTRIES_ALERTS =
+            "DROP TABLE IF EXISTS " + SQliteDatabase.Alerts.TABLE_NAME;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -73,6 +85,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_ENTRIES_INSULIN);
         db.execSQL(SQL_CREATE_ENTRIES_NOTE);
         db.execSQL(SQL_CREATE_ENTRIES_OBJECTIVES);
+        db.execSQL(SQL_CREATE_ENTRIES_ALERTS);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -83,6 +96,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_ENTRIES_INSULIN);
         db.execSQL(SQL_DELETE_ENTRIES_NOTE);
         db.execSQL(SQL_DELETE_ENTRIES_OBJECTIVES);
+        db.execSQL(SQL_DELETE_ENTRIES_ALERTS);
         onCreate(db);
     }
 
@@ -299,7 +313,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(SQliteDatabase.Objectives.COLUMN_NAME_DATE, date);
         values.put(SQliteDatabase.Objectives.COLUMN_NAME_DURATION, duration);
         values.put(SQliteDatabase.Objectives.COLUMN_NAME_TYPE, type);
-        values.put(SQliteDatabase.Objectives.COLUMN_NAME_DESC, description);
+        values.put(SQliteDatabase.Objectives.COLUMN_NAME_DESCRIPTION, description);
 
         // Insert the new row, returning the primary key value of the new row
         db.insertOrThrow(SQliteDatabase.Objectives.TABLE_NAME, null, values);
@@ -312,14 +326,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 SQliteDatabase.Objectives.COLUMN_NAME_DATE,
                 SQliteDatabase.Objectives.COLUMN_NAME_TYPE,
                 SQliteDatabase.Objectives.COLUMN_NAME_DURATION,
-                SQliteDatabase.Objectives.COLUMN_NAME_DESC};
+                SQliteDatabase.Objectives.COLUMN_NAME_DESCRIPTION};
         Cursor c = sQliteDatabase.query(SQliteDatabase.Objectives.TABLE_NAME, field,
                 null, null, null, null, null);
 
         int date = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_DATE);
         int type = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_TYPE);
         int duration = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_DURATION);
-        int desc = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_DESC);
+        int desc = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_DESCRIPTION);
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             String dateData = c.getString(date);
@@ -334,5 +348,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.close();
 
         return objectiveList;
+    }
+
+    public void writeAlertInDB(String name, String description, String type, String startMoment, String endMoment) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(SQliteDatabase.Alerts.COLUMN_NAME_START_DATE, startMoment);
+        values.put(SQliteDatabase.Alerts.COLUMN_NAME_END_DATE, endMoment);
+        values.put(SQliteDatabase.Alerts.COLUMN_NAME_TYPE, type);
+        values.put(SQliteDatabase.Alerts.COLUMN_NAME_DESCRIPTION, description);
+        values.put(SQliteDatabase.Alerts.COLUMN_NAME_NAME, name);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insertOrThrow(SQliteDatabase.Alerts.TABLE_NAME, null, values);
     }
 }
