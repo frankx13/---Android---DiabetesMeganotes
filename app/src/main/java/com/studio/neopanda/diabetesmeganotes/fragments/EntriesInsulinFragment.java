@@ -1,9 +1,7 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.fragments;
 
 
 import android.content.Context;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,6 +14,12 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.studio.neopanda.diabetesmeganotes.R;
+import com.studio.neopanda.diabetesmeganotes.adapters.EntriesUnitsFragmentAdapter;
+import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
+import com.studio.neopanda.diabetesmeganotes.models.InsulinInjection;
+import com.studio.neopanda.diabetesmeganotes.utils.AverageGlycemyUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;

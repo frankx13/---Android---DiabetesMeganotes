@@ -37,6 +37,7 @@
         android:text="@string/my_alerts"
         android:textAlignment="center"
         android:textColor="@android:color/black"
+        android:drawableEnd="@drawable/ic_home_black_48dp"
         android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"

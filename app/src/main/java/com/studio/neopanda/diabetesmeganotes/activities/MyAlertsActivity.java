@@ -1,5 +1,10 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.activities;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
@@ -13,8 +18,16 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.studio.neopanda.diabetesmeganotes.R;
+import com.studio.neopanda.diabetesmeganotes.adapters.AlertsAdapter;
+import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
+import com.studio.neopanda.diabetesmeganotes.database.SQliteDatabase;
+import com.studio.neopanda.diabetesmeganotes.models.Alert;
+import com.studio.neopanda.diabetesmeganotes.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -28,44 +41,46 @@ import butterknife.OnClick;
 public class MyAlertsActivity extends AppCompatActivity {
 
     //UI
+    @BindView(R.id.title_app_alerts_TV)
+    public TextView titleApp;
     @BindView(R.id.add_alert_next_btn)
-    Button addAlertNextBtn;
+    public Button addAlertNextBtn;
     @BindView(R.id.add_alert_previous_btn)
-    Button addAlertPreviousBtn;
+    public Button addAlertPreviousBtn;
     @BindView(R.id.alert_type_indicator_tv)
-    TextView typeAlertSelected;
+    public TextView typeAlertSelected;
     @BindView(R.id.pizza_selection_alerts)
-    ImageView foodSelectionIV;
+    public ImageView foodSelectionIV;
     @BindView(R.id.sport_selection_alerts)
-    ImageView sportSelectionIV;
+    public ImageView sportSelectionIV;
     @BindView(R.id.insulin_selection_alerts)
-    ImageView insulinSelectionIV;
+    public ImageView insulinSelectionIV;
     @BindView(R.id.glycemy_selection_alerts)
-    ImageView glycemySelectionIV;
+    public ImageView glycemySelectionIV;
     @BindView(R.id.iv_selection_cube_alerts)
-    ImageView cubeSelection;
+    public ImageView cubeSelection;
     @BindView(R.id.tv_alert_selection)
-    TextView textHelper;
+    public TextView textHelper;
     @BindView(R.id.name_alert_input)
-    EditText alertNameInput;
+    public EditText alertNameInput;
     @BindView(R.id.desc_alert_input)
-    EditText alertDescInput;
+    public EditText alertDescInput;
     @BindView(R.id.sdate_alert_input)
-    DatePicker dateInput;
+    public DatePicker dateInput;
     @BindView(R.id.container_input_name_alert)
-    LinearLayout containerAddAlert;
+    public LinearLayout containerAddAlert;
     @BindView(R.id.container_add_alert_nav_choice)
-    LinearLayout containerAddAlertNavigation;
+    public LinearLayout containerAddAlertNavigation;
     @BindView(R.id.add_new_alert_btn)
-    Button addNewAlertBtn;
+    public Button addNewAlertBtn;
     @BindView(R.id.see_all_alerts_btn)
-    Button seeAllAlertsBtn;
+    public Button seeAllAlertsBtn;
     @BindView(R.id.alerts_recyclerview)
-    RecyclerView recyclerView;
+    public RecyclerView recyclerView;
     @BindView(R.id.exit_alert_entries_btn)
-    ImageButton exitJournalBtn;
+    public ImageButton exitJournalBtn;
     @BindView(R.id.rv_container)
-    LinearLayout recyclerContainer;
+    public LinearLayout recyclerContainer;
 
     //DATA
     private String typeAlert = "";
@@ -83,7 +98,6 @@ public class MyAlertsActivity extends AppCompatActivity {
     private boolean glycemySelected = false;
     private boolean isNameConfirmed = false;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,8 +106,11 @@ public class MyAlertsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         alerts = new ArrayList<>();
 
+        Utils.backToDashboard(titleApp, this, MyAlertsActivity.this);
+
         nextBtnMecanic();
         previousBtnMecanic();
+        showNotification("Negaz", "ya fogot' da diabetes pal'");
     }
 
     private void showMotionViews() {
@@ -257,7 +274,7 @@ public class MyAlertsActivity extends AppCompatActivity {
         edateAlert = "";
     }
 
-    public void resetDate(DatePicker myPicker){
+    public void resetDate(DatePicker myPicker) {
         Calendar now = Calendar.getInstance();
         myPicker.updateDate(now.get(Calendar.YEAR), now.get(Calendar.MONTH), now.get(Calendar.DAY_OF_MONTH));
     }
@@ -365,11 +382,18 @@ public class MyAlertsActivity extends AppCompatActivity {
 
     @OnClick({R.id.see_all_alerts_btn})
     public void onClickSeeAllAlertsBtn() {
-        alerts.addAll(dbHelper.getAlerts());
-        sortingList();
-        addingIds();
-        loadRV();
-        loadExitBtn();
+        boolean isTableNotEmpty = dbHelper.isTableNotEmpty(SQliteDatabase.Alerts.TABLE_NAME);
+
+        if (isTableNotEmpty) {
+            alerts.addAll(dbHelper.getAlerts());
+            sortingList();
+            addingIds();
+            loadRV();
+            loadExitBtn();
+        } else {
+            Toast.makeText(this, "Oops! On dirait que vous n'avez aucune alarme programmée.", Toast.LENGTH_LONG).show();
+        }
+
     }
 
     @OnClick({R.id.add_new_alert_btn})
@@ -386,5 +410,27 @@ public class MyAlertsActivity extends AppCompatActivity {
     private void showNavAddAlertBtn() {
         addAlertNextBtn.setVisibility(View.VISIBLE);
         addAlertPreviousBtn.setVisibility(View.VISIBLE);
+    }
+
+    void showNotification(String title, String message) {
+        //TODO need to implement a worker to handle the notifications properly
+        NotificationManager mNotificationManager =
+                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            NotificationChannel channel = new NotificationChannel("123",
+                    "D.Meg",
+                    NotificationManager.IMPORTANCE_DEFAULT);
+            channel.setDescription("Hey ma' bro, dan't ya forgot yos' diabetes pal' ?");
+            mNotificationManager.createNotificationChannel(channel);
+        }
+        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "123")
+                .setSmallIcon(R.drawable.ic_needle_24dp) // notification icon
+                .setContentTitle(title) // title for notification
+                .setContentText(message)// message for notification
+                .setAutoCancel(true); // clear notification after click
+        Intent intent = new Intent(getApplicationContext(), MyAlertsActivity.class);
+        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        mBuilder.setContentIntent(pi);
+        mNotificationManager.notify(0, mBuilder.build());
     }
 }

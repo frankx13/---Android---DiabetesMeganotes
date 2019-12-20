@@ -1,11 +1,11 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.models;
 
 public class Objective {
-    String date;
-    String type;
-    String duration;
-    String description;
-    int idEntry;
+    public String date;
+    public String type;
+    public String duration;
+    public String description;
+    public int idEntry;
 
     public Objective(String date, String type, String duration, String description) {
         this.date = date;

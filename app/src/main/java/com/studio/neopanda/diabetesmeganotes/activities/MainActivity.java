@@ -1,6 +1,5 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.activities;
 
-import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +11,10 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.studio.neopanda.diabetesmeganotes.R;
+import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
+import com.studio.neopanda.diabetesmeganotes.database.SQliteDatabase;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,11 +25,11 @@ public class MainActivity extends AppCompatActivity {
 
     //UI
     @BindView(R.id.creds_username_ET)
-    EditText authUsernameET;
+    public EditText authUsernameET;
     @BindView(R.id.creds_pwd_ET)
-    EditText authPwdET;
+    public EditText authPwdET;
     @BindView(R.id.validation_auth_btn)
-    Button validateAuthBtn;
+    public Button validateAuthBtn;
 
     //DATA
     DatabaseHelper dbHelper = new DatabaseHelper(this);

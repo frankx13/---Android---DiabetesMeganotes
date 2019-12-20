@@ -1,10 +1,16 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.database;
 
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+
+import com.studio.neopanda.diabetesmeganotes.models.Glycemy;
+import com.studio.neopanda.diabetesmeganotes.models.InsulinInjection;
+import com.studio.neopanda.diabetesmeganotes.models.Objective;
+import com.studio.neopanda.diabetesmeganotes.models.Alert;
+import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
 
 import java.util.ArrayList;
 import java.util.List;

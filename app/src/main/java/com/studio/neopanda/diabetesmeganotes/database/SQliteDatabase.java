@@ -1,4 +1,4 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.database;
 
 import android.provider.BaseColumns;
 

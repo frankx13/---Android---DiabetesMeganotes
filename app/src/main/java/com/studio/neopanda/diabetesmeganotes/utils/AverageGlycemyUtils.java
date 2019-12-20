@@ -1,4 +1,4 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.utils;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;

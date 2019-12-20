@@ -1,4 +1,4 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.models;
 
 public class Alert {
     public String name;//
@@ -6,14 +6,17 @@ public class Alert {
     public String type;//
     public String startMoment;//
     public String endMoment;//
-    public int idEntry;
+    public String hourAlert;
+    public boolean isActive;
+    public int idEntry;//
 
-    public Alert(String name, String description, String type, String startMoment, String endMoment) {
+    public Alert(String name, String description, String type, String startMoment, String endMoment, String hourAlert) {
         this.name = name;
         this.description = description;
         this.type = type;
         this.startMoment = startMoment;
         this.endMoment = endMoment;
+        this.hourAlert = hourAlert;
     }
 
     public String getName() {
@@ -62,5 +65,21 @@ public class Alert {
 
     public void setIdEntry(int idEntry) {
         this.idEntry = idEntry;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
+    }
+
+    public String getHourAlert() {
+        return hourAlert;
+    }
+
+    public void setHourAlert(String hourAlert) {
+        this.hourAlert = hourAlert;
     }
 }

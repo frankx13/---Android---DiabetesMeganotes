@@ -1,10 +1,10 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.models;
 
 public class InsulinInjection {
 
-    String date;
-    String numberUnit;
-    int idEntry;
+    public String date;
+    public String numberUnit;
+    public int idEntry;
 
     public InsulinInjection(String date, String numberUnit) {
         this.date = date;

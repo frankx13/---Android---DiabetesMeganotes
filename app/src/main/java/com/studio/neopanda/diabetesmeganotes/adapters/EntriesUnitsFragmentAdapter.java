@@ -1,4 +1,4 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.adapters;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,6 +8,9 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.studio.neopanda.diabetesmeganotes.models.InsulinInjection;
+import com.studio.neopanda.diabetesmeganotes.R;
 
 import java.util.List;
 

@@ -1,8 +1,6 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.activities;
 
-import android.content.ContentValues;
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -17,6 +15,11 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.studio.neopanda.diabetesmeganotes.R;
+import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
+import com.studio.neopanda.diabetesmeganotes.utils.AverageGlycemyUtils;
+import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,25 +30,25 @@ public class DashboardActivity extends AppCompatActivity {
 
     //UI
     @BindView(R.id.my_glycemy_diary_btn)
-    Button toGlycemiesBtn;
+    public Button toGlycemiesBtn;
     @BindView(R.id.fast_stats_60d_TV)
-    TextView statsSixtyDays;
+    public TextView statsSixtyDays;
     @BindView(R.id.fast_stats_30d_TV)
-    TextView statsThirtyDays;
+    public TextView statsThirtyDays;
     @BindView(R.id.fast_stats_15d_TV)
-    TextView statsFifteenDays;
+    public TextView statsFifteenDays;
     @BindView(R.id.fast_stats_7d_TV)
-    TextView statsSevenDays;
+    public TextView statsSevenDays;
     @BindView(R.id.fast_note_TV)
-    TextView fastNoteTV;
+    public TextView fastNoteTV;
     @BindView(R.id.fast_note_EV)
-    EditText fastNoteEV;
+    public EditText fastNoteEV;
     @BindView(R.id.fast_note_btn)
-    Button fastNoteBtn;
+    public Button fastNoteBtn;
     @BindView(R.id.my_objectives_btn)
-    Button objectivesBtn;
+    public Button objectivesBtn;
     @BindView(R.id.my_alerts_btn)
-    Button alertsBtn;
+    public Button alertsBtn;
 
     //DATA
     private DatabaseHelper dbHelper = new DatabaseHelper(this);

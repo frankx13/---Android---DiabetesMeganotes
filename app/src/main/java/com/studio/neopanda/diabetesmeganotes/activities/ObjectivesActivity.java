@@ -1,5 +1,6 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.activities;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -13,6 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.studio.neopanda.diabetesmeganotes.R;
+import com.studio.neopanda.diabetesmeganotes.adapters.ObjectivesAdapter;
+import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
+import com.studio.neopanda.diabetesmeganotes.models.Objective;
+import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
+import com.studio.neopanda.diabetesmeganotes.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -24,27 +32,29 @@ import butterknife.OnClick;
 public class ObjectivesActivity extends AppCompatActivity {
 
     @BindView(R.id.add_entry_objective)
-    Button addObjectiveBtn;
+    public Button addObjectiveBtn;
     @BindView(R.id.exit_entry_objectives_btn)
-    ImageButton exitEntryBtn;
+    public ImageButton exitEntryBtn;
     @BindView(R.id.container_add_objective)
-    LinearLayout newObjectiveContainer;
+    public LinearLayout newObjectiveContainer;
     @BindView(R.id.validate_new_objective_btn)
-    Button validateNewEntryBtn;
+    public Button validateNewEntryBtn;
     @BindView(R.id.input_objective_number_days)
-    EditText inputObjectiveDays;
+    public EditText inputObjectiveDays;
     @BindView(R.id.input_objective_description)
-    EditText inputObjectiveDescription;
+    public EditText inputObjectiveDescription;
     @BindView(R.id.type_food_tv)
-    TextView typeFood;
+    public TextView typeFood;
     @BindView(R.id.type_sport_tv)
-    TextView typeSport;
+    public TextView typeSport;
     @BindView(R.id.type_insulin_tv)
-    TextView typeInsulin;
+    public TextView typeInsulin;
     @BindView(R.id.type_glycemy_tv)
-    TextView typeGlycemy;
+    public TextView typeGlycemy;
     @BindView(R.id.recyclerView_objectives)
-    RecyclerView recyclerViewObjectives;
+    public RecyclerView recyclerViewObjectives;
+    @BindView(R.id.title_app_TV)
+    public TextView titleApp;
 
     private String deadlineObjective = "";
     private String typeObjective = "";
@@ -56,6 +66,7 @@ public class ObjectivesActivity extends AppCompatActivity {
     private boolean isTableNotEmpty = false;
     private int idEntry = 0;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,8 +76,10 @@ public class ObjectivesActivity extends AppCompatActivity {
 
         objectives = new ArrayList<>();
 
+        Utils.backToDashboard(titleApp, this, ObjectivesActivity.this);
+
         dbHelper.isTableNotEmpty("Objectives");
-        if (!isTableNotEmpty){
+        if (!isTableNotEmpty) {
             objectives = dbHelper.getObjectives();
             //TODO define number max of objectives
 //            objectives = objectives.subList(0, 3);
@@ -145,7 +158,7 @@ public class ObjectivesActivity extends AppCompatActivity {
         }
     }
 
-    private void loadDataInRV(List<Objective> objectivesList){
+    private void loadDataInRV(List<Objective> objectivesList) {
         ObjectivesAdapter adapter = new ObjectivesAdapter(this, objectivesList);
         recyclerViewObjectives.setAdapter(adapter);
         recyclerViewObjectives.setLayoutManager(new LinearLayoutManager(this));

@@ -1,4 +1,4 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.activities;
 
 import android.os.Bundle;
 import android.view.View;
@@ -16,6 +16,13 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.studio.neopanda.diabetesmeganotes.R;
+import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
+import com.studio.neopanda.diabetesmeganotes.fragments.EntriesDiaryFragment;
+import com.studio.neopanda.diabetesmeganotes.fragments.EntriesInsulinFragment;
+import com.studio.neopanda.diabetesmeganotes.utils.UIUtils;
+import com.studio.neopanda.diabetesmeganotes.utils.Utils;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -27,41 +34,41 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     static boolean isDiaryOpen = false;
     //UI
     @BindView(R.id.seven_days_average_glycemy_TV)
-    TextView weekGlycemyAverage;
+    public TextView weekGlycemyAverage;
     @BindView(R.id.seven_days_average_insulin_TV)
-    TextView weekInsulinAverage;
+    public TextView weekInsulinAverage;
     @BindView(R.id.title_app_TV_glycemies)
-    TextView titleGlycemyScreen;
+    public TextView titleGlycemyScreen;
     @BindView(R.id.add_entry_glycemy)
-    Button addGlycemyBtn;
+    public Button addGlycemyBtn;
     @BindView(R.id.add_entry_insulin)
-    Button addInsulinBtn;
+    public Button addInsulinBtn;
     @BindView(R.id.new_entry_container)
-    LinearLayout containerAddEntryPart;
+    public LinearLayout containerAddEntryPart;
     @BindView(R.id.datepicker_new_entry_glycemy)
-    CalendarView calendarView;
+    public CalendarView calendarView;
     @BindView(R.id.glycemy_level_input_ET)
-    EditText glycemyInputLevel;
+    public EditText glycemyInputLevel;
     @BindView(R.id.level_glycemy_new_entry_TV)
-    TextView glycemyInputTV;
+    public TextView glycemyInputTV;
     @BindView(R.id.date_glycemy_new_entry_TV)
-    TextView dateGlycemyInputTV;
+    public TextView dateGlycemyInputTV;
     @BindView(R.id.validate_new_entry_btn)
-    Button validateNewEntryBtn;
+    public Button validateNewEntryBtn;
     @BindView(R.id.view_entries_glycemy)
-    Button viewAllEntriesBtn;
+    public Button viewAllEntriesBtn;
     @BindView(R.id.container_journal)
-    FrameLayout journalContainer;
+    public FrameLayout journalContainer;
     @BindView(R.id.exit_diary_journal_btn)
-    ImageButton exitDiaryJournalBtn;
+    public ImageButton exitDiaryJournalBtn;
     @BindView(R.id.input_insulin_units_new_entry)
-    EditText insulinUnitsInput;
+    public EditText insulinUnitsInput;
     @BindView(R.id.validate_new_insulin_btn)
-    Button validateInsulinInput;
+    public Button validateInsulinInput;
     @BindView(R.id.container_new_units_insulin)
-    LinearLayout containerInsulinUnitsInput;
+    public LinearLayout containerInsulinUnitsInput;
     @BindView(R.id.view_entries_insulin_units)
-    Button viewEntriesInsulinBtn;
+    public Button viewEntriesInsulinBtn;
 
     //DATA
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -78,6 +85,8 @@ public class MyGlycemiesActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         itemIds = new ArrayList<>();
+
+        Utils.backToDashboard(titleGlycemyScreen, this, MyGlycemiesActivity.this);
 
         addGlycemyBtn.setOnClickListener(new View.OnClickListener() {
             @Override

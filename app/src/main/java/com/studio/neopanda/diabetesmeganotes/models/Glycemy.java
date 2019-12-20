@@ -1,10 +1,10 @@
-package com.studio.neopanda.diabetesmeganotes;
+package com.studio.neopanda.diabetesmeganotes.models;
 
 public class Glycemy {
 
-    String date;
-    String glycemyLevel;
-    int idEntry;
+    public String date;
+    public String glycemyLevel;
+    public int idEntry;
 
     public Glycemy(String date, String glycemyLevel) {
         this.date = date;

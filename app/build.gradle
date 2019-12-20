@@ -32,12 +32,15 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 
+    //NOTIFICATIONS
+    implementation 'androidx.core:core:1.1.0'
+
     //BUTTERKNIFE
     implementation 'com.jakewharton:butterknife:10.2.0'
     annotationProcessor 'com.jakewharton:butterknife-compiler:10.2.0'
 
     //ANDROID DESIGN
-    implementation 'com.google.android.material:material:1.2.0-alpha02'
+    implementation 'com.google.android.material:material:1.2.0-alpha03'
 
     //RECYCLERVIEW
     implementation "androidx.recyclerview:recyclerview:1.1.0"
