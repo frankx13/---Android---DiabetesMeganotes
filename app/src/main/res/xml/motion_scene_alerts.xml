@@ -5,27 +5,31 @@
     <!--LEFT-->
     <Transition
         app:constraintSetEnd="@id/leftImg"
-        app:constraintSetStart="@id/base">
+        app:constraintSetStart="@id/base"
+        app:duration="1000">
         <OnClick app:targetId="@id/pizza_selection_alerts" />
     </Transition>
 
     <!--TOP-->
     <Transition
         app:constraintSetEnd="@id/topImg"
-        app:constraintSetStart="@id/base">
+        app:constraintSetStart="@id/base"
+        app:duration="1000">
         <OnClick app:targetId="@id/sport_selection_alerts" />
     </Transition>
     <!--RIGHT-->
     <Transition
         app:constraintSetEnd="@id/rightImg"
-        app:constraintSetStart="@id/base">
+        app:constraintSetStart="@id/base"
+        app:duration="1000">
         <OnClick app:targetId="@id/insulin_selection_alerts" />
     </Transition>
 
     <!--BOTTOM-->
     <Transition
         app:constraintSetEnd="@id/bottomImg"
-        app:constraintSetStart="@id/base">
+        app:constraintSetStart="@id/base"
+        app:duration="1000">
         <OnClick app:targetId="@id/glycemy_selection_alerts" />
     </Transition>
 
@@ -36,49 +40,69 @@
             android:id="@id/pizza_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.37"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" >
+
+            <CustomAttribute
+                app:attributeName="backgroundColor"
+                app:customColorValue="#0000" />
+        </Constraint>
 
         <Constraint
             android:id="@id/sport_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" >
+
+            <CustomAttribute
+                app:attributeName="backgroundColor"
+                app:customColorValue="#0000" />
+        </Constraint>
 
         <Constraint
             android:id="@id/insulin_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" >
+
+            <CustomAttribute
+                app:attributeName="backgroundColor"
+                app:customColorValue="#0000" />
+        </Constraint>
 
         <Constraint
             android:id="@id/glycemy_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.65"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" >
+
+            <CustomAttribute
+                app:attributeName="backgroundColor"
+                app:customColorValue="#0000" />
+        </Constraint>
     </ConstraintSet>
 
     <!--TOP SPORT-->
@@ -88,51 +112,53 @@
             android:id="@id/pizza_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.37"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
 
         <Constraint
             android:id="@id/sport_selection_alerts"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            app:layout_constraintBottom_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintEnd_toEndOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintStart_toStartOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintTop_toTopOf="@+id/man_iv_selector_alerts" >
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:tag="selected"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintEnd_toEndOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintStart_toStartOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintTop_toTopOf="@+id/iv_selection_cube_alerts">
 
             <CustomAttribute
-                app:attributeName="selectedColor"
-                app:customColorValue="#B8E986" />
+                app:attributeName="backgroundColor"
+                app:customColorValue="#B8E986"
+                app:customStringValue="selected"/>
         </Constraint>
 
         <Constraint
             android:id="@id/insulin_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
 
         <Constraint
             android:id="@id/glycemy_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.65"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
     </ConstraintSet>
 
     <!--LEFT FOOD-->
@@ -140,15 +166,16 @@
 
         <Constraint
             android:id="@id/pizza_selection_alerts"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            app:layout_constraintBottom_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintEnd_toEndOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintStart_toStartOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintTop_toTopOf="@+id/man_iv_selector_alerts" >
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:tag="selected"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintEnd_toEndOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintStart_toStartOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintTop_toTopOf="@+id/iv_selection_cube_alerts">
 
             <CustomAttribute
-                app:attributeName="selectedColor"
+                app:attributeName="backgroundColor"
                 app:customColorValue="#B8E986" />
         </Constraint>
 
@@ -156,37 +183,37 @@
             android:id="@id/sport_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
 
         <Constraint
             android:id="@id/insulin_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
 
         <Constraint
             android:id="@id/glycemy_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.65"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
     </ConstraintSet>
 
     <!--RIGHT INSULIN-->
@@ -196,37 +223,38 @@
             android:id="@id/pizza_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.37"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
 
         <Constraint
             android:id="@id/sport_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
 
         <Constraint
             android:id="@id/insulin_selection_alerts"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            app:layout_constraintBottom_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintEnd_toEndOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintStart_toStartOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintTop_toTopOf="@+id/man_iv_selector_alerts" >
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:tag="selected"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintEnd_toEndOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintStart_toStartOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintTop_toTopOf="@+id/iv_selection_cube_alerts">
 
             <CustomAttribute
-                app:attributeName="selectedColor"
+                app:attributeName="backgroundColor"
                 app:customColorValue="#B8E986" />
         </Constraint>
 
@@ -234,13 +262,13 @@
             android:id="@id/glycemy_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.65"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
     </ConstraintSet>
 
     <!--BOTTOM GLYCEMY-->
@@ -250,49 +278,50 @@
             android:id="@id/pizza_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.37"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
 
         <Constraint
             android:id="@id/sport_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts" />
 
         <Constraint
             android:id="@id/insulin_selection_alerts"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="65dp"
+            android:tag="unselected"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.9"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/iv_selection_cube_alerts"/>
 
         <Constraint
             android:id="@id/glycemy_selection_alerts"
-            android:layout_width="90dp"
-            android:layout_height="90dp"
-            app:layout_constraintBottom_toBottomOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintEnd_toEndOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintStart_toStartOf="@+id/man_iv_selector_alerts"
-            app:layout_constraintTop_toTopOf="@+id/man_iv_selector_alerts" >
+            android:layout_width="95dp"
+            android:layout_height="95dp"
+            android:tag="selected"
+            app:layout_constraintBottom_toBottomOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintEnd_toEndOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintStart_toStartOf="@+id/iv_selection_cube_alerts"
+            app:layout_constraintTop_toTopOf="@+id/iv_selection_cube_alerts">
 
             <CustomAttribute
-                app:attributeName="selectedColor"
+                app:attributeName="backgroundColor"
                 app:customColorValue="#B8E986" />
         </Constraint>
     </ConstraintSet>

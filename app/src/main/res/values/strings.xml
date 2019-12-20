@@ -65,4 +65,7 @@
     <string name="choose_alert_type_tv">Cliquer sur l\'icone du type d\'alerte pour le sélectionner.</string>
     <string name="previous">Précédent</string>
     <string name="next">Suivant</string>
+    <string name="alert_type_selected">Type d\'alerte : Aucun</string>
+    <string name="confirm">Confirmer</string>
+    <string name="choose_alert_text">Choisissez un nom pour votre alerte !</string>
 </resources>
