@@ -11,6 +11,8 @@
     <!-- Theme global activity. -->
     <style name="NoBarTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
+        <!-- Enable Transitions -->
+        <item name="android:windowContentTransitions">true</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionBar">false</item>
         <item name="colorPrimary">@color/colorPrimary</item>

@@ -2,7 +2,11 @@ package com.studio.neopanda.diabetesmeganotes.activities;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -70,10 +74,11 @@ public class ObjectivesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_objectives);
 
         ButterKnife.bind(this);
-
+        prepareTransitions();
         objectives = new ArrayList<>();
 
         Utils.backToDashboard(titleApp, this, ObjectivesActivity.this);
@@ -146,6 +151,13 @@ public class ObjectivesActivity extends AppCompatActivity {
                 });
             }
         });
+    }
+
+    private void prepareTransitions(){
+        // set an exit transition
+        getWindow().setExitTransition(new Explode());
+        // set an enter transition
+//        getWindow().setEnterTransition(new Slide());
     }
 
     private void sortingList() {

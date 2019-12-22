@@ -105,4 +105,8 @@ public class MainActivity extends AppCompatActivity {
         dbHelper.close();
         super.onDestroy();
     }
+
+    private void checkVersion() {
+        
+    }
 }

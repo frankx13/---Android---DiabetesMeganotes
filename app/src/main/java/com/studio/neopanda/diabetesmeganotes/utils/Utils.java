@@ -2,11 +2,13 @@ package com.studio.neopanda.diabetesmeganotes.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.view.MotionEvent;
 import android.widget.TextView;
 
+import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.activities.DashboardActivity;
 
 public class Utils {
@@ -19,6 +21,7 @@ public class Utils {
                     // your action for drawable click event
                     Intent intent = new Intent(context, DashboardActivity.class);
                     context.startActivity(intent);
+                    activity.overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
                     activity.finish();
 
                     return true;

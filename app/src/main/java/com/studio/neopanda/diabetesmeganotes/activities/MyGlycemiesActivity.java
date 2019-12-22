@@ -1,7 +1,11 @@
 package com.studio.neopanda.diabetesmeganotes.activities;
 
 import android.os.Bundle;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
@@ -81,9 +85,11 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_my_glycemies);
 
         ButterKnife.bind(this);
+        prepareTransitions();
         itemIds = new ArrayList<>();
 
         Utils.backToDashboard(titleGlycemyScreen, this, MyGlycemiesActivity.this);
@@ -129,6 +135,13 @@ public class MyGlycemiesActivity extends AppCompatActivity {
                 exitDiaryJournalBtn.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void prepareTransitions(){
+        // set an exit transition
+        getWindow().setExitTransition(new Explode());
+        // set an enter transition
+//        getWindow().setEnterTransition(new Slide());
     }
 
     private void onClickViewInsulinBtn() {

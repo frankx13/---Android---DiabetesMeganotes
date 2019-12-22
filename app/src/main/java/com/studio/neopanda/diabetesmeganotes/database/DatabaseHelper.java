@@ -18,8 +18,8 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // If you change the database schema, you must increment the database version.
-    public static final int DATABASE_VERSION = 6;
-    public static final String DATABASE_NAME = "MeganotesReader.db";
+    private static final int DATABASE_VERSION = 6;
+    private static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CREDENTIALS =
             "CREATE TABLE " + SQliteDatabase.Credentials.TABLE_NAME + " (" +
@@ -397,7 +397,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String nameData = c.getString(name);
             String descData = c.getString(description);
 
-            alertList.add(new Alert(nameData, descData, typeData, sdateData, edateData));
+            //TODO implement hour input
+            alertList.add(new Alert(nameData, descData, typeData, sdateData, edateData, "10:00"));
         }
 
         getReadableDatabase().close();

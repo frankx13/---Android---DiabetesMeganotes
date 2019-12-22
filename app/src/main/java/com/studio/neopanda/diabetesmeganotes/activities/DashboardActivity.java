@@ -1,5 +1,7 @@
 package com.studio.neopanda.diabetesmeganotes.activities;
 
+import android.app.Activity;
+import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -7,7 +9,14 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.transition.ChangeBounds;
+import android.transition.ChangeTransform;
+import android.transition.Explode;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.Transition;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -72,16 +81,22 @@ public class DashboardActivity extends AppCompatActivity {
         listGlycemiesDouble = new ArrayList<>();
         toGlycemiesBtn.setOnClickListener(v -> {
             Intent intent = new Intent(getApplicationContext(), MyGlycemiesActivity.class);
+            startActivity(intent,
+                    ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
             startActivity(intent);
-            finish();
+            overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
+//            finish();
         });
 
         objectivesBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), ObjectivesActivity.class);
+                startActivity(intent,
+                        ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
                 startActivity(intent);
-                finish();
+                overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
+//                finish();
             }
         });
 
@@ -89,8 +104,11 @@ public class DashboardActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MyAlertsActivity.class);
+                startActivity(intent,
+                        ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
                 startActivity(intent);
-                finish();
+                overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
+//                finish();
             }
         });
 
