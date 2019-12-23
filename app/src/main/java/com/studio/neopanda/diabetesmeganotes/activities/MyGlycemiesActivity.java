@@ -37,10 +37,6 @@ public class MyGlycemiesActivity extends AppCompatActivity {
 
     static boolean isDiaryOpen = false;
     //UI
-    @BindView(R.id.seven_days_average_glycemy_TV)
-    public TextView weekGlycemyAverage;
-    @BindView(R.id.seven_days_average_insulin_TV)
-    public TextView weekInsulinAverage;
     @BindView(R.id.title_app_TV_glycemies)
     public TextView titleGlycemyScreen;
     @BindView(R.id.add_entry_glycemy)
@@ -85,11 +81,9 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
         setContentView(R.layout.activity_my_glycemies);
 
         ButterKnife.bind(this);
-        prepareTransitions();
         itemIds = new ArrayList<>();
 
         Utils.backToDashboard(titleGlycemyScreen, this, MyGlycemiesActivity.this);
@@ -135,13 +129,6 @@ public class MyGlycemiesActivity extends AppCompatActivity {
                 exitDiaryJournalBtn.setVisibility(View.GONE);
             }
         });
-    }
-
-    private void prepareTransitions(){
-        // set an exit transition
-        getWindow().setExitTransition(new Explode());
-        // set an enter transition
-//        getWindow().setEnterTransition(new Slide());
     }
 
     private void onClickViewInsulinBtn() {

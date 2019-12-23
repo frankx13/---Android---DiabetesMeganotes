@@ -8,11 +8,10 @@ public class SQliteDatabase {
 
     }
 
-    /* Inner class that defines the table contents */
-    public static class Credentials implements BaseColumns {
-        public static final String TABLE_NAME = "Credentials";
+    public static class Users implements BaseColumns{
+        public static final String TABLE_NAME = "Users";
         public static final String COLUMN_NAME_USERNAME = "Username";
-        public static final String COLUMN_NAME_PASSWORD = "Password";
+        public static final String COLUMN_NAME_IMAGE_SELECTED = "Image";
     }
 
     public static class Glycemies implements BaseColumns {

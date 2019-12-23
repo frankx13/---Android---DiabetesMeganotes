@@ -2,7 +2,7 @@
     <string name="app_name">DiabetesMeganotes</string>
     <string name="diabetes_meganotes">Diabetes Meganotes</string>
     <string name="text_dont_let_it_waste">Reprenez votre vie en main !</string>
-    <string name="connexion">Connexion classique</string>
+    <string name="register_new_user">Nouvel utilisateur</string>
     <string name="password_hint">Mot de passe</string>
     <string name="username_hint">Identifiant</string>
     <string name="pin_connect_ET">Connexion par PIN</string>
@@ -76,4 +76,11 @@
     <string name="terminate">Terminer</string>
     <string name="add_entry_alert">Ajouter une alerte</string>
     <string name="see_all_alerts">Voir toutes les alertes</string>
+    <string name="title_existing_user_auth">Etes-vous...</string>
+    <string name="username_prototype">username</string>
+    <string name="title_new_user_auth">Nouvel utilisateur</string>
+    <string name="instructions_create_username">Choisissez un nom d\'utilisateur</string>
+    <string name="instructions_create_avatar">Choisissez un avatar</string>
+    <string name="create_user_validation_text">Créer utilisateur</string>
+    <string name="hint_create_username">Écrire ici (20 caractères. max)</string>
 </resources>

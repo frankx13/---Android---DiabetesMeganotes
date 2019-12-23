@@ -23,39 +23,11 @@
         android:textSize="24sp"
         android:textStyle="bold" />
 
-    <LinearLayout
-        android:id="@+id/week_container_glycemies"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/title_app_TV_glycemies"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/seven_days_average_glycemy_TV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/seven_days_average"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-
-        <TextView
-            android:id="@+id/seven_days_average_insulin_TV"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:text="@string/insulin_average_seven_days"
-            android:textAlignment="center"
-            android:textColor="@android:color/black"
-            android:textSize="16sp" />
-
-    </LinearLayout>
-
     <Button
         android:id="@+id/add_entry_glycemy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/week_container_glycemies"
+        android:layout_below="@id/title_app_TV_glycemies"
         android:layout_marginStart="20dp"
         android:layout_marginTop="25dp"
         android:layout_marginEnd="20dp"

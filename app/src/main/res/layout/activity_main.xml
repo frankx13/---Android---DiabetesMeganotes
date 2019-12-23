@@ -36,90 +36,173 @@
         android:textSize="17sp"
         android:textStyle="normal" />
 
-    <TextView
-        android:id="@+id/connect_TV"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:id="@+id/container_existing_user_user"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/subtitle_app_TV"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="70dp"
-        android:text="@string/connexion"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="24sp"
-        android:textStyle="italic" />
+        android:layout_margin="15dp"
+        android:orientation="vertical"
+        android:visibility="gone">
 
-    <EditText
-        android:id="@+id/creds_username_ET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/connect_TV"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/username_hint"
-        android:inputType="text"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        android:textStyle="italic"
-        tools:ignore="Autofill" />
+        <TextView
+            android:id="@+id/title_existing_user"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/title_existing_user_auth"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="21sp"
+            android:textStyle="bold|italic" />
 
-    <EditText
-        android:id="@+id/creds_pwd_ET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/creds_username_ET"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/password_hint"
-        android:inputType="textPassword"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        android:textStyle="italic"
-        tools:ignore="Autofill" />
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/new_user_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
-    <TextView
-        android:id="@+id/pin_connection_ET"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/creds_pwd_ET"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="20dp"
-        android:text="@string/pin_connect_ET"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="24sp"
-        android:textStyle="italic" />
-
-    <EditText
-        android:id="@+id/creds_pin_ET"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/pin_connection_ET"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:hint="@string/pin_code_ET"
-        android:inputType="numberPassword"
-        android:textAlignment="center"
-        android:textColor="@android:color/black"
-        android:textSize="22sp"
-        android:textStyle="italic"
-        tools:ignore="Autofill" />
+    </LinearLayout>
 
     <Button
-        android:id="@+id/validation_auth_btn"
-        android:layout_width="wrap_content"
+        android:id="@+id/title_new_user"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/creds_pin_ET"
-        android:layout_marginTop="35dp"
-        android:layout_centerHorizontal="true"
-        android:padding="20dp"
-        android:text="@string/lets_go"
+        android:layout_below="@+id/container_existing_user_user"
+        android:layout_marginStart="15dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="15dp"
+        android:background="@drawable/btn_classic"
+        android:drawableStart="@drawable/ic_person_add_black_24dp"
+        android:drawableEnd="@drawable/ic_person_add_black_24dp"
+        android:padding="10dp"
+        android:text="@string/title_new_user_auth"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="17sp"
+        android:textStyle="bold|italic" />
+
+    <TextView
+        android:id="@+id/new_user_username_instructions_TV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/subtitle_app_TV"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="50dp"
+        android:layout_marginEnd="20dp"
+        android:text="@string/instructions_create_username"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:textStyle="italic"
+        android:visibility="gone" />
+
+    <EditText
+        android:id="@+id/create_username_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/new_user_username_instructions_TV"
+        android:layout_marginStart="20dp"
+        android:layout_marginEnd="20dp"
+        android:background="@drawable/btn_simple"
+        android:hint="@string/hint_create_username"
+        android:padding="10dp"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
         android:textSize="20sp"
+        android:textStyle="italic"
+        android:visibility="gone" />
+
+    <LinearLayout
+        android:id="@+id/container_new_user_image_selection"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/create_username_input"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="20sp"
+        android:layout_marginEnd="10dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:id="@+id/new_user_image_instructions_TV"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/instructions_create_avatar"
+            android:textAlignment="center"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="italic" />
+
+        <LinearLayout
+            android:id="@+id/subcontainer_image_one"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/avatar_img_one"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_avatar_one"
+                android:elevation="6dp"
+                android:src="@drawable/btn_simple" />
+
+            <ImageView
+                android:id="@+id/avatar_img_two"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_avatar_two"
+                android:elevation="6dp"
+                android:src="@drawable/btn_simple" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/subcontainer_image_two"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/avatar_img_three"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_avatar_three"
+                android:elevation="6dp"
+                android:src="@drawable/btn_simple" />
+
+            <ImageView
+                android:id="@+id/avatar_img_four"
+                android:layout_width="75dp"
+                android:layout_height="75dp"
+                android:layout_margin="10dp"
+                android:background="@drawable/ic_avatar_four"
+                android:elevation="6dp"
+                android:src="@drawable/btn_simple" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/validation_new_user_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/container_new_user_image_selection"
+        android:layout_centerHorizontal="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="35dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:background="@drawable/btn_classic"
+        android:padding="20dp"
+        android:text="@string/create_user_validation_text"
         android:textColor="@android:color/white"
-        android:background="@drawable/btn_classic"/>
+        android:textSize="20sp"
+        android:visibility="gone" />
 
 </RelativeLayout>

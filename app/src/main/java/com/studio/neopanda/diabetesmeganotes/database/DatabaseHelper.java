@@ -10,6 +10,7 @@ import com.studio.neopanda.diabetesmeganotes.models.Glycemy;
 import com.studio.neopanda.diabetesmeganotes.models.InsulinInjection;
 import com.studio.neopanda.diabetesmeganotes.models.Objective;
 import com.studio.neopanda.diabetesmeganotes.models.Alert;
+import com.studio.neopanda.diabetesmeganotes.models.User;
 import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
 
 import java.util.ArrayList;
@@ -18,17 +19,17 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 6;
+    private static final int DATABASE_VERSION = 7;
     private static final String DATABASE_NAME = "MeganotesReader.db";
 
-    private static final String SQL_CREATE_ENTRIES_CREDENTIALS =
-            "CREATE TABLE " + SQliteDatabase.Credentials.TABLE_NAME + " (" +
-                    SQliteDatabase.Credentials._ID + " INTEGER PRIMARY KEY," +
-                    SQliteDatabase.Credentials.COLUMN_NAME_PASSWORD + " TEXT," +
-                    SQliteDatabase.Credentials.COLUMN_NAME_USERNAME + " TEXT)";
+    private static final String SQL_CREATE_ENTRIES_USERS =
+            "CREATE TABLE " + SQliteDatabase.Users.TABLE_NAME + " (" +
+                    SQliteDatabase.Users._ID + " INTEGER PRIMARY KEY," +
+                    SQliteDatabase.Users.COLUMN_NAME_USERNAME + " TEXT," +
+                    SQliteDatabase.Users.COLUMN_NAME_IMAGE_SELECTED + " INTEGER)";
 
-    private static final String SQL_DELETE_ENTRIES_CREDENTIALS =
-            "DROP TABLE IF EXISTS " + SQliteDatabase.Credentials.TABLE_NAME;
+    private static final String SQL_DELETE_ENTRIES_USERS =
+            "DROP TABLE IF EXISTS " + SQliteDatabase.Users.TABLE_NAME;
 
     private static final String SQL_CREATE_ENTRIES_GLYCEMIES =
             "CREATE TABLE " + SQliteDatabase.Glycemies.TABLE_NAME + " (" +
@@ -86,7 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void onCreate(SQLiteDatabase db) {
-        db.execSQL(SQL_CREATE_ENTRIES_CREDENTIALS);
+        db.execSQL(SQL_CREATE_ENTRIES_USERS);
         db.execSQL(SQL_CREATE_ENTRIES_GLYCEMIES);
         db.execSQL(SQL_CREATE_ENTRIES_INSULIN);
         db.execSQL(SQL_CREATE_ENTRIES_NOTE);
@@ -97,7 +98,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
-        db.execSQL(SQL_DELETE_ENTRIES_CREDENTIALS);
+        db.execSQL(SQL_DELETE_ENTRIES_USERS);
         db.execSQL(SQL_DELETE_ENTRIES_GLYCEMIES);
         db.execSQL(SQL_DELETE_ENTRIES_INSULIN);
         db.execSQL(SQL_DELETE_ENTRIES_NOTE);
@@ -184,17 +185,39 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(SQliteDatabase.Note.TABLE_NAME, null, values);
     }
 
-    public void setCredentialsInDB(String username, String password) {
+    public void writeUserssInDB(String username, int imgSelection) {
         // Gets the data repository in write mode
         SQLiteDatabase db = getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Credentials.COLUMN_NAME_USERNAME, username);
-        values.put(SQliteDatabase.Credentials.COLUMN_NAME_PASSWORD, password);
+        values.put(SQliteDatabase.Users.COLUMN_NAME_USERNAME, username);
+        values.put(SQliteDatabase.Users.COLUMN_NAME_IMAGE_SELECTED, imgSelection);
 
         // Insert the new row, returning the primary key value of the new row
-        db.insert(SQliteDatabase.Credentials.TABLE_NAME, null, values);
+        db.insert(SQliteDatabase.Users.TABLE_NAME, null, values);
+    }
+
+    public List<User> getUsers() {
+        List<User> usersList = new ArrayList<>();
+        SQLiteDatabase sQliteDatabase = getReadableDatabase();
+        String[] field = {SQliteDatabase.Users.COLUMN_NAME_USERNAME, SQliteDatabase.Users.COLUMN_NAME_USERNAME};
+        Cursor c = sQliteDatabase.query(SQliteDatabase.Users.TABLE_NAME, field, null, null, null, null, null);
+
+        int username = c.getColumnIndex(SQliteDatabase.Users.COLUMN_NAME_USERNAME);
+        int img = c.getColumnIndex(SQliteDatabase.Users.COLUMN_NAME_IMAGE_SELECTED);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            String dateData = c.getString(username);
+            int levelData = c.getInt(img);
+
+            usersList.add(new User(dateData, levelData));
+        }
+
+        getReadableDatabase().close();
+        c.close();
+
+        return usersList;
     }
 
     public void writeInsulinUnitsInDB(String units) {
@@ -239,11 +262,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void deleteAuthInDB() {
         SQLiteDatabase db = getReadableDatabase();
         // Define 'where' part of query.
-        String selection = SQliteDatabase.Credentials.COLUMN_NAME_USERNAME + " LIKE ?";
+        String selection = SQliteDatabase.Users.COLUMN_NAME_USERNAME + " LIKE ?";
         // Specify arguments in placeholder order.
         String[] selectionArgs = {"Josef"};
         // Issue SQL statement => indicate the numbers of rows deleted
-        int deletedRows = db.delete(SQliteDatabase.Credentials.TABLE_NAME, selection, selectionArgs);
+        int deletedRows = db.delete(SQliteDatabase.Users.TABLE_NAME, selection, selectionArgs);
     }
 
     public void updateAuthInDB() {
@@ -252,15 +275,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // New value for one column
         String title = "Joseff";
         ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Credentials.COLUMN_NAME_USERNAME, title);
+        values.put(SQliteDatabase.Users.COLUMN_NAME_USERNAME, title);
 
         // Which row to update, based on the title
-        String selection = SQliteDatabase.Credentials.COLUMN_NAME_USERNAME + " LIKE ?";
+        String selection = SQliteDatabase.Users.COLUMN_NAME_USERNAME + " LIKE ?";
         String[] selectionArgs = {"Joseph"};
 
         //Return the numbers of updated rows
         int count = db.update(
-                SQliteDatabase.Credentials.TABLE_NAME,
+                SQliteDatabase.Users.TABLE_NAME,
                 values,
                 selection,
                 selectionArgs);

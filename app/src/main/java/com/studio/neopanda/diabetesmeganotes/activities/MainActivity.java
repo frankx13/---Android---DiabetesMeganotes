@@ -1,19 +1,23 @@
 package com.studio.neopanda.diabetesmeganotes.activities;
 
 import android.content.Intent;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.provider.BaseColumns;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.studio.neopanda.diabetesmeganotes.R;
+import com.studio.neopanda.diabetesmeganotes.adapters.UserConnectionAdapter;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
-import com.studio.neopanda.diabetesmeganotes.database.SQliteDatabase;
+import com.studio.neopanda.diabetesmeganotes.models.User;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,16 +28,41 @@ import butterknife.ButterKnife;
 public class MainActivity extends AppCompatActivity {
 
     //UI
-    @BindView(R.id.creds_username_ET)
-    public EditText authUsernameET;
-    @BindView(R.id.creds_pwd_ET)
-    public EditText authPwdET;
-    @BindView(R.id.validation_auth_btn)
-    public Button validateAuthBtn;
+    @BindView(R.id.container_existing_user_user)
+    LinearLayout containerExistingUser;
+    @BindView(R.id.new_user_recyclerview)
+    RecyclerView recyclerView;
+    @BindView(R.id.title_new_user)
+    Button newUserBtn;
+    @BindView(R.id.new_user_username_instructions_TV)
+    TextView instructionsUsernameTv;
+    @BindView(R.id.create_username_input)
+    EditText usernameInput;
+    @BindView(R.id.container_new_user_image_selection)
+    LinearLayout containerImageSelections;
+    @BindView(R.id.new_user_image_instructions_TV)
+    TextView instructionsImageTv;
+    @BindView(R.id.subcontainer_image_one)
+    LinearLayout subcontainerImageOne;
+    @BindView(R.id.subcontainer_image_two)
+    LinearLayout subcontainerImageTwo;
+    @BindView(R.id.avatar_img_one)
+    ImageView avatarOne;
+    @BindView(R.id.avatar_img_two)
+    ImageView avatarTwo;
+    @BindView(R.id.avatar_img_three)
+    ImageView avatarThree;
+    @BindView(R.id.avatar_img_four)
+    ImageView avatarFour;
+    @BindView(R.id.validation_new_user_btn)
+    Button validateNewUser;
 
     //DATA
-    DatabaseHelper dbHelper = new DatabaseHelper(this);
-    List itemIds;
+    private DatabaseHelper dbHelper = new DatabaseHelper(this);
+    private boolean isTableNotEmpty = true;
+    private List<User> usersList;
+    private int imageResInput = 0;
+    private String usernameNewUser;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,72 +70,120 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-        itemIds = new ArrayList<>();
-        validateAuthBtn.setOnClickListener(v -> onClickValidateAuthBtn());
-    }
+        usersList = new ArrayList<>();
 
-    public void onClickValidateAuthBtn() {
-        String username = authUsernameET.getEditableText().toString();
-        String pwd = authPwdET.getEditableText().toString();
-
-        readAuthInDB(username);
-        if (itemIds.size() < 1) {
-            dbHelper.setCredentialsInDB(username, pwd);
-            Toast.makeText(this, "Le compte a bien été créé", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "Connexion en cours", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, DashboardActivity.class);
-            startActivity(intent);
-            finish();
+        checkIfUserExists();
+        if (isTableNotEmpty) {
+            loadRecyclerView();
+            containerExistingUser.setVisibility(View.VISIBLE);
         }
+
+        onClickNewUser();
+        setImageListeners();
     }
 
-    public void readAuthInDB(String username) {
-        SQLiteDatabase db = dbHelper.getReadableDatabase();
-        // Define a projection that specifies which columns from the database
-        // you will actually use after this query.
-        String[] projection = {
-                BaseColumns._ID,
-                SQliteDatabase.Credentials.COLUMN_NAME_USERNAME,
-                SQliteDatabase.Credentials.COLUMN_NAME_PASSWORD
-        };
-
-        // Filter results WHERE "title" = 'My Title'
-        String selection = SQliteDatabase.Credentials.COLUMN_NAME_USERNAME + " = ?";
-        String[] selectionArgs = {username};
-
-        // How you want the results sorted in the resulting Cursor
-        String sortOrder =
-                SQliteDatabase.Credentials.COLUMN_NAME_USERNAME + " DESC";
-
-        Cursor cursor = db.query(
-                SQliteDatabase.Credentials.TABLE_NAME,   // The table to query
-                projection,             // The array of columns to return (pass null to get all)
-                selection,              // The columns for the WHERE clause
-                selectionArgs,          // The values for the WHERE clause
-                null,                   // don't group the rows
-                null,                   // don't filter by row groups
-                sortOrder               // The sort order
-        );
-
-        //This part is adding all valid results to the itemIds List
-//        List itemIds = new ArrayList<>();
-        while (cursor.moveToNext()) {
-            long itemId = cursor.getLong(
-                    cursor.getColumnIndexOrThrow(SQliteDatabase.Credentials._ID));
-            itemIds.add(itemId);
-        }
-        cursor.close();
+    private void setImageListeners() {
+        avatarOne.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageResInput = R.id.avatar_img_one;
+                avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
+                avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        avatarTwo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageResInput = R.id.avatar_img_two;
+                avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
+                avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        avatarThree.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageResInput = R.id.avatar_img_three;
+                avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
+                avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
+            }
+        });
+        avatarFour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                imageResInput = R.id.avatar_img_four;
+                avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+                avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
+                Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    //Close database connection ondestroy
+    private void onClickNewUser() {
+        newUserBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setNewUserViews();
+                validateNewUser.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        usernameNewUser = usernameInput.getEditableText().toString();
+                        if (!usernameNewUser.equals("") && imageResInput != 0) {
+                            dbHelper.writeUserssInDB(usernameNewUser, imageResInput);
+                            loadDashboard();
+                        } else if (usernameNewUser.equals("")) {
+                            Toast.makeText(MainActivity.this, "Vous devez remplir un nom d'utilisateur!", Toast.LENGTH_SHORT).show();
+                        } else if (usernameNewUser.length() > 20) {
+                            Toast.makeText(MainActivity.this, "Votre nom d'utilisateur est trop long, 20 caractères max autorisés!", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, "Vous devez choisir une image!", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void loadDashboard() {
+        Intent intent = new Intent(this, DashboardActivity.class);
+        startActivity(intent);
+        overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
+        finish();
+    }
+
+    private void setNewUserViews() {
+        newUserBtn.setVisibility(View.GONE);
+        containerExistingUser.setVisibility(View.GONE);
+        instructionsUsernameTv.setVisibility(View.VISIBLE);
+        usernameInput.setVisibility(View.VISIBLE);
+        containerImageSelections.setVisibility(View.VISIBLE);
+        validateNewUser.setVisibility(View.VISIBLE);
+    }
+
+    private void loadRecyclerView() {
+        UserConnectionAdapter adapter = new UserConnectionAdapter(getApplicationContext(), usersList, imageResInput);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    private void checkIfUserExists() {
+        isTableNotEmpty = dbHelper.isTableNotEmpty("Users");
+    }
+
+    //Close database connection onDestroy
     @Override
     protected void onDestroy() {
         dbHelper.close();
         super.onDestroy();
-    }
-
-    private void checkVersion() {
-        
     }
 }
