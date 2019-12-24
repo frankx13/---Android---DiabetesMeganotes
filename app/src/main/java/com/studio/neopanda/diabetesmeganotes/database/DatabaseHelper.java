@@ -19,7 +19,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 7;
+    private static final int DATABASE_VERSION = 17;
     private static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_USERS =
@@ -185,7 +185,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insert(SQliteDatabase.Note.TABLE_NAME, null, values);
     }
 
-    public void writeUserssInDB(String username, int imgSelection) {
+    public void writeUserssInDB(String username, String imgSelection) {
         // Gets the data repository in write mode
         SQLiteDatabase db = getWritableDatabase();
 
@@ -201,7 +201,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<User> getUsers() {
         List<User> usersList = new ArrayList<>();
         SQLiteDatabase sQliteDatabase = getReadableDatabase();
-        String[] field = {SQliteDatabase.Users.COLUMN_NAME_USERNAME, SQliteDatabase.Users.COLUMN_NAME_USERNAME};
+        String[] field = {SQliteDatabase.Users.COLUMN_NAME_USERNAME, SQliteDatabase.Users.COLUMN_NAME_IMAGE_SELECTED};
         Cursor c = sQliteDatabase.query(SQliteDatabase.Users.TABLE_NAME, field, null, null, null, null, null);
 
         int username = c.getColumnIndex(SQliteDatabase.Users.COLUMN_NAME_USERNAME);
@@ -209,7 +209,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             String dateData = c.getString(username);
-            int levelData = c.getInt(img);
+            String levelData = c.getString(img);
 
             usersList.add(new User(dateData, levelData));
         }

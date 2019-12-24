@@ -2,9 +2,9 @@ package com.studio.neopanda.diabetesmeganotes.models;
 
 public class User {
     String username;
-    int userImg;
+    String userImg;
 
-    public User(String username, int userImg) {
+    public User(String username, String userImg) {
         this.username = username;
         this.userImg = userImg;
     }
@@ -17,11 +17,11 @@ public class User {
         this.username = username;
     }
 
-    public int getUserImg() {
+    public String getUserImg() {
         return userImg;
     }
 
-    public void setUserImg(int userImg) {
+    public void setUserImg(String userImg) {
         this.userImg = userImg;
     }
 }

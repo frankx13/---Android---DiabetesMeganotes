@@ -61,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
     private boolean isTableNotEmpty = true;
     private List<User> usersList;
-    private int imageResInput = 0;
+    private String imageResInput;
     private String usernameNewUser;
 
     @Override
@@ -73,20 +73,22 @@ public class MainActivity extends AppCompatActivity {
         usersList = new ArrayList<>();
 
         checkIfUserExists();
+        usersList = dbHelper.getUsers();
         if (isTableNotEmpty) {
-            loadRecyclerView();
             containerExistingUser.setVisibility(View.VISIBLE);
+            loadRecyclerView();
         }
 
-        onClickNewUser();
         setImageListeners();
+        onClickNewUser();
     }
 
     private void setImageListeners() {
+        //TODO cleanup code and remove the double parsing of types for image resources
         avatarOne.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageResInput = R.id.avatar_img_one;
+                imageResInput = String.valueOf(R.drawable.ic_avatar_one);
                 avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
                 avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
                 avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
@@ -97,7 +99,7 @@ public class MainActivity extends AppCompatActivity {
         avatarTwo.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageResInput = R.id.avatar_img_two;
+                imageResInput = String.valueOf(R.drawable.ic_avatar_two);
                 avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
                 avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
                 avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity {
         avatarThree.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageResInput = R.id.avatar_img_three;
+                imageResInput = String.valueOf(R.drawable.ic_avatar_three);
                 avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
                 avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
                 avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
@@ -119,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
         avatarFour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                imageResInput = R.id.avatar_img_four;
+                imageResInput = String.valueOf(R.drawable.ic_avatar_four);
                 avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
                 avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
                 avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
@@ -130,28 +132,32 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onClickNewUser() {
-        newUserBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setNewUserViews();
-                validateNewUser.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        usernameNewUser = usernameInput.getEditableText().toString();
-                        if (!usernameNewUser.equals("") && imageResInput != 0) {
-                            dbHelper.writeUserssInDB(usernameNewUser, imageResInput);
-                            loadDashboard();
-                        } else if (usernameNewUser.equals("")) {
-                            Toast.makeText(MainActivity.this, "Vous devez remplir un nom d'utilisateur!", Toast.LENGTH_SHORT).show();
-                        } else if (usernameNewUser.length() > 20) {
-                            Toast.makeText(MainActivity.this, "Votre nom d'utilisateur est trop long, 20 caractères max autorisés!", Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(MainActivity.this, "Vous devez choisir une image!", Toast.LENGTH_SHORT).show();
-                        }
+            newUserBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (usersList.size() < 3) {
+                        setNewUserViews();
+                        validateNewUser.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                usernameNewUser = usernameInput.getEditableText().toString();
+                                if (!usernameNewUser.equals("") && !imageResInput.equals("")) {
+                                    dbHelper.writeUserssInDB(usernameNewUser, String.valueOf(imageResInput));
+                                    loadDashboard();
+                                } else if (usernameNewUser.equals("")) {
+                                    Toast.makeText(MainActivity.this, "Vous devez remplir un nom d'utilisateur!", Toast.LENGTH_SHORT).show();
+                                } else if (usernameNewUser.length() > 20) {
+                                    Toast.makeText(MainActivity.this, "Votre nom d'utilisateur est trop long, 20 caractères max autorisés!", Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(MainActivity.this, "Vous devez choisir une image!", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } else {
+                        Toast.makeText(MainActivity.this, "Nombre max d'utilisateurs atteint. Souhaitez-vous supprimer un utilisateur existant ?", Toast.LENGTH_SHORT).show();
                     }
-                });
-            }
-        });
+                }
+            });
     }
 
     private void loadDashboard() {
@@ -171,7 +177,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void loadRecyclerView() {
-        UserConnectionAdapter adapter = new UserConnectionAdapter(getApplicationContext(), usersList, imageResInput);
+        UserConnectionAdapter adapter = new UserConnectionAdapter(this, usersList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }

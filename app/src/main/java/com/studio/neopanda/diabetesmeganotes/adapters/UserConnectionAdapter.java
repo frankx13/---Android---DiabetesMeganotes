@@ -1,6 +1,7 @@
 package com.studio.neopanda.diabetesmeganotes.adapters;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,7 +11,8 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.squareup.picasso.Picasso;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.models.User;
 
@@ -20,12 +22,10 @@ public class UserConnectionAdapter extends RecyclerView.Adapter<UserConnectionAd
 
     private Context mContext;
     private List<User> mData;
-    private int imageSelection;
 
-    public UserConnectionAdapter(Context mContext, List<User> mData, int imageSelectionResource) {
+    public UserConnectionAdapter(Context mContext, List<User> mData) {
         this.mContext = mContext;
         this.mData = mData;
-        this.imageSelection = imageSelectionResource;
     }
 
     @NonNull
@@ -38,9 +38,9 @@ public class UserConnectionAdapter extends RecyclerView.Adapter<UserConnectionAd
 
     @Override
     public void onBindViewHolder(@NonNull UserConnectionAdapter.MyViewHolder holder, int position) {
-        Picasso.with(mContext)
-                .load(imageSelection)
-                .centerCrop()
+        Glide.with(mContext)
+                .load(Integer.parseInt(mData.get(position).getUserImg()))
+                .apply(RequestOptions.circleCropTransform())
                 .into(holder.userImg);
 
         holder.username.setText(mData.get(position).getUsername());
@@ -56,7 +56,7 @@ public class UserConnectionAdapter extends RecyclerView.Adapter<UserConnectionAd
         ImageView userImg;
         TextView username;
 
-         MyViewHolder(@NonNull View itemView) {
+        MyViewHolder(@NonNull View itemView) {
             super(itemView);
 
             userImg = itemView.findViewById(R.id.img_existing_user);
