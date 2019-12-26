@@ -10,16 +10,16 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.studio.neopanda.diabetesmeganotes.R;
-import com.studio.neopanda.diabetesmeganotes.models.Glycemy;
+import com.studio.neopanda.diabetesmeganotes.models.GlycemyBinder;
 
 import java.util.List;
 
 public class EntriesFragmentAdapter extends RecyclerView.Adapter<EntriesFragmentAdapter.MyViewHolder> {
 
-    private List<Glycemy> mData;
+    private List<GlycemyBinder> mData;
     private Context mContext;
 
-    public EntriesFragmentAdapter(Context context, List<Glycemy> mData) {
+    public EntriesFragmentAdapter(Context context, List<GlycemyBinder> mData) {
         this.mContext = context;
         this.mData = mData;
     }
@@ -35,8 +35,8 @@ public class EntriesFragmentAdapter extends RecyclerView.Adapter<EntriesFragment
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         holder.dateTV.setText("Date : " + mData.get(position).date);
-        holder.levelGlycemyTV.setText("Glycémie : " + mData.get(position).glycemyLevel);
-        holder.idDiary.setText("Analyse n° : " + mData.get(position).getIdEntry());
+        holder.levelGlycemyTV.setText("Glycémie : " + mData.get(position).glycemy);
+        holder.idDiary.setText("Analyse n° : " + mData.get(position).id);
     }
 
     @Override

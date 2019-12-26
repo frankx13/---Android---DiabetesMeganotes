@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.studio.neopanda.diabetesmeganotes.models.Alert;
 import com.studio.neopanda.diabetesmeganotes.models.CurrentUser;
-import com.studio.neopanda.diabetesmeganotes.models.Glycemy;
 import com.studio.neopanda.diabetesmeganotes.models.GlycemyBinder;
 import com.studio.neopanda.diabetesmeganotes.models.InsulinInjection;
 import com.studio.neopanda.diabetesmeganotes.models.Objective;
@@ -21,7 +20,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // DB version
-    private static final int DATABASE_VERSION = 4;
+    private static final int DATABASE_VERSION = 5;
     private static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CURRENT_USERS =
@@ -358,19 +357,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.insertOrThrow(SQliteDatabase.InsulinUnits.TABLE_NAME, null, values);
     }
 
-    public void writeGlycemyInDB(String date, String glycemy) {
-        // Gets the data repository in write mode
-        SQLiteDatabase db = getWritableDatabase();
-
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Glycemies.COLUMN_NAME_DATE, date);
-        values.put(SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY, glycemy);
-
-        // Insert the new row, returning the primary key value of the new row
-        db.insertOrThrow(SQliteDatabase.Glycemies.TABLE_NAME, null, values);
-    }
-
     //Checking if table is null
     public boolean isTableNotEmpty(String tableName) {
         SQLiteDatabase db = getWritableDatabase();
@@ -425,28 +411,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String insulinData = c.getString(insulinUnits);
 
             glycemiesList.add(new InsulinInjection(dateData, insulinData));
-        }
-
-        getReadableDatabase().close();
-        c.close();
-
-        return glycemiesList;
-    }
-
-    public List<Glycemy> getGlycemies() {
-        List<Glycemy> glycemiesList = new ArrayList<>();
-        SQLiteDatabase sQliteDatabase = getReadableDatabase();
-        String[] field = {SQliteDatabase.Glycemies.COLUMN_NAME_DATE, SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY};
-        Cursor c = sQliteDatabase.query(SQliteDatabase.Glycemies.TABLE_NAME, field, null, null, null, null, null);
-
-        int date = c.getColumnIndex(SQliteDatabase.Glycemies.COLUMN_NAME_DATE);
-        int level = c.getColumnIndex(SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY);
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            String dateData = c.getString(date);
-            String levelData = c.getString(level);
-
-            glycemiesList.add(new Glycemy(dateData, levelData));
         }
 
         getReadableDatabase().close();

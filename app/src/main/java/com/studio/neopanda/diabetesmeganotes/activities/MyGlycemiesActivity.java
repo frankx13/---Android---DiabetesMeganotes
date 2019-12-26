@@ -1,11 +1,7 @@
 package com.studio.neopanda.diabetesmeganotes.activities;
 
 import android.os.Bundle;
-import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.Slide;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.CalendarView;
 import android.widget.EditText;
@@ -86,6 +82,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         itemIds = new ArrayList<>();
+        userID = dbHelper.getActiveUserInDB().get(0).getUsername();
 
         Utils.backToDashboard(titleGlycemyScreen, this, MyGlycemiesActivity.this);
 
@@ -178,8 +175,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     }
 
     public void onClickViewEntriesBtn() {
-        boolean tableNotEmpty = dbHelper.isTableNotEmpty("Glycemies");
-        if (tableNotEmpty) {
+        if (dbHelper.getBindedGlycemyData(userID).size() > 0) {
             fragmentID = 1;
             EntriesDiaryFragment fragment = new EntriesDiaryFragment();
             journalContainer.setVisibility(View.VISIBLE);
@@ -223,11 +219,8 @@ public class MyGlycemiesActivity extends AppCompatActivity {
             if (newEntryGlycemyLevel.length() < 4) {
                 Toast.makeText(this, "Trop peu de nombres rentrés. Veuillez utiliser ce modèle et recommencer : x.xx", Toast.LENGTH_LONG).show();
             } else if (newEntryGlycemyLevel.length() == 4) {
-                userID = dbHelper.getActiveUserInDB().get(0).getUsername();
-                dbHelper.writeGlycemyInDB(newEntryGlycemyDate, newEntryGlycemyLevel);
-                dbHelper.bindGlycemyData(newEntryGlycemyLevel, newEntryGlycemyDate, "Glycemies", userID, "");
-                Toast.makeText(this, dbHelper.getBindedGlycemyData(userID).get(0).dataID, Toast.LENGTH_SHORT).show();
                 UIUtils.hideKeyboard(this);
+                dbHelper.bindGlycemyData(newEntryGlycemyLevel, newEntryGlycemyDate, "Glycemies", userID, "");
                 containerAddEntryPart.setVisibility(View.GONE);
             } else {
                 Toast.makeText(this, "Impossible d'ajouter cette entrée. Veuillez utiliser ce modèle et recommencer : x.xx", Toast.LENGTH_LONG).show();
