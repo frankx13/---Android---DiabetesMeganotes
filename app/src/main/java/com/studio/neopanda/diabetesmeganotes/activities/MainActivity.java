@@ -1,5 +1,7 @@
 package com.studio.neopanda.diabetesmeganotes.activities;
 
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -10,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,6 +20,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.adapters.UserConnectionAdapter;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
+import com.studio.neopanda.diabetesmeganotes.models.CurrentUser;
 import com.studio.neopanda.diabetesmeganotes.models.User;
 
 import java.util.ArrayList;
@@ -59,8 +63,11 @@ public class MainActivity extends AppCompatActivity {
 
     //DATA
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
-    private boolean isTableNotEmpty = true;
+    private boolean isUserTableEmpty = true;
+    private boolean isCurrentUserActive = true;
     private List<User> usersList;
+    private List<CurrentUser> currentUserList;
+    private String[] currentUserArray;
     private String imageResInput;
     private String usernameNewUser;
 
@@ -70,17 +77,31 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
+        currentUserList = new ArrayList<>();
+        checkIfCurrentUserExists();
+        currentUserArray = new String [] {"currentUserDefault"};
+        currentUserList = dbHelper.getActiveUserInDB();
+        if (!currentUserList.isEmpty()){
+            String currentUser = currentUserList.get(0).getUsername();
+            currentUserArray[0] = currentUser;
+            dbHelper.resetActiveUserInDB(currentUserArray);
+        }
+
         usersList = new ArrayList<>();
 
         checkIfUserExists();
         usersList = dbHelper.getUsers();
-        if (isTableNotEmpty) {
+        if (isUserTableEmpty) {
             containerExistingUser.setVisibility(View.VISIBLE);
             loadRecyclerView();
         }
 
         setImageListeners();
         onClickNewUser();
+    }
+
+    private void checkIfCurrentUserExists() {
+        isCurrentUserActive = dbHelper.isTableNotEmpty("CurrentUser");
     }
 
     private void setImageListeners() {
@@ -136,16 +157,21 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onClick(View v) {
                     if (usersList.size() < 3) {
+                        containerExistingUser.setVisibility(View.GONE);
                         setNewUserViews();
                         validateNewUser.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {
                                 usernameNewUser = usernameInput.getEditableText().toString();
                                 if (!usernameNewUser.equals("") && !imageResInput.equals("")) {
-                                    dbHelper.writeUserssInDB(usernameNewUser, String.valueOf(imageResInput));
-                                    loadDashboard();
+                                    dbHelper.writeUserssInDB(usernameNewUser, imageResInput);
+                                    usersList = dbHelper.getUsers();
+                                    setMenuViews();
+                                    containerExistingUser.setVisibility(View.VISIBLE);
+                                    loadRecyclerView();
+                                    Toast.makeText(MainActivity.this, "Utilisateur créé!", Toast.LENGTH_SHORT).show();
                                 } else if (usernameNewUser.equals("")) {
-                                    Toast.makeText(MainActivity.this, "Vous devez remplir un nom d'utilisateur!", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(MainActivity.this, "Vous devez choisir un nom d'utilisateur!", Toast.LENGTH_SHORT).show();
                                 } else if (usernameNewUser.length() > 20) {
                                     Toast.makeText(MainActivity.this, "Votre nom d'utilisateur est trop long, 20 caractères max autorisés!", Toast.LENGTH_SHORT).show();
                                 } else {
@@ -154,17 +180,29 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                     } else {
-                        Toast.makeText(MainActivity.this, "Nombre max d'utilisateurs atteint. Souhaitez-vous supprimer un utilisateur existant ?", Toast.LENGTH_SHORT).show();
+                        onCreateDialog();
                     }
                 }
             });
     }
 
-    private void loadDashboard() {
-        Intent intent = new Intent(this, DashboardActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
-        finish();
+    public void onCreateDialog() {
+        // Use the Builder class for convenient dialog construction
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.dialog_delete_existing_user)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        loopThroughRV();
+                    }
+                });
+        // Create the AlertDialog object and return it
+        builder.create().show();
+    }
+
+    private void loopThroughRV(){
+        for (int i = 0; i < recyclerView.getChildCount(); i++) {
+            recyclerView.getChildAt(i).findViewById(R.id.delete_user_btn).setVisibility(View.VISIBLE);
+        }
     }
 
     private void setNewUserViews() {
@@ -176,14 +214,23 @@ public class MainActivity extends AppCompatActivity {
         validateNewUser.setVisibility(View.VISIBLE);
     }
 
+    private void setMenuViews() {
+        newUserBtn.setVisibility(View.VISIBLE);
+        containerExistingUser.setVisibility(View.VISIBLE);
+        instructionsUsernameTv.setVisibility(View.GONE);
+        usernameInput.setVisibility(View.GONE);
+        containerImageSelections.setVisibility(View.GONE);
+        validateNewUser.setVisibility(View.GONE);
+    }
+
     private void loadRecyclerView() {
-        UserConnectionAdapter adapter = new UserConnectionAdapter(this, usersList);
+        UserConnectionAdapter adapter = new UserConnectionAdapter(this, this, usersList);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void checkIfUserExists() {
-        isTableNotEmpty = dbHelper.isTableNotEmpty("Users");
+        isUserTableEmpty = dbHelper.isTableNotEmpty("Users");
     }
 
     //Close database connection onDestroy

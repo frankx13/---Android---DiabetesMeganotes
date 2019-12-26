@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">DiabetesMeganotes</string>
     <string name="diabetes_meganotes">Diabetes Meganotes</string>
     <string name="text_dont_let_it_waste">Reprenez votre vie en main !</string>
@@ -76,11 +76,16 @@
     <string name="terminate">Terminer</string>
     <string name="add_entry_alert">Ajouter une alerte</string>
     <string name="see_all_alerts">Voir toutes les alertes</string>
-    <string name="title_existing_user_auth">Etes-vous...</string>
+    <string name="title_existing_user_auth">Etes-vous…</string>
     <string name="username_prototype">username</string>
     <string name="title_new_user_auth">Nouvel utilisateur</string>
     <string name="instructions_create_username">Choisissez un nom d\'utilisateur</string>
     <string name="instructions_create_avatar">Choisissez un avatar</string>
     <string name="create_user_validation_text">Créer utilisateur</string>
     <string name="hint_create_username">Écrire ici (20 caractères. max)</string>
+    <string name="no">Non</string>
+    <string name="yes">Oui</string>
+    <string name="dialog_delete_existing_user" tools:ignore="Typos">Nombre max d\'utilisateurs atteint (3). Supprimez un utilisateur pour en créer un autre.</string>
+    <string name="dialog_delete_existing_user_confirmation">Etes-vous sûr de vouloir supprimer %1$s ?</string>
+    <string name="ok">OK</string>
 </resources>

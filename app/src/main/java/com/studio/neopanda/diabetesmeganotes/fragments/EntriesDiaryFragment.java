@@ -20,10 +20,12 @@ import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.adapters.EntriesFragmentAdapter;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
 import com.studio.neopanda.diabetesmeganotes.models.Glycemy;
+import com.studio.neopanda.diabetesmeganotes.models.GlycemyBinder;
 import com.studio.neopanda.diabetesmeganotes.utils.AverageGlycemyUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 public class EntriesDiaryFragment extends Fragment {
@@ -33,9 +35,11 @@ public class EntriesDiaryFragment extends Fragment {
     private TextView averageGlycemyLevel;
 
     private List<Glycemy> glycemies;
+    private List<GlycemyBinder> glycemyBinder;
     private DatabaseHelper dbHelper = null;
     private int idEntry = 0;
     private List<Double> glycemyLevels;
+    private String userId = "";
 
     public EntriesDiaryFragment() {
         // Required empty public constructor
@@ -64,6 +68,9 @@ public class EntriesDiaryFragment extends Fragment {
         containerDiary = getActivity().findViewById(R.id.container_diary_journal);
         glycemies = new ArrayList<>();
         glycemyLevels = new ArrayList<>();
+        glycemyBinder = new ArrayList<>();
+
+        userId = dbHelper.getActiveUserInDB().get(0).getUsername();
 
         glycemies = dbHelper.getGlycemies();
 
@@ -72,10 +79,33 @@ public class EntriesDiaryFragment extends Fragment {
             addingIds();
             loadingTextViewAverage();
             antiUIBreakthrough();
+            filteringWithUsername();
             onLoadRecyclerView();
         } else {
             Toast.makeText(getActivity(), "Aucune entrée trouvée, essayez d'en ajouter !", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void filteringWithUsername() {
+        for (Glycemy g : glycemies) {
+            glycemyBinder.add(new GlycemyBinder(g.glycemyLevel, g.date));
+        }
+
+        if (!glycemyBinder.isEmpty()) {
+            for (Iterator<GlycemyBinder> glyBinderIterator = glycemyBinder.iterator(); glyBinderIterator.hasNext(); ) {
+                // Get next item.
+                GlycemyBinder glyBinder = glyBinderIterator.next();
+                // If current item title is not from the current user, remove that entry from list.
+                if (!userId.equalsIgnoreCase(glyBinder.getDataID())) {
+                    glyBinderIterator.remove();
+                } else {
+                    // Output current glycemy.
+                    Log.e("ITERATORBUG", "filteringWithUsername: " + glyBinder);
+                }
+            }
+        }
+
+        Log.e("ENDITARATIONLOG", "EEEEND ! : " + glycemyBinder);
     }
 
     private void antiUIBreakthrough() {
@@ -128,7 +158,6 @@ public class EntriesDiaryFragment extends Fragment {
 
     private void onLoadRecyclerView() {
         Toast.makeText(getActivity(), "Aucune entrée présente, essayez d'en ajouter!", Toast.LENGTH_SHORT).show();
-        Log.e("LOADINGRV", "onClickViewEntriesBtn: " + glycemies + "firstItem" + glycemies.get(0).getDate());
         EntriesFragmentAdapter adapter = new EntriesFragmentAdapter(getContext(), glycemies);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));

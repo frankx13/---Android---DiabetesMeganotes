@@ -77,6 +77,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     private String newEntryGlycemyLevel;
     private String newInsulinUnits;
     private int fragmentID = 0;
+    private String userID = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -222,8 +223,10 @@ public class MyGlycemiesActivity extends AppCompatActivity {
             if (newEntryGlycemyLevel.length() < 4) {
                 Toast.makeText(this, "Trop peu de nombres rentrés. Veuillez utiliser ce modèle et recommencer : x.xx", Toast.LENGTH_LONG).show();
             } else if (newEntryGlycemyLevel.length() == 4) {
+                userID = dbHelper.getActiveUserInDB().get(0).getUsername();
                 dbHelper.writeGlycemyInDB(newEntryGlycemyDate, newEntryGlycemyLevel);
-                Toast.makeText(this, "L'entrée a bien été enregistrée !", Toast.LENGTH_SHORT).show();
+                dbHelper.bindGlycemyData(newEntryGlycemyLevel, newEntryGlycemyDate, "Glycemies", userID, "");
+                Toast.makeText(this, dbHelper.getBindedGlycemyData(userID).get(0).dataID, Toast.LENGTH_SHORT).show();
                 UIUtils.hideKeyboard(this);
                 containerAddEntryPart.setVisibility(View.GONE);
             } else {

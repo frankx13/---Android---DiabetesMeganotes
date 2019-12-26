@@ -1,6 +1,5 @@
 package com.studio.neopanda.diabetesmeganotes.activities;
 
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
@@ -9,14 +8,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
-import android.transition.ChangeBounds;
-import android.transition.ChangeTransform;
-import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.Slide;
-import android.transition.Transition;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -28,6 +20,7 @@ import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
 import com.studio.neopanda.diabetesmeganotes.utils.AverageGlycemyUtils;
 import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
+import com.studio.neopanda.diabetesmeganotes.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +33,8 @@ public class DashboardActivity extends AppCompatActivity {
     //UI
     @BindView(R.id.my_glycemy_diary_btn)
     public Button toGlycemiesBtn;
+    @BindView(R.id.title_app_TV)
+    public TextView titleDashboard;
     @BindView(R.id.fast_stats_60d_TV)
     public TextView statsSixtyDays;
     @BindView(R.id.fast_stats_30d_TV)
@@ -56,6 +51,8 @@ public class DashboardActivity extends AppCompatActivity {
     public Button fastNoteBtn;
     @BindView(R.id.my_objectives_btn)
     public Button objectivesBtn;
+    @BindView(R.id.my_infos_btn)
+    public Button infosBtn;
     @BindView(R.id.my_alerts_btn)
     public Button alertsBtn;
 
@@ -76,6 +73,10 @@ public class DashboardActivity extends AppCompatActivity {
         setContentView(R.layout.activity_dashboard);
 
         ButterKnife.bind(this);
+        welcomeUser();
+
+        Utils.logoutUser(titleDashboard, this, DashboardActivity.this);
+
         listDates = new ArrayList<>();
         listGlycemies = new ArrayList<>();
         listGlycemiesDouble = new ArrayList<>();
@@ -85,7 +86,6 @@ public class DashboardActivity extends AppCompatActivity {
                     ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
             startActivity(intent);
             overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
-//            finish();
         });
 
         objectivesBtn.setOnClickListener(new View.OnClickListener() {
@@ -96,7 +96,6 @@ public class DashboardActivity extends AppCompatActivity {
                         ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
                 startActivity(intent);
                 overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
-//                finish();
             }
         });
 
@@ -108,13 +107,29 @@ public class DashboardActivity extends AppCompatActivity {
                         ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
                 startActivity(intent);
                 overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
-//                finish();
             }
         });
 
+        infosBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO V2.0 Release this feature in the next update
+//                Intent intent = new Intent(getApplicationContext(), InformationsActivity.class);
+//                startActivity(intent,
+//                        ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
+//                startActivity(intent);
+//                overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
+                Toast.makeText(DashboardActivity.this, "Available in the next update !", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         loadAverageStats(0);
         loadNotes();
+    }
+
+    private void welcomeUser() {
+        String username = dbHelper.getActiveUserInDB().get(0).getUsername();
+        Toast.makeText(this, "Salut " + username + " !", Toast.LENGTH_SHORT).show();
     }
 
     private void loadNotes() {
@@ -169,7 +184,7 @@ public class DashboardActivity extends AppCompatActivity {
 
         listDates = dbHelper.getGlycemiesInTimePeriod(todayDate, targetDate);
 
-        if (listDates!=null && !listDates.isEmpty()) {
+        if (listDates != null && !listDates.isEmpty()) {
             listGlycemies = dbHelper.getAverageGlycemies(todayDate, targetDate);
             for (String s : listGlycemies) {
                 listGlycemiesDouble.add(Double.valueOf(s));

@@ -6,10 +6,12 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.studio.neopanda.diabetesmeganotes.models.Alert;
+import com.studio.neopanda.diabetesmeganotes.models.CurrentUser;
 import com.studio.neopanda.diabetesmeganotes.models.Glycemy;
+import com.studio.neopanda.diabetesmeganotes.models.GlycemyBinder;
 import com.studio.neopanda.diabetesmeganotes.models.InsulinInjection;
 import com.studio.neopanda.diabetesmeganotes.models.Objective;
-import com.studio.neopanda.diabetesmeganotes.models.Alert;
 import com.studio.neopanda.diabetesmeganotes.models.User;
 import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
 
@@ -18,22 +20,54 @@ import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
-    // If you change the database schema, you must increment the database version.
-    private static final int DATABASE_VERSION = 17;
+    // DB version
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "MeganotesReader.db";
+
+    private static final String SQL_CREATE_ENTRIES_CURRENT_USERS =
+            "CREATE TABLE " + SQliteDatabase.CurrentUser.TABLE_NAME + " (" +
+                    SQliteDatabase.CurrentUser._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    SQliteDatabase.CurrentUser.COLUMN_NAME_USERNAME + " TEXT," +
+                    SQliteDatabase.CurrentUser.COLUMN_NAME_IMAGE_SELECTED + " INTEGER)";
+
+    private static final String SQL_DELETE_ENTRIES_CURRENT_USERS =
+            "DROP TABLE IF EXISTS " + SQliteDatabase.CurrentUser.TABLE_NAME;
+
+    private static final String SQL_CREATE_ENTRIES_GLYCEMYBINDER =
+            "CREATE TABLE " + DataBinder.DataGlycemies.TABLE_NAME + " (" +
+                    DataBinder.DataGlycemies._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    DataBinder.DataGlycemies.COLUMN_NAME_GLYCEMY + " TEXT," +
+                    DataBinder.DataGlycemies.COLUMN_NAME_DATE + " TEXT," +
+                    DataBinder.DataGlycemies.COLUMN_NAME_EXTRA_INFOS + " TEXT," +
+                    DataBinder.DataGlycemies.TABLE_TO_STOCK + " TEXT," +
+                    DataBinder.DataGlycemies.COLUMN_NAME_DATA_ID + " TEXT)";
+
+    private static final String SQL_DELETE_ENTRIES_GLYCEMYBINDER =
+            "DROP TABLE IF EXISTS " +  DataBinder.DataGlycemies.TABLE_NAME;
 
     private static final String SQL_CREATE_ENTRIES_USERS =
             "CREATE TABLE " + SQliteDatabase.Users.TABLE_NAME + " (" +
-                    SQliteDatabase.Users._ID + " INTEGER PRIMARY KEY," +
+                    SQliteDatabase.Users._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     SQliteDatabase.Users.COLUMN_NAME_USERNAME + " TEXT," +
-                    SQliteDatabase.Users.COLUMN_NAME_IMAGE_SELECTED + " INTEGER)";
+                    SQliteDatabase.Users.COLUMN_NAME_IMAGE_SELECTED + " INTEGER," +
+                    SQliteDatabase.Users.COLUMN_NAME_GLYCEMIES_ID + " INTEGER," +
+                    SQliteDatabase.Users.COLUMN_NAME_INSULIN_ID + " INTEGER," +
+                    SQliteDatabase.Users.COLUMN_NAME_NOTE_ID + " INTEGER," +
+                    SQliteDatabase.Users.COLUMN_NAME_OBJECTIVES_ID + " INTEGER," +
+                    SQliteDatabase.Users.COLUMN_NAME_ALERTS_ID + " INTEGER," +
+                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_GLYCEMIES_ID + ") REFERENCES " + SQliteDatabase.InsulinUnits._ID + " ," +
+                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_INSULIN_ID + ") REFERENCES " + SQliteDatabase.InsulinUnits._ID + " ," +
+                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_NOTE_ID + ") REFERENCES " + SQliteDatabase.Note._ID + " ," +
+                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_OBJECTIVES_ID + ") REFERENCES " + SQliteDatabase.Objectives._ID + " ," +
+                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_ALERTS_ID + ") REFERENCES " + SQliteDatabase.Glycemies._ID + ")";
 
     private static final String SQL_DELETE_ENTRIES_USERS =
             "DROP TABLE IF EXISTS " + SQliteDatabase.Users.TABLE_NAME;
 
+
     private static final String SQL_CREATE_ENTRIES_GLYCEMIES =
             "CREATE TABLE " + SQliteDatabase.Glycemies.TABLE_NAME + " (" +
-                    SQliteDatabase.Glycemies._ID + " INTEGER PRIMARY KEY," +
+                    SQliteDatabase.Glycemies._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY + " TEXT," +
                     SQliteDatabase.Glycemies.COLUMN_NAME_EXTRA_INFOS + " TEXT," +
                     SQliteDatabase.Glycemies.COLUMN_NAME_DATE + " TEXT)";
@@ -43,7 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES_INSULIN =
             "CREATE TABLE " + SQliteDatabase.InsulinUnits.TABLE_NAME + " (" +
-                    SQliteDatabase.InsulinUnits._ID + " INTEGER PRIMARY KEY," +
+                    SQliteDatabase.InsulinUnits._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     SQliteDatabase.InsulinUnits.COLUMN_NAME_UNITS + " INTEGER," +
                     SQliteDatabase.InsulinUnits.COLUMN_NAME_EXTRA_INFOS + " TEXT," +
                     SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE + " TEXT)";
@@ -53,7 +87,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES_NOTE =
             "CREATE TABLE " + SQliteDatabase.Note.TABLE_NAME + " (" +
-                    SQliteDatabase.Note._ID + " INTEGER PRIMARY KEY," +
+                    SQliteDatabase.Note._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     SQliteDatabase.Note.COLUMN_NAME_TEXT + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES_NOTE =
@@ -61,7 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES_OBJECTIVES =
             "CREATE TABLE " + SQliteDatabase.Objectives.TABLE_NAME + " (" +
-                    SQliteDatabase.Objectives._ID + " INTEGER PRIMARY KEY," +
+                    SQliteDatabase.Objectives._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     SQliteDatabase.Objectives.COLUMN_NAME_DESCRIPTION + " TEXT," +
                     SQliteDatabase.Objectives.COLUMN_NAME_DURATION + " INTEGER," +
                     SQliteDatabase.Objectives.COLUMN_NAME_TYPE + " TEXT," +
@@ -72,7 +106,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String SQL_CREATE_ENTRIES_ALERTS =
             "CREATE TABLE " + SQliteDatabase.Alerts.TABLE_NAME + " (" +
-                    SQliteDatabase.Alerts._ID + " INTEGER PRIMARY KEY," +
+                    SQliteDatabase.Alerts._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
                     SQliteDatabase.Alerts.COLUMN_NAME_START_DATE + " TEXT," +
                     SQliteDatabase.Alerts.COLUMN_NAME_END_DATE + " TEXT," +
                     SQliteDatabase.Alerts.COLUMN_NAME_NAME + " TEXT," +
@@ -93,6 +127,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_ENTRIES_NOTE);
         db.execSQL(SQL_CREATE_ENTRIES_OBJECTIVES);
         db.execSQL(SQL_CREATE_ENTRIES_ALERTS);
+        db.execSQL(SQL_CREATE_ENTRIES_CURRENT_USERS);
+        db.execSQL(SQL_CREATE_ENTRIES_GLYCEMYBINDER);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -104,7 +140,95 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_DELETE_ENTRIES_NOTE);
         db.execSQL(SQL_DELETE_ENTRIES_OBJECTIVES);
         db.execSQL(SQL_DELETE_ENTRIES_ALERTS);
+        db.execSQL(SQL_DELETE_ENTRIES_CURRENT_USERS);
+        db.execSQL(SQL_DELETE_ENTRIES_GLYCEMYBINDER);
         onCreate(db);
+    }
+
+    public void writeActiveUserInDB(String username, String imgSelection) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(SQliteDatabase.CurrentUser.COLUMN_NAME_USERNAME, username);
+        values.put(SQliteDatabase.CurrentUser.COLUMN_NAME_IMAGE_SELECTED, imgSelection);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insert(SQliteDatabase.CurrentUser.TABLE_NAME, null, values);
+    }
+
+    public void bindGlycemyData(String glycemy, String date, String tableToStock,
+                                String userID, String extras){
+        // Gets the data repository in write mode
+        SQLiteDatabase db = getWritableDatabase();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(DataBinder.DataGlycemies.COLUMN_NAME_GLYCEMY, glycemy);
+        values.put(DataBinder.DataGlycemies.COLUMN_NAME_DATE, date);
+        values.put(DataBinder.DataGlycemies.TABLE_TO_STOCK, tableToStock);
+        values.put(DataBinder.DataGlycemies.COLUMN_NAME_DATA_ID, userID);
+        values.put(DataBinder.DataGlycemies.COLUMN_NAME_EXTRA_INFOS, extras);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insert(DataBinder.DataGlycemies.TABLE_NAME, null, values);
+    }
+
+    public List<GlycemyBinder> getBindedGlycemyData(String dataID) {
+        List<GlycemyBinder> usersList = new ArrayList<>();
+        SQLiteDatabase sQliteDatabase = getReadableDatabase();
+        String[] field = {DataBinder.DataGlycemies.COLUMN_NAME_GLYCEMY, DataBinder.DataGlycemies.COLUMN_NAME_DATE, DataBinder.DataGlycemies.COLUMN_NAME_DATA_ID};
+        Cursor c = sQliteDatabase.query(DataBinder.DataGlycemies.TABLE_NAME, field, null, null, null, null, null);
+
+        int level = c.getColumnIndex(DataBinder.DataGlycemies.COLUMN_NAME_GLYCEMY);
+        int date = c.getColumnIndex(DataBinder.DataGlycemies.COLUMN_NAME_DATE);
+        int dataId = c.getColumnIndex(DataBinder.DataGlycemies.COLUMN_NAME_DATA_ID);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            String levelData = c.getString(date);
+            String dateData = c.getString(level);
+            String dIdData = c.getString(dataId);
+
+            if (dIdData.equals(dataID)){
+                usersList.add(new GlycemyBinder(dateData, levelData, dIdData));
+            }
+        }
+
+        getReadableDatabase().close();
+        c.close();
+
+        return usersList;
+    }
+
+    public void resetActiveUserInDB(String[] selectionArgs) {
+        SQLiteDatabase db = getReadableDatabase();
+        // Define 'where' part of query.
+        String selection = SQliteDatabase.CurrentUser.COLUMN_NAME_USERNAME + " LIKE ?";
+        // Issue SQL statement => indicate the numbers of rows deleted
+        db.delete(SQliteDatabase.CurrentUser.TABLE_NAME, selection, selectionArgs);
+    }
+
+    public List<CurrentUser> getActiveUserInDB() {
+        List<CurrentUser> usersList = new ArrayList<>();
+        SQLiteDatabase sQliteDatabase = getReadableDatabase();
+        String[] field = {SQliteDatabase.CurrentUser.COLUMN_NAME_USERNAME, SQliteDatabase.CurrentUser.COLUMN_NAME_IMAGE_SELECTED};
+        Cursor c = sQliteDatabase.query(SQliteDatabase.CurrentUser.TABLE_NAME, field, null, null, null, null, null);
+
+        int username = c.getColumnIndex(SQliteDatabase.CurrentUser.COLUMN_NAME_USERNAME);
+        int img = c.getColumnIndex(SQliteDatabase.CurrentUser.COLUMN_NAME_IMAGE_SELECTED);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            String dateData = c.getString(username);
+            String levelData = c.getString(img);
+
+            usersList.add(new CurrentUser(dateData, levelData));
+        }
+
+        getReadableDatabase().close();
+        c.close();
+
+        return usersList;
     }
 
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
@@ -208,10 +332,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int img = c.getColumnIndex(SQliteDatabase.Users.COLUMN_NAME_IMAGE_SELECTED);
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            String dateData = c.getString(username);
-            String levelData = c.getString(img);
+            String usernameData = c.getString(username);
+            String imgData = c.getString(img);
 
-            usersList.add(new User(dateData, levelData));
+            usersList.add(new User(usernameData, imgData));
         }
 
         getReadableDatabase().close();
@@ -259,12 +383,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return icount > 0;
     }
 
-    public void deleteAuthInDB() {
+    public void deleteUserInDB(String[] selectionArgs) {
         SQLiteDatabase db = getReadableDatabase();
         // Define 'where' part of query.
         String selection = SQliteDatabase.Users.COLUMN_NAME_USERNAME + " LIKE ?";
-        // Specify arguments in placeholder order.
-        String[] selectionArgs = {"Josef"};
         // Issue SQL statement => indicate the numbers of rows deleted
         int deletedRows = db.delete(SQliteDatabase.Users.TABLE_NAME, selection, selectionArgs);
     }
