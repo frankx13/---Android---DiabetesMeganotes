@@ -123,7 +123,8 @@ public class DashboardActivity extends AppCompatActivity {
             }
         });
 
-        loadAverageStats(0);
+        //TODO fix the method with GlycemyBinder table
+//        loadAverageStats(0);
         loadNotes();
     }
 
@@ -164,51 +165,54 @@ public class DashboardActivity extends AppCompatActivity {
         });
     }
 
-    private void loadAverageStats(int statTurn) {
-        todayDate = DateUtils.calculateDateOfToday();
+    //TODO Fix method with databinder
+//    private void loadAverageStats(int statTurn) {
+//        todayDate = DateUtils.calculateDateOfToday();
+//
+//        switch (statsTurns) {
+//            case 0:
+//                targetDate = DateUtils.calculateDateFromToday(7);
+//                break;
+//            case 1:
+//                targetDate = DateUtils.calculateDateFromToday(15);
+//                break;
+//            case 2:
+//                targetDate = DateUtils.calculateDateFromToday(30);
+//                break;
+//            case 3:
+//                targetDate = DateUtils.calculateDateFromToday(60);
+//                break;
+//        }
 
-        switch (statsTurns) {
-            case 0:
-                targetDate = DateUtils.calculateDateFromToday(7);
-                break;
-            case 1:
-                targetDate = DateUtils.calculateDateFromToday(15);
-                break;
-            case 2:
-                targetDate = DateUtils.calculateDateFromToday(30);
-                break;
-            case 3:
-                targetDate = DateUtils.calculateDateFromToday(60);
-                break;
-        }
+        //TODO replace the Helper code with the Glycemies from DataBinder
+//        listDates = dbHelper.getGlycemiesInTimePeriod(todayDate, targetDate);
+//
+//        if (listDates != null && !listDates.isEmpty()) {
+//            listGlycemies = dbHelper.getAverageGlycemies(todayDate, targetDate);
+//            for (String s : listGlycemies) {
+//                listGlycemiesDouble.add(Double.valueOf(s));
+//            }
+//
+//            double averageGlycemyLevel = AverageGlycemyUtils.calculateAverageGlycemyAllResults(listGlycemiesDouble);
+//            if (averageGlycemyLevel < 0.80 || averageGlycemyLevel > 2.50) {
+//                glycemyColor = 3;
+//            } else if (averageGlycemyLevel > 1.80) {
+//                glycemyColor = 2;
+//            } else if (averageGlycemyLevel > 1.40) {
+//                glycemyColor = 1;
+//            } else {
+//                glycemyColor = 0;
+//            }
+//            paintAverageChars(averageGlycemyLevel, glycemyColor);
+//        } else {
+//            statsSixtyDays.setText(getResources().getString(R.string.not_enough_entries));
+//            statsThirtyDays.setText("");
+//            statsFifteenDays.setText("");
+//            statsSevenDays.setText("");
+//        }
+//    }
 
-        listDates = dbHelper.getGlycemiesInTimePeriod(todayDate, targetDate);
-
-        if (listDates != null && !listDates.isEmpty()) {
-            listGlycemies = dbHelper.getAverageGlycemies(todayDate, targetDate);
-            for (String s : listGlycemies) {
-                listGlycemiesDouble.add(Double.valueOf(s));
-            }
-
-            double averageGlycemyLevel = AverageGlycemyUtils.calculateAverageGlycemyAllResults(listGlycemiesDouble);
-            if (averageGlycemyLevel < 0.80 || averageGlycemyLevel > 2.50) {
-                glycemyColor = 3;
-            } else if (averageGlycemyLevel > 1.80) {
-                glycemyColor = 2;
-            } else if (averageGlycemyLevel > 1.40) {
-                glycemyColor = 1;
-            } else {
-                glycemyColor = 0;
-            }
-            paintAverageChars(averageGlycemyLevel, glycemyColor);
-        } else {
-            statsSixtyDays.setText(getResources().getString(R.string.not_enough_entries));
-            statsThirtyDays.setText("");
-            statsFifteenDays.setText("");
-            statsSevenDays.setText("");
-        }
-    }
-
+    //TODO fix loadAverageStats method
     private void paintAverageChars(double averageGlycemyLevel, int color) {
         String preText = "";
 
@@ -278,7 +282,8 @@ public class DashboardActivity extends AppCompatActivity {
 
         if (statsTurns <= 2) {
             statsTurns += 1;
-            loadAverageStats(statsTurns);
+            //TODO fix the method with DataBinder
+//            loadAverageStats(statsTurns);
         }
     }
 

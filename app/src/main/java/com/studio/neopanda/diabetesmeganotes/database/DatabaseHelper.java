@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import com.studio.neopanda.diabetesmeganotes.models.Alert;
 import com.studio.neopanda.diabetesmeganotes.models.CurrentUser;
 import com.studio.neopanda.diabetesmeganotes.models.GlycemyBinder;
-import com.studio.neopanda.diabetesmeganotes.models.InsulinInjection;
+import com.studio.neopanda.diabetesmeganotes.models.InsulinBinder;
 import com.studio.neopanda.diabetesmeganotes.models.Objective;
 import com.studio.neopanda.diabetesmeganotes.models.User;
 import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
@@ -20,7 +20,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // DB version
-    private static final int DATABASE_VERSION = 5;
+    private static final int DATABASE_VERSION = 8;
     private static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CURRENT_USERS =
@@ -32,6 +32,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES_CURRENT_USERS =
             "DROP TABLE IF EXISTS " + SQliteDatabase.CurrentUser.TABLE_NAME;
 
+    private static final String SQL_CREATE_ENTRIES_INSULINBINDER =
+            "CREATE TABLE " + DataBinder.DataInsulin.TABLE_NAME + " (" +
+                    DataBinder.DataInsulin._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    DataBinder.DataInsulin.COLUMN_NAME_DATE + " TEXT," +
+                    DataBinder.DataInsulin.COLUMN_NAME_UNITS + " INTEGER," +
+                    DataBinder.DataInsulin.COLUMN_NAME_DATA_ID + " TEXT)";
+
+    private static final String SQL_DELETE_ENTRIES_INSULINBINDER =
+            "DROP TABLE IF EXISTS " + DataBinder.DataInsulin.TABLE_NAME;
+
     private static final String SQL_CREATE_ENTRIES_GLYCEMYBINDER =
             "CREATE TABLE " + DataBinder.DataGlycemies.TABLE_NAME + " (" +
                     DataBinder.DataGlycemies._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
@@ -42,7 +52,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     DataBinder.DataGlycemies.COLUMN_NAME_DATA_ID + " TEXT)";
 
     private static final String SQL_DELETE_ENTRIES_GLYCEMYBINDER =
-            "DROP TABLE IF EXISTS " +  DataBinder.DataGlycemies.TABLE_NAME;
+            "DROP TABLE IF EXISTS " + DataBinder.DataGlycemies.TABLE_NAME;
 
     private static final String SQL_CREATE_ENTRIES_USERS =
             "CREATE TABLE " + SQliteDatabase.Users.TABLE_NAME + " (" +
@@ -62,17 +72,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String SQL_DELETE_ENTRIES_USERS =
             "DROP TABLE IF EXISTS " + SQliteDatabase.Users.TABLE_NAME;
-
-
-    private static final String SQL_CREATE_ENTRIES_GLYCEMIES =
-            "CREATE TABLE " + SQliteDatabase.Glycemies.TABLE_NAME + " (" +
-                    SQliteDatabase.Glycemies._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    SQliteDatabase.Glycemies.COLUMN_NAME_GLYCEMY + " TEXT," +
-                    SQliteDatabase.Glycemies.COLUMN_NAME_EXTRA_INFOS + " TEXT," +
-                    SQliteDatabase.Glycemies.COLUMN_NAME_DATE + " TEXT)";
-
-    private static final String SQL_DELETE_ENTRIES_GLYCEMIES =
-            "DROP TABLE IF EXISTS " + SQliteDatabase.Glycemies.TABLE_NAME;
 
     private static final String SQL_CREATE_ENTRIES_INSULIN =
             "CREATE TABLE " + SQliteDatabase.InsulinUnits.TABLE_NAME + " (" +
@@ -121,26 +120,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES_USERS);
-        db.execSQL(SQL_CREATE_ENTRIES_GLYCEMIES);
         db.execSQL(SQL_CREATE_ENTRIES_INSULIN);
         db.execSQL(SQL_CREATE_ENTRIES_NOTE);
         db.execSQL(SQL_CREATE_ENTRIES_OBJECTIVES);
         db.execSQL(SQL_CREATE_ENTRIES_ALERTS);
         db.execSQL(SQL_CREATE_ENTRIES_CURRENT_USERS);
         db.execSQL(SQL_CREATE_ENTRIES_GLYCEMYBINDER);
+        db.execSQL(SQL_CREATE_ENTRIES_INSULINBINDER);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_ENTRIES_USERS);
-        db.execSQL(SQL_DELETE_ENTRIES_GLYCEMIES);
         db.execSQL(SQL_DELETE_ENTRIES_INSULIN);
         db.execSQL(SQL_DELETE_ENTRIES_NOTE);
         db.execSQL(SQL_DELETE_ENTRIES_OBJECTIVES);
         db.execSQL(SQL_DELETE_ENTRIES_ALERTS);
         db.execSQL(SQL_DELETE_ENTRIES_CURRENT_USERS);
         db.execSQL(SQL_DELETE_ENTRIES_GLYCEMYBINDER);
+        db.execSQL(SQL_DELETE_ENTRIES_INSULINBINDER);
         onCreate(db);
     }
 
@@ -158,7 +157,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void bindGlycemyData(String glycemy, String date, String tableToStock,
-                                String userID, String extras){
+                                String userID, String extras) {
         // Gets the data repository in write mode
         SQLiteDatabase db = getWritableDatabase();
 
@@ -173,6 +172,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // Insert the new row, returning the primary key value of the new row
         db.insert(DataBinder.DataGlycemies.TABLE_NAME, null, values);
     }
+
 
     public List<GlycemyBinder> getBindedGlycemyData(String dataID) {
         List<GlycemyBinder> usersList = new ArrayList<>();
@@ -189,7 +189,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String dateData = c.getString(level);
             String dIdData = c.getString(dataId);
 
-            if (dIdData.equals(dataID)){
+            if (dIdData.equals(dataID)) {
                 usersList.add(new GlycemyBinder(dateData, levelData, dIdData));
             }
         }
@@ -198,6 +198,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.close();
 
         return usersList;
+    }
+
+    public void bindInsulinData(String units, String userId) {
+        // Gets the data repository in write mode
+        SQLiteDatabase db = getWritableDatabase();
+        String todayDate = DateUtils.calculateDateOfToday();
+
+        // Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(DataBinder.DataInsulin.COLUMN_NAME_DATE, todayDate);
+        values.put(DataBinder.DataInsulin.COLUMN_NAME_UNITS, units);
+        values.put(DataBinder.DataInsulin.COLUMN_NAME_DATA_ID, userId);
+
+        // Insert the new row, returning the primary key value of the new row
+        db.insertOrThrow(DataBinder.DataInsulin.TABLE_NAME, null, values);
+    }
+
+    public List<InsulinBinder> getBindedInsulinData(String dataID) {
+        List<InsulinBinder> injectionsList = new ArrayList<>();
+        SQLiteDatabase sQliteDatabase = getReadableDatabase();
+        String[] field = {
+                DataBinder.DataInsulin.COLUMN_NAME_DATE,
+                DataBinder.DataInsulin.COLUMN_NAME_UNITS,
+                DataBinder.DataInsulin.COLUMN_NAME_DATA_ID};
+        Cursor c = sQliteDatabase.query(DataBinder.DataInsulin.TABLE_NAME, field, null, null, null, null, null);
+
+        int date = c.getColumnIndex(DataBinder.DataInsulin.COLUMN_NAME_DATE);
+        int insulinUnits = c.getColumnIndex(DataBinder.DataInsulin.COLUMN_NAME_UNITS);
+        int userId = c.getColumnIndex(DataBinder.DataInsulin.COLUMN_NAME_DATA_ID);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            String dateData = c.getString(date);
+            String insulinData = c.getString(insulinUnits);
+            String dataIdData = c.getString(userId);
+
+            if (dataIdData.equals(dataID)) {
+                injectionsList.add(new InsulinBinder(dateData, insulinData, dataIdData));
+            }
+        }
+
+        getWritableDatabase().close();
+        c.close();
+
+        return injectionsList;
     }
 
     public void resetActiveUserInDB(String[] selectionArgs) {
@@ -234,51 +278,53 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public List<String> getGlycemiesInTimePeriod(String today, String target) {
-        List<String> text = new ArrayList<>();
-        String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
-        SQLiteDatabase db = this.getReadableDatabase();
+    //TODO replace the method with the Glycemies data from DataBinder
+//    public List<String> getGlycemiesInTimePeriod(String today, String target) {
+//        List<String> text = new ArrayList<>();
+//        String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        try {
+//            Cursor cursor = db.rawQuery(selectQuery, null);
+//            if (cursor != null && cursor.getCount() > 0) {
+//                cursor.moveToFirst();
+//                do {
+//                    text.add(cursor.getString(3));
+//                }
+//                while (cursor.moveToNext());
+//            } else
+//                return null;
+//            db.close();
+//            cursor.close();
+//        } catch (Exception e) {
+//            System.out.println("Exception throw in SQLiteDBHandler" + e);
+//        }
+//        return text;
+//    }
 
-        try {
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor != null && cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    text.add(cursor.getString(3));
-                }
-                while (cursor.moveToNext());
-            } else
-                return null;
-            db.close();
-            cursor.close();
-        } catch (Exception e) {
-            System.out.println("Exception throw in SQLiteDBHandler" + e);
-        }
-        return text;
-    }
-
-    public List<String> getAverageGlycemies(String today, String target) {
-        List<String> text = new ArrayList<>();
-        String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        try {
-            Cursor cursor = db.rawQuery(selectQuery, null);
-            if (cursor != null && cursor.getCount() > 0) {
-                cursor.moveToFirst();
-                do {
-                    text.add(cursor.getString(1));
-                }
-                while (cursor.moveToNext());
-            } else
-                return null;
-            db.close();
-            cursor.close();
-        } catch (Exception e) {
-            System.out.println("Exception throw in SQLiteDBHandler" + e);
-        }
-        return text;
-    }
+    //TODO replace the method with the Glycemies data from DataBinder
+//    public List<String> getAverageGlycemies(String today, String target) {
+//        List<String> text = new ArrayList<>();
+//        String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        try {
+//            Cursor cursor = db.rawQuery(selectQuery, null);
+//            if (cursor != null && cursor.getCount() > 0) {
+//                cursor.moveToFirst();
+//                do {
+//                    text.add(cursor.getString(1));
+//                }
+//                while (cursor.moveToNext());
+//            } else
+//                return null;
+//            db.close();
+//            cursor.close();
+//        } catch (Exception e) {
+//            System.out.println("Exception throw in SQLiteDBHandler" + e);
+//        }
+//        return text;
+//    }
 
     public String getNote() {
         String note;
@@ -343,20 +389,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return usersList;
     }
 
-    public void writeInsulinUnitsInDB(String units) {
-        // Gets the data repository in write mode
-        SQLiteDatabase db = getWritableDatabase();
-        String todayDate = DateUtils.calculateDateOfToday();
-
-        // Create a new map of values, where column names are the keys
-        ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE, todayDate);
-        values.put(SQliteDatabase.InsulinUnits.COLUMN_NAME_UNITS, units);
-
-        // Insert the new row, returning the primary key value of the new row
-        db.insertOrThrow(SQliteDatabase.InsulinUnits.TABLE_NAME, null, values);
-    }
-
     //Checking if table is null
     public boolean isTableNotEmpty(String tableName) {
         SQLiteDatabase db = getWritableDatabase();
@@ -367,6 +399,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int icount = mcursor.getInt(0);
         mcursor.close();
         return icount > 0;
+    }
+
+    public void deleteInjectionInDB(String[] selectionArgs) {
+        SQLiteDatabase db = getReadableDatabase();
+        // Define 'where' part of query.
+        String selection = DataBinder.DataInsulin._ID + " LIKE ?";
+        // Issue SQL statement => indicate the numbers of rows deleted
+        int deletedRows = db.delete(DataBinder.DataInsulin.TABLE_NAME, selection, selectionArgs);
     }
 
     public void deleteUserInDB(String[] selectionArgs) {
@@ -395,28 +435,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 values,
                 selection,
                 selectionArgs);
-    }
-
-    public List<InsulinInjection> getInsulinInjections() {
-        List<InsulinInjection> glycemiesList = new ArrayList<>();
-        SQLiteDatabase sQliteDatabase = getReadableDatabase();
-        String[] field = {SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE, SQliteDatabase.InsulinUnits.COLUMN_NAME_UNITS};
-        Cursor c = sQliteDatabase.query(SQliteDatabase.InsulinUnits.TABLE_NAME, field, null, null, null, null, null);
-
-        int date = c.getColumnIndex(SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE);
-        int insulinUnits = c.getColumnIndex(SQliteDatabase.InsulinUnits.COLUMN_NAME_UNITS);
-
-        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
-            String dateData = c.getString(date);
-            String insulinData = c.getString(insulinUnits);
-
-            glycemiesList.add(new InsulinInjection(dateData, insulinData));
-        }
-
-        getReadableDatabase().close();
-        c.close();
-
-        return glycemiesList;
     }
 
     public void writeObjectiveInDB(String date, String duration, String type, String description) {

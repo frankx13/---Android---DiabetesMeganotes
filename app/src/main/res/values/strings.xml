@@ -88,4 +88,5 @@
     <string name="dialog_delete_existing_user" tools:ignore="Typos">Nombre max d\'utilisateurs atteint (3). Supprimez un utilisateur pour en créer un autre.</string>
     <string name="dialog_delete_existing_user_confirmation">Etes-vous sûr de vouloir supprimer %1$s ?</string>
     <string name="ok">OK</string>
+    <string name="dialog_delete_insulin_entry">Supprimer cette entrée ?</string>
 </resources>

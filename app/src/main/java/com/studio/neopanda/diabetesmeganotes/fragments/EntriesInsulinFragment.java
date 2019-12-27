@@ -3,7 +3,6 @@ package com.studio.neopanda.diabetesmeganotes.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.adapters.EntriesUnitsFragmentAdapter;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
-import com.studio.neopanda.diabetesmeganotes.models.InsulinInjection;
+import com.studio.neopanda.diabetesmeganotes.models.InsulinBinder;
 import com.studio.neopanda.diabetesmeganotes.utils.AverageGlycemyUtils;
 
 import java.util.ArrayList;
@@ -35,9 +34,10 @@ public class EntriesInsulinFragment extends Fragment {
 
     //DATA
     private DatabaseHelper dbHelper = null;
-    private List<InsulinInjection> insulinInjections;
+    private List<InsulinBinder> insulinInjections;
     private int idEntry = 0;
     private List<Integer> insulinUnits;
+    private String userId = "";
 
     public EntriesInsulinFragment() {
         // Required empty public constructor
@@ -61,20 +61,38 @@ public class EntriesInsulinFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
+        initViews();
+        initVars();
+        getCurrentUser();
+        fetchInjectionsInDB();
+        continueProcess();
+    }
+
+    private void getCurrentUser() {
+        userId = dbHelper.getActiveUserInDB().get(0).getUsername();
+    }
+
+    private void initVars() {
+        insulinUnits = new ArrayList<>();
+        insulinInjections = new ArrayList<>();
+    }
+
+    private void initViews() {
         recyclerViewInsulin = getActivity().findViewById(R.id.recyclerview_insulin_entries);
         averageInsulinLevel = getActivity().findViewById(R.id.average_level_insulin_TV);
         containerInsulin = getActivity().findViewById(R.id.container_diary_journal_insulin);
+    }
 
-        insulinUnits = new ArrayList<>();
-        insulinInjections = new ArrayList<>();
-
-        insulinInjections = dbHelper.getInsulinInjections();
+    private void continueProcess() {
         sortingList();
         addingIds();
         loadingTextViewAverage();
         antiUIBreakthrough();
-
         onLoadRecyclerView();
+    }
+
+    private void fetchInjectionsInDB() {
+        insulinInjections = dbHelper.getBindedInsulinData(userId);
     }
 
     private void antiUIBreakthrough() {
@@ -91,13 +109,13 @@ public class EntriesInsulinFragment extends Fragment {
     }
 
     private void addingIds() {
-        for (InsulinInjection injection : insulinInjections) {
+        for (InsulinBinder injection : insulinInjections) {
             injection.setIdEntry(idEntry += 1);
         }
     }
 
-    private int calculateAverageGlycemyLevel() {
-        for (InsulinInjection injection : insulinInjections) {
+    private int calculateAverageUnitsByInjection() {
+        for (InsulinBinder injection : insulinInjections) {
             insulinUnits.add(Integer.valueOf(injection.numberUnit));
         }
 
@@ -105,15 +123,13 @@ public class EntriesInsulinFragment extends Fragment {
     }
 
     private void loadingTextViewAverage() {
-        int average = calculateAverageGlycemyLevel();
+        int average = calculateAverageUnitsByInjection();
 
         averageInsulinLevel.setText("≈ " + average + "unités par injection");
     }
 
 
-
     private void onLoadRecyclerView() {
-        Log.e("LOADINGRV", "onClickViewEntriesBtn: " + insulinInjections + "firstItem" + insulinInjections.get(0).getDate());
         EntriesUnitsFragmentAdapter adapter = new EntriesUnitsFragmentAdapter(getContext(), insulinInjections);
         recyclerViewInsulin.setAdapter(adapter);
         recyclerViewInsulin.setLayoutManager(new LinearLayoutManager(getActivity()));

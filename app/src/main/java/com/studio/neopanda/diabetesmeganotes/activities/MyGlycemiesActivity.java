@@ -23,9 +23,6 @@ import com.studio.neopanda.diabetesmeganotes.fragments.EntriesInsulinFragment;
 import com.studio.neopanda.diabetesmeganotes.utils.UIUtils;
 import com.studio.neopanda.diabetesmeganotes.utils.Utils;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -68,7 +65,6 @@ public class MyGlycemiesActivity extends AppCompatActivity {
 
     //DATA
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
-    private List itemIds;
     private String newEntryGlycemyDate;
     private String newEntryGlycemyLevel;
     private String newInsulinUnits;
@@ -81,35 +77,16 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_glycemies);
 
         ButterKnife.bind(this);
-        itemIds = new ArrayList<>();
+
         userID = dbHelper.getActiveUserInDB().get(0).getUsername();
 
-        Utils.backToDashboard(titleGlycemyScreen, this, MyGlycemiesActivity.this);
+        setBackOption();
+        manageGlycemies();
+        manageInjections();
+        setExitFragmentsBtn();
+    }
 
-        addGlycemyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickAddEntryBtn();
-            }
-        });
-        viewAllEntriesBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickViewEntriesBtn();
-            }
-        });
-        addInsulinBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickAddInsulinBtn();
-            }
-        });
-        viewEntriesInsulinBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickViewInsulinBtn();
-            }
-        });
+    private void setExitFragmentsBtn() {
         exitDiaryJournalBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -129,9 +106,42 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         });
     }
 
+    private void setBackOption() {
+        Utils.backToDashboard(titleGlycemyScreen, this, MyGlycemiesActivity.this);
+    }
+
+    private void manageInjections() {
+        addInsulinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickAddInsulinBtn();
+            }
+        });
+        viewEntriesInsulinBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickViewInsulinBtn();
+            }
+        });
+    }
+
+    private void manageGlycemies() {
+        addGlycemyBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickAddEntryBtn();
+            }
+        });
+        viewAllEntriesBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onClickViewEntriesBtn();
+            }
+        });
+    }
+
     private void onClickViewInsulinBtn() {
-        boolean tableNotEmpty = dbHelper.isTableNotEmpty("Insulin");
-        if (tableNotEmpty) {
+        if (dbHelper.getBindedInsulinData(userID).size() > 0) {
             fragmentID = 2;
             EntriesInsulinFragment fragment = new EntriesInsulinFragment();
             journalContainer.setVisibility(View.VISIBLE);
@@ -150,7 +160,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
         containerInsulinUnitsInput.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                //Empty block to avoid click non-desired effects
             }
         });
 
@@ -162,7 +172,7 @@ public class MyGlycemiesActivity extends AppCompatActivity {
                 if (newInsulinUnits.length() > 2) {
                     Toast.makeText(MyGlycemiesActivity.this, "Trop de chiffres, veuillez réessayer.", Toast.LENGTH_SHORT).show();
                 } else if (newInsulinUnits.length() == 1 || newInsulinUnits.length() == 2) {
-                    dbHelper.writeInsulinUnitsInDB(newInsulinUnits);
+                    dbHelper.bindInsulinData(newInsulinUnits, userID);
                     Toast.makeText(MyGlycemiesActivity.this, "Unités renseignées avec succès !", Toast.LENGTH_SHORT).show();
                     UIUtils.hideKeyboard(MyGlycemiesActivity.this);
                     containerInsulinUnitsInput.setVisibility(View.GONE);
