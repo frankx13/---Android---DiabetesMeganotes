@@ -130,10 +130,9 @@ public class EntriesInsulinFragment extends Fragment {
 
 
     private void onLoadRecyclerView() {
-        EntriesUnitsFragmentAdapter adapter = new EntriesUnitsFragmentAdapter(getContext(), insulinInjections);
+        EntriesUnitsFragmentAdapter adapter = new EntriesUnitsFragmentAdapter(getContext(), insulinInjections, getActivity());
         recyclerViewInsulin.setAdapter(adapter);
         recyclerViewInsulin.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerViewInsulin.setHasFixedSize(true);
         adapter.notifyDataSetChanged();
     }
 }

@@ -231,6 +231,8 @@ public class MyGlycemiesActivity extends AppCompatActivity {
             } else if (newEntryGlycemyLevel.length() == 4) {
                 UIUtils.hideKeyboard(this);
                 dbHelper.bindGlycemyData(newEntryGlycemyLevel, newEntryGlycemyDate, "Glycemies", userID, "");
+                Toast.makeText(this, "Glycémie ajoutée!", Toast.LENGTH_LONG).show();
+                UIUtils.hideKeyboard(this);
                 containerAddEntryPart.setVisibility(View.GONE);
             } else {
                 Toast.makeText(this, "Impossible d'ajouter cette entrée. Veuillez utiliser ce modèle et recommencer : x.xx", Toast.LENGTH_LONG).show();

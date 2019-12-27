@@ -1,5 +1,6 @@
 package com.studio.neopanda.diabetesmeganotes.adapters;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
@@ -18,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
 import com.studio.neopanda.diabetesmeganotes.models.InsulinBinder;
+import com.studio.neopanda.diabetesmeganotes.utils.UIUtils;
 
 import java.util.List;
 
@@ -25,14 +27,15 @@ public class EntriesUnitsFragmentAdapter extends RecyclerView.Adapter<EntriesUni
 
     private List<InsulinBinder> mData;
     private Context mContext;
+    private Activity activity;
     private DatabaseHelper dbHelper;
-    private String newValue;
     private int id;
     private String newUnitsUpdated;
 
-    public EntriesUnitsFragmentAdapter(Context context, List<InsulinBinder> mData) {
+    public EntriesUnitsFragmentAdapter(Context context, List<InsulinBinder> mData, Activity activity) {
         this.mContext = context;
         this.mData = mData;
+        this.activity = activity;
     }
 
     @NonNull
@@ -49,6 +52,7 @@ public class EntriesUnitsFragmentAdapter extends RecyclerView.Adapter<EntriesUni
         holder.dateTV.setText("Date : " + mData.get(position).date);
         holder.insulinUnitsTV.setText("Unités : " + mData.get(position).numberUnit);
         holder.idDiary.setText("Analyse n° : " + mData.get(position).id);
+
         holder.modifyEntryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,10 +65,11 @@ public class EntriesUnitsFragmentAdapter extends RecyclerView.Adapter<EntriesUni
                     @Override
                     public void onClick(View v) {
                         newUnitsUpdated = holder.newUnits.getEditableText().toString();
-                        //TODO update DB
-                        id = mData.get(position).id;
-                        dbHelper.updateInsulinUnitsEntry(newUnitsUpdated, id);
-
+                        if (newUnitsUpdated.equals("")){
+                            Toast.makeText(mContext, "Vous devez quitter la page si vous ne souhaitez pas modifier cette valeur, ou bien en indiquer une nouvelle pour effectuer la modification", Toast.LENGTH_LONG).show();
+                        } else {
+                            onClickUpdateEntry(position);
+                        }
                         holder.containerUpdateEntry.setVisibility(View.GONE);
                         holder.updateEntryBtn.setVisibility(View.GONE);
                         holder.containerActiondEntry.setVisibility(View.VISIBLE);
@@ -100,9 +105,18 @@ public class EntriesUnitsFragmentAdapter extends RecyclerView.Adapter<EntriesUni
         return mData.size();
     }
 
+    private void onClickUpdateEntry(int position) {
+        id = mData.get(position).id;
+        dbHelper.updateInsulinUnitsEntry(newUnitsUpdated, id);
+        Toast.makeText(mContext, "L'entrée n° " + mData.get(position).id + " a été modifiée!", Toast.LENGTH_SHORT).show();
+        mData.get(position).numberUnit = newUnitsUpdated;
+        notifyItemChanged(position);
+        UIUtils.hideKeyboard(activity);
+    }
+
     private void onClickDeleteEntry(String[] itemsToDelete, String idDeleted, int position) {
         dbHelper.deleteInjectionInDB(itemsToDelete);
-        Toast.makeText(mContext, "The entry n° " + idDeleted + " has been deleted!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(mContext, "L'entrée n° " + idDeleted + " a été supprimée!", Toast.LENGTH_SHORT).show();
         mData.remove(position);
         notifyItemRemoved(position);
         notifyDataSetChanged();

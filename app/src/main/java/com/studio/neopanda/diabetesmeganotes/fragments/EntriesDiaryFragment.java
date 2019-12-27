@@ -11,6 +11,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -133,12 +134,9 @@ public class EntriesDiaryFragment extends Fragment {
     }
 
     private void onLoadRecyclerView() {
-        EntriesFragmentAdapter adapter = new EntriesFragmentAdapter(getContext(), glycemyBinder);
+        EntriesFragmentAdapter adapter = new EntriesFragmentAdapter(getContext(), glycemyBinder, getActivity());
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setHasFixedSize(true);
         adapter.notifyDataSetChanged();
     }
-
-
 }

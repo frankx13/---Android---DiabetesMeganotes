@@ -20,7 +20,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // DB version
-    private static final int DATABASE_VERSION = 10;
+    private static final int DATABASE_VERSION = 13;
     private static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CURRENT_USERS =
@@ -409,6 +409,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int deletedRows = db.delete(DataBinder.DataInsulin.TABLE_NAME, selection, selectionArgs);
     }
 
+    public void deleteGlycemyInDB(String[] selectionArgs) {
+        SQLiteDatabase db = getReadableDatabase();
+        // Define 'where' part of query.
+        String selection = DataBinder.DataGlycemies._ID + " LIKE ?";
+        // Issue SQL statement => indicate the numbers of rows deleted
+        int deletedRows = db.delete(DataBinder.DataGlycemies.TABLE_NAME, selection, selectionArgs);
+    }
+
     public void deleteUserInDB(String[] selectionArgs) {
         SQLiteDatabase db = getReadableDatabase();
         // Define 'where' part of query.
@@ -423,6 +431,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(DataBinder.DataInsulin.COLUMN_NAME_UNITS, newValue);
         db.update(DataBinder.DataInsulin.TABLE_NAME, values,
                 DataBinder.DataInsulin._ID + " = ? ", new String[]{Integer.toString(id)});
+    }
+
+    public void updateGlycemyEntry(String newValue, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DataBinder.DataGlycemies.COLUMN_NAME_GLYCEMY, newValue);
+        db.update(DataBinder.DataGlycemies.TABLE_NAME, values,
+                DataBinder.DataGlycemies._ID + " = ? ", new String[]{Integer.toString(id)});
     }
 
 
