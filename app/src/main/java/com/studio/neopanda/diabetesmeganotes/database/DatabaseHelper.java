@@ -20,7 +20,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // DB version
-    private static final int DATABASE_VERSION = 8;
+    private static final int DATABASE_VERSION = 10;
     private static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CURRENT_USERS =
@@ -417,25 +417,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int deletedRows = db.delete(SQliteDatabase.Users.TABLE_NAME, selection, selectionArgs);
     }
 
-    public void updateAuthInDB() {
-        SQLiteDatabase db = getWritableDatabase();
-
-        // New value for one column
-        String title = "Joseff";
+    public void updateInsulinUnitsEntry(String newValue, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Users.COLUMN_NAME_USERNAME, title);
-
-        // Which row to update, based on the title
-        String selection = SQliteDatabase.Users.COLUMN_NAME_USERNAME + " LIKE ?";
-        String[] selectionArgs = {"Joseph"};
-
-        //Return the numbers of updated rows
-        int count = db.update(
-                SQliteDatabase.Users.TABLE_NAME,
-                values,
-                selection,
-                selectionArgs);
+        values.put(DataBinder.DataInsulin.COLUMN_NAME_UNITS, newValue);
+        db.update(DataBinder.DataInsulin.TABLE_NAME, values,
+                DataBinder.DataInsulin._ID + " = ? ", new String[]{Integer.toString(id)});
     }
+
 
     public void writeObjectiveInDB(String date, String duration, String type, String description) {
         // Gets the data repository in write mode

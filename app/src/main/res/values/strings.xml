@@ -89,4 +89,5 @@
     <string name="dialog_delete_existing_user_confirmation">Etes-vous sûr de vouloir supprimer %1$s ?</string>
     <string name="ok">OK</string>
     <string name="dialog_delete_insulin_entry">Supprimer cette entrée ?</string>
+    <string name="new_value_insulin_units_update">Nouvelle valeur</string>
 </resources>

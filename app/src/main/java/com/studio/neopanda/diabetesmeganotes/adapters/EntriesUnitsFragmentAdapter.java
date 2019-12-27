@@ -6,6 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -13,10 +15,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
 import com.studio.neopanda.diabetesmeganotes.models.InsulinBinder;
-import com.studio.neopanda.diabetesmeganotes.models.InsulinInjection;
-import com.studio.neopanda.diabetesmeganotes.R;
 
 import java.util.List;
 
@@ -25,6 +26,9 @@ public class EntriesUnitsFragmentAdapter extends RecyclerView.Adapter<EntriesUni
     private List<InsulinBinder> mData;
     private Context mContext;
     private DatabaseHelper dbHelper;
+    private String newValue;
+    private int id;
+    private String newUnitsUpdated;
 
     public EntriesUnitsFragmentAdapter(Context context, List<InsulinBinder> mData) {
         this.mContext = context;
@@ -41,13 +45,31 @@ public class EntriesUnitsFragmentAdapter extends RecyclerView.Adapter<EntriesUni
 
     @Override
     public void onBindViewHolder(@NonNull EntriesUnitsFragmentAdapter.MyViewHolder holder, int position) {
+        dbHelper = new DatabaseHelper(mContext);
         holder.dateTV.setText("Date : " + mData.get(position).date);
         holder.insulinUnitsTV.setText("Unités : " + mData.get(position).numberUnit);
         holder.idDiary.setText("Analyse n° : " + mData.get(position).id);
         holder.modifyEntryBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                holder.containerUpdateEntry.setVisibility(View.VISIBLE);
+                holder.updateEntryBtn.setVisibility(View.VISIBLE);
+                holder.containerActiondEntry.setVisibility(View.GONE);
+                holder.oldUnits.setText(mData.get(position).getNumberUnit());
 
+                holder.updateEntryBtn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        newUnitsUpdated = holder.newUnits.getEditableText().toString();
+                        //TODO update DB
+                        id = mData.get(position).id;
+                        dbHelper.updateInsulinUnitsEntry(newUnitsUpdated, id);
+
+                        holder.containerUpdateEntry.setVisibility(View.GONE);
+                        holder.updateEntryBtn.setVisibility(View.GONE);
+                        holder.containerActiondEntry.setVisibility(View.VISIBLE);
+                    }
+                });
             }
         });
         holder.deleteEntryBtn.setOnClickListener(new View.OnClickListener() {
@@ -78,8 +100,7 @@ public class EntriesUnitsFragmentAdapter extends RecyclerView.Adapter<EntriesUni
         return mData.size();
     }
 
-    private void onClickDeleteEntry(String[] itemsToDelete, String idDeleted, int position){
-        dbHelper = new DatabaseHelper(mContext);
+    private void onClickDeleteEntry(String[] itemsToDelete, String idDeleted, int position) {
         dbHelper.deleteInjectionInDB(itemsToDelete);
         Toast.makeText(mContext, "The entry n° " + idDeleted + " has been deleted!", Toast.LENGTH_SHORT).show();
         mData.remove(position);
@@ -92,8 +113,13 @@ public class EntriesUnitsFragmentAdapter extends RecyclerView.Adapter<EntriesUni
         TextView dateTV;
         TextView insulinUnitsTV;
         TextView idDiary;
+        LinearLayout containerUpdateEntry;
+        LinearLayout containerActiondEntry;
+        TextView oldUnits;
+        EditText newUnits;
         Button modifyEntryBtn;
         Button deleteEntryBtn;
+        Button updateEntryBtn;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -103,6 +129,11 @@ public class EntriesUnitsFragmentAdapter extends RecyclerView.Adapter<EntriesUni
             idDiary = itemView.findViewById(R.id.id_insulin_entry_TV);
             modifyEntryBtn = itemView.findViewById(R.id.modify_insulin_entry_btn);
             deleteEntryBtn = itemView.findViewById(R.id.delete_insulin_entry_btn);
+            containerUpdateEntry = itemView.findViewById(R.id.container_update_entry_insulin);
+            oldUnits = itemView.findViewById(R.id.insulin_entry_old_TV);
+            newUnits = itemView.findViewById(R.id.insulin_entry_new_TV);
+            updateEntryBtn = itemView.findViewById(R.id.validate_update_insulin_btn);
+            containerActiondEntry = itemView.findViewById(R.id.container_actions_update_delete_insulin);
         }
     }
 }
