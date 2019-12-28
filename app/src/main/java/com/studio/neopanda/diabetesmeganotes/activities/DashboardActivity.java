@@ -64,8 +64,10 @@ public class DashboardActivity extends AppCompatActivity {
     private String targetDate;
     private String todayDate;
     private int glycemyColor;
+    private String userId;
     private int statsTurns = 0;
     private String note = "";
+    private String noteInDB = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,22 +126,23 @@ public class DashboardActivity extends AppCompatActivity {
         });
 
         //TODO fix the method with GlycemyBinder table
-//        loadAverageStats(0);
+        loadAverageStats(0);
         loadNotes();
     }
 
     private void welcomeUser() {
-        String username = dbHelper.getActiveUserInDB().get(0).getUsername();
-        Toast.makeText(this, "Salut " + username + " !", Toast.LENGTH_SHORT).show();
+        userId = dbHelper.getActiveUserInDB().get(0).getUsername();
+        noteInDB = dbHelper.getNote(userId);
+        Toast.makeText(this, "Salut " + userId + " !", Toast.LENGTH_SHORT).show();
     }
 
     private void loadNotes() {
-        String noteInDB = dbHelper.getNote();
         if (!noteInDB.equals("")) {
             fastNoteTV.setText(noteInDB);
         } else {
             fastNoteTV.setText(getResources().getString(R.string.empty_note_text));
         }
+
         fastNoteTV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -149,13 +152,18 @@ public class DashboardActivity extends AppCompatActivity {
                 fastNoteBtn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        note = fastNoteEV.getEditableText().toString() + " \n\n (Cliquer pour modifier)";
-                        dbHelper.setNoteInDB(note);
+                        if (noteInDB.equals("")) {
+                            dbHelper.setNoteInDB(fastNoteEV.getEditableText().toString() + " \n\n (Cliquer pour modifier)", userId);
+                        } else {
+                            dbHelper.updateNote(fastNoteEV.getEditableText().toString() + " \n\n (Cliquer pour modifier)", 1);
+                        }
+
+                        note = dbHelper.getNote(userId);
+                        fastNoteTV.setText(note);
                         Toast.makeText(DashboardActivity.this,
                                 "Note enregistrée avec succès !",
                                 Toast.LENGTH_SHORT).show();
 
-                        fastNoteTV.setText(note);
                         fastNoteEV.setVisibility(View.GONE);
                         fastNoteBtn.setVisibility(View.GONE);
                         fastNoteTV.setVisibility(View.VISIBLE);
@@ -166,51 +174,50 @@ public class DashboardActivity extends AppCompatActivity {
     }
 
     //TODO Fix method with databinder
-//    private void loadAverageStats(int statTurn) {
-//        todayDate = DateUtils.calculateDateOfToday();
-//
-//        switch (statsTurns) {
-//            case 0:
-//                targetDate = DateUtils.calculateDateFromToday(7);
-//                break;
-//            case 1:
-//                targetDate = DateUtils.calculateDateFromToday(15);
-//                break;
-//            case 2:
-//                targetDate = DateUtils.calculateDateFromToday(30);
-//                break;
-//            case 3:
-//                targetDate = DateUtils.calculateDateFromToday(60);
-//                break;
-//        }
+    private void loadAverageStats(int statTurn) {
+        todayDate = DateUtils.calculateDateOfToday();
 
-        //TODO replace the Helper code with the Glycemies from DataBinder
-//        listDates = dbHelper.getGlycemiesInTimePeriod(todayDate, targetDate);
-//
-//        if (listDates != null && !listDates.isEmpty()) {
-//            listGlycemies = dbHelper.getAverageGlycemies(todayDate, targetDate);
-//            for (String s : listGlycemies) {
-//                listGlycemiesDouble.add(Double.valueOf(s));
-//            }
-//
-//            double averageGlycemyLevel = AverageGlycemyUtils.calculateAverageGlycemyAllResults(listGlycemiesDouble);
-//            if (averageGlycemyLevel < 0.80 || averageGlycemyLevel > 2.50) {
-//                glycemyColor = 3;
-//            } else if (averageGlycemyLevel > 1.80) {
-//                glycemyColor = 2;
-//            } else if (averageGlycemyLevel > 1.40) {
-//                glycemyColor = 1;
-//            } else {
-//                glycemyColor = 0;
-//            }
-//            paintAverageChars(averageGlycemyLevel, glycemyColor);
-//        } else {
-//            statsSixtyDays.setText(getResources().getString(R.string.not_enough_entries));
-//            statsThirtyDays.setText("");
-//            statsFifteenDays.setText("");
-//            statsSevenDays.setText("");
-//        }
-//    }
+        switch (statsTurns) {
+            case 0:
+                targetDate = DateUtils.calculateDateFromToday(7);
+                break;
+            case 1:
+                targetDate = DateUtils.calculateDateFromToday(15);
+                break;
+            case 2:
+                targetDate = DateUtils.calculateDateFromToday(30);
+                break;
+            case 3:
+                targetDate = DateUtils.calculateDateFromToday(60);
+                break;
+        }
+
+        listDates = dbHelper.getGlycemiesInTimePeriod(todayDate, targetDate);
+
+        if (listDates != null && !listDates.isEmpty()) {
+            listGlycemies = dbHelper.getAverageGlycemies(todayDate, targetDate);
+            for (String s : listGlycemies) {
+                listGlycemiesDouble.add(Double.valueOf(s));
+            }
+
+            double averageGlycemyLevel = AverageGlycemyUtils.calculateAverageGlycemyAllResults(listGlycemiesDouble);
+            if (averageGlycemyLevel < 0.80 || averageGlycemyLevel > 2.50) {
+                glycemyColor = 3;
+            } else if (averageGlycemyLevel > 1.80) {
+                glycemyColor = 2;
+            } else if (averageGlycemyLevel > 1.40) {
+                glycemyColor = 1;
+            } else {
+                glycemyColor = 0;
+            }
+            paintAverageChars(averageGlycemyLevel, glycemyColor);
+        } else {
+            statsSixtyDays.setText(getResources().getString(R.string.not_enough_entries));
+            statsThirtyDays.setText("");
+            statsFifteenDays.setText("");
+            statsSevenDays.setText("");
+        }
+    }
 
     //TODO fix loadAverageStats method
     private void paintAverageChars(double averageGlycemyLevel, int color) {
@@ -283,7 +290,7 @@ public class DashboardActivity extends AppCompatActivity {
         if (statsTurns <= 2) {
             statsTurns += 1;
             //TODO fix the method with DataBinder
-//            loadAverageStats(statsTurns);
+            loadAverageStats(statsTurns);
         }
     }
 

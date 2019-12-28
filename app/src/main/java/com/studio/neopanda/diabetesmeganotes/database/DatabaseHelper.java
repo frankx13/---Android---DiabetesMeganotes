@@ -5,11 +5,13 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.widget.Toast;
 
 import com.studio.neopanda.diabetesmeganotes.models.Alert;
 import com.studio.neopanda.diabetesmeganotes.models.CurrentUser;
 import com.studio.neopanda.diabetesmeganotes.models.GlycemyBinder;
 import com.studio.neopanda.diabetesmeganotes.models.InsulinBinder;
+import com.studio.neopanda.diabetesmeganotes.models.NoteBinder;
 import com.studio.neopanda.diabetesmeganotes.models.Objective;
 import com.studio.neopanda.diabetesmeganotes.models.User;
 import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
@@ -20,7 +22,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // DB version
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 17;
     private static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CURRENT_USERS =
@@ -66,30 +68,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     SQliteDatabase.Users.COLUMN_NAME_ALERTS_ID + " INTEGER," +
                     "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_GLYCEMIES_ID + ") REFERENCES " + SQliteDatabase.InsulinUnits._ID + " ," +
                     "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_INSULIN_ID + ") REFERENCES " + SQliteDatabase.InsulinUnits._ID + " ," +
-                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_NOTE_ID + ") REFERENCES " + SQliteDatabase.Note._ID + " ," +
                     "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_OBJECTIVES_ID + ") REFERENCES " + SQliteDatabase.Objectives._ID + " ," +
                     "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_ALERTS_ID + ") REFERENCES " + SQliteDatabase.Glycemies._ID + ")";
 
     private static final String SQL_DELETE_ENTRIES_USERS =
             "DROP TABLE IF EXISTS " + SQliteDatabase.Users.TABLE_NAME;
 
-    private static final String SQL_CREATE_ENTRIES_INSULIN =
-            "CREATE TABLE " + SQliteDatabase.InsulinUnits.TABLE_NAME + " (" +
-                    SQliteDatabase.InsulinUnits._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    SQliteDatabase.InsulinUnits.COLUMN_NAME_UNITS + " INTEGER," +
-                    SQliteDatabase.InsulinUnits.COLUMN_NAME_EXTRA_INFOS + " TEXT," +
-                    SQliteDatabase.InsulinUnits.COLUMN_NAME_DATE + " TEXT)";
+    private static final String SQL_CREATE_ENTRIES_NOTEBINDER =
+            "CREATE TABLE " + DataBinder.DataNote.TABLE_NAME + " (" +
+                    DataBinder.DataNote._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    DataBinder.DataNote.COLUMN_NAME_TEXT + " TEXT," +
+                    DataBinder.DataNote.COLUMN_NAME_DATA_ID + " TEXT)";
 
-    private static final String SQL_DELETE_ENTRIES_INSULIN =
-            "DROP TABLE IF EXISTS " + SQliteDatabase.InsulinUnits.TABLE_NAME;
-
-    private static final String SQL_CREATE_ENTRIES_NOTE =
-            "CREATE TABLE " + SQliteDatabase.Note.TABLE_NAME + " (" +
-                    SQliteDatabase.Note._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    SQliteDatabase.Note.COLUMN_NAME_TEXT + " TEXT)";
-
-    private static final String SQL_DELETE_ENTRIES_NOTE =
-            "DROP TABLE IF EXISTS " + SQliteDatabase.Note.TABLE_NAME;
+    private static final String SQL_DELETE_ENTRIES_NOTEBINDER =
+            "DROP TABLE IF EXISTS " + DataBinder.DataNote.TABLE_NAME;
 
     private static final String SQL_CREATE_ENTRIES_OBJECTIVES =
             "CREATE TABLE " + SQliteDatabase.Objectives.TABLE_NAME + " (" +
@@ -120,26 +112,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES_USERS);
-        db.execSQL(SQL_CREATE_ENTRIES_INSULIN);
-        db.execSQL(SQL_CREATE_ENTRIES_NOTE);
         db.execSQL(SQL_CREATE_ENTRIES_OBJECTIVES);
         db.execSQL(SQL_CREATE_ENTRIES_ALERTS);
         db.execSQL(SQL_CREATE_ENTRIES_CURRENT_USERS);
         db.execSQL(SQL_CREATE_ENTRIES_GLYCEMYBINDER);
         db.execSQL(SQL_CREATE_ENTRIES_INSULINBINDER);
+        db.execSQL(SQL_CREATE_ENTRIES_NOTEBINDER);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_ENTRIES_USERS);
-        db.execSQL(SQL_DELETE_ENTRIES_INSULIN);
-        db.execSQL(SQL_DELETE_ENTRIES_NOTE);
         db.execSQL(SQL_DELETE_ENTRIES_OBJECTIVES);
         db.execSQL(SQL_DELETE_ENTRIES_ALERTS);
         db.execSQL(SQL_DELETE_ENTRIES_CURRENT_USERS);
         db.execSQL(SQL_DELETE_ENTRIES_GLYCEMYBINDER);
         db.execSQL(SQL_DELETE_ENTRIES_INSULINBINDER);
+        db.execSQL(SQL_DELETE_ENTRIES_NOTEBINDER);
         onCreate(db);
     }
 
@@ -278,80 +268,97 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    //TODO replace the method with the Glycemies data from DataBinder
-//    public List<String> getGlycemiesInTimePeriod(String today, String target) {
-//        List<String> text = new ArrayList<>();
-//        String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
-//        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        try {
-//            Cursor cursor = db.rawQuery(selectQuery, null);
-//            if (cursor != null && cursor.getCount() > 0) {
-//                cursor.moveToFirst();
-//                do {
-//                    text.add(cursor.getString(3));
-//                }
-//                while (cursor.moveToNext());
-//            } else
-//                return null;
-//            db.close();
-//            cursor.close();
-//        } catch (Exception e) {
-//            System.out.println("Exception throw in SQLiteDBHandler" + e);
-//        }
-//        return text;
-//    }
-
-    //TODO replace the method with the Glycemies data from DataBinder
-//    public List<String> getAverageGlycemies(String today, String target) {
-//        List<String> text = new ArrayList<>();
-//        String selectQuery = "SELECT * FROM Glycemies WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
-//        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        try {
-//            Cursor cursor = db.rawQuery(selectQuery, null);
-//            if (cursor != null && cursor.getCount() > 0) {
-//                cursor.moveToFirst();
-//                do {
-//                    text.add(cursor.getString(1));
-//                }
-//                while (cursor.moveToNext());
-//            } else
-//                return null;
-//            db.close();
-//            cursor.close();
-//        } catch (Exception e) {
-//            System.out.println("Exception throw in SQLiteDBHandler" + e);
-//        }
-//        return text;
-//    }
-
-    public String getNote() {
-        String note;
-
-        String selectQuery = "SELECT * FROM Note";
+    public List<String> getGlycemiesInTimePeriod(String today, String target) {
+        List<String> text = new ArrayList<>();
+        String selectQuery = "SELECT * FROM GlycemyBinder WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery(selectQuery, null);
-        if (cursor != null && cursor.getCount() > 0) {
-            cursor.moveToLast();
-            note = cursor.getString(1);
+
+        try {
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    text.add(cursor.getString(3));
+                }
+                while (cursor.moveToNext());
+            } else
+                return null;
+            db.close();
             cursor.close();
-            return note;
-        } else {
-            return "Vous pouvez ajouter une note en cliquant ici :)";
+        } catch (Exception e) {
+            System.out.println("Exception throw in SQLiteDBHandler" + e);
         }
+        return text;
     }
 
-    public void setNoteInDB(String note) {
+    public List<String> getAverageGlycemies(String today, String target) {
+        List<String> text = new ArrayList<>();
+        String selectQuery = "SELECT * FROM GlycemyBinder WHERE Date >= '" + target + "' AND Date <= '" + today + "'";
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        try {
+            Cursor cursor = db.rawQuery(selectQuery, null);
+            if (cursor != null && cursor.getCount() > 0) {
+                cursor.moveToFirst();
+                do {
+                    text.add(cursor.getString(1));
+                }
+                while (cursor.moveToNext());
+            } else
+                return null;
+            db.close();
+            cursor.close();
+        } catch (Exception e) {
+            System.out.println("Exception throw in SQLiteDBHandler" + e);
+        }
+        return text;
+    }
+
+    public String getNote(String userId) {
+        String note = "";
+        SQLiteDatabase sQliteDatabase = getReadableDatabase();
+        String[] field = {
+                DataBinder.DataNote.COLUMN_NAME_TEXT,
+                DataBinder.DataNote.COLUMN_NAME_DATA_ID};
+        Cursor c = sQliteDatabase.query(DataBinder.DataNote.TABLE_NAME, field, null, null, null, null, null);
+
+        int text = c.getColumnIndex(DataBinder.DataNote.COLUMN_NAME_TEXT);
+        int dataID = c.getColumnIndex(DataBinder.DataNote.COLUMN_NAME_DATA_ID);
+
+        for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
+            String noteData = c.getString(text);
+            String dataIdData = c.getString(dataID);
+
+            if (dataIdData.equals(userId)) {
+                note = noteData;
+            }
+        }
+
+        getWritableDatabase().close();
+        c.close();
+
+        return note;
+    }
+
+    public void setNoteInDB(String note, String dataId) {
         // Gets the data repository in write mode
         SQLiteDatabase db = getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Note.COLUMN_NAME_TEXT, note);
+        values.put(DataBinder.DataNote.COLUMN_NAME_TEXT, note);
+        values.put(DataBinder.DataNote.COLUMN_NAME_DATA_ID, dataId);
 
         // Insert the new row, returning the primary key value of the new row
-        db.insert(SQliteDatabase.Note.TABLE_NAME, null, values);
+        db.insert(DataBinder.DataNote.TABLE_NAME, null, values);
+    }
+
+    public void updateNote(String newValue, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DataBinder.DataNote.COLUMN_NAME_TEXT, newValue);
+        db.update(DataBinder.DataNote.TABLE_NAME, values,
+                DataBinder.DataNote._ID + " = ? ", new String[]{Integer.toString(id)});
     }
 
     public void writeUserssInDB(String username, String imgSelection) {

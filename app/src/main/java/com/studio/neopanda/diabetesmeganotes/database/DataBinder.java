@@ -4,7 +4,7 @@ import android.provider.BaseColumns;
 
 public class DataBinder {
 
-    public DataBinder() {
+    private DataBinder() {
 
     }
 
@@ -22,6 +22,11 @@ public class DataBinder {
         public static final String COLUMN_NAME_DATE = "Date";
         public static final String COLUMN_NAME_UNITS = "InsulinUnits";
         public static final String COLUMN_NAME_DATA_ID = "DataID";
+    }
 
+    public static class DataNote implements BaseColumns {
+        public static final String TABLE_NAME = "Note";
+        public static final String COLUMN_NAME_TEXT = "Text";
+        public static final String COLUMN_NAME_DATA_ID = "DataID";
     }
 }

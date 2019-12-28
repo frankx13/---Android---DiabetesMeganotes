@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.view.MotionEvent;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.activities.DashboardActivity;
@@ -42,6 +43,7 @@ public class Utils {
                     context.startActivity(intent);
                     activity.overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
                     activity.finish();
+                    Toast.makeText(context, "Déconnexion...", Toast.LENGTH_SHORT).show();
 
                     return true;
                 }

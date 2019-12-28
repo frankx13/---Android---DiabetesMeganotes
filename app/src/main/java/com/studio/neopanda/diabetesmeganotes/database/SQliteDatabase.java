@@ -39,11 +39,6 @@ public class SQliteDatabase {
         public static final String COLUMN_NAME_EXTRA_INFOS = "Extras";
     }
 
-    public static class Note implements BaseColumns {
-        public static final String TABLE_NAME = "Note";
-        public static final String COLUMN_NAME_TEXT = "Text";
-    }
-
     public static class Objectives implements BaseColumns {
         public static final String TABLE_NAME = "Objectives";
         public static final String COLUMN_NAME_DATE = "Date";
