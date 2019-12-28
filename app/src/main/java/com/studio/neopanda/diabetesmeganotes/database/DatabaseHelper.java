@@ -5,13 +5,11 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.widget.Toast;
 
 import com.studio.neopanda.diabetesmeganotes.models.Alert;
 import com.studio.neopanda.diabetesmeganotes.models.CurrentUser;
 import com.studio.neopanda.diabetesmeganotes.models.GlycemyBinder;
 import com.studio.neopanda.diabetesmeganotes.models.InsulinBinder;
-import com.studio.neopanda.diabetesmeganotes.models.NoteBinder;
 import com.studio.neopanda.diabetesmeganotes.models.Objective;
 import com.studio.neopanda.diabetesmeganotes.models.User;
 import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
@@ -22,7 +20,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // DB version
-    private static final int DATABASE_VERSION = 17;
+    private static final int DATABASE_VERSION = 19;
     private static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CURRENT_USERS =
@@ -66,10 +64,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     SQliteDatabase.Users.COLUMN_NAME_NOTE_ID + " INTEGER," +
                     SQliteDatabase.Users.COLUMN_NAME_OBJECTIVES_ID + " INTEGER," +
                     SQliteDatabase.Users.COLUMN_NAME_ALERTS_ID + " INTEGER," +
-                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_GLYCEMIES_ID + ") REFERENCES " + SQliteDatabase.InsulinUnits._ID + " ," +
-                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_INSULIN_ID + ") REFERENCES " + SQliteDatabase.InsulinUnits._ID + " ," +
-                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_OBJECTIVES_ID + ") REFERENCES " + SQliteDatabase.Objectives._ID + " ," +
-                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_ALERTS_ID + ") REFERENCES " + SQliteDatabase.Glycemies._ID + ")";
+                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_ALERTS_ID + ") REFERENCES " + SQliteDatabase.Objectives._ID + ")";
 
     private static final String SQL_DELETE_ENTRIES_USERS =
             "DROP TABLE IF EXISTS " + SQliteDatabase.Users.TABLE_NAME;

@@ -90,4 +90,14 @@
     <string name="ok">OK</string>
     <string name="dialog_delete_insulin_entry">Supprimer cette entrée ?</string>
     <string name="new_value_insulin_units_update">Nouvelle valeur</string>
+    <string name="iscustom_objective_text">Vous souhaitez…</string>
+    <string name="choose_an_objective">Choisir un objectif</string>
+    <string name="define_an_objective">Définir un objectif</string>
+    <string name="show_entry_objectives">Montrer objectifs</string>
+    <string name="start_date_prototype">Commencé depuis</string>
+    <string name="Choose_objective_pack">Choisissez un pack :</string>
+    <string name="first_pack_name">Réduire l\'alimentation \nDurée de 7 jours</string>
+    <string name="second_pack_name">Faire plus de sport \nDurée de 7 jours</string>
+    <string name="third_pack_name">Faire moins d\'insuline \nDurée de 7 jours</string>
+    <string name="forth_pack_name">Améliorer la glycémie \nDurée de 7 jours</string>
 </resources>

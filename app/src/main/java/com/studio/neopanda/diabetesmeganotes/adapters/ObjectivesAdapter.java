@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.models.Objective;
+import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
 
 import java.util.List;
 
@@ -34,10 +35,13 @@ public class ObjectivesAdapter extends RecyclerView.Adapter<ObjectivesAdapter.My
 
     @Override
     public void onBindViewHolder(@NonNull ObjectivesAdapter.MyViewHolder holder, int position) {
-        holder.numberTV.setText("Objectif " + mData.get(position).idEntry);
-        holder.typeTV.setText("Type d'objectif : " + mData.get(position).type);
+        holder.numberTV.setText("Objectif n°" + mData.get(position).idEntry);
+        holder.typeTV.setText("Type : " + mData.get(position).type);
         holder.durationTV.setText("Durée : " + mData.get(position).duration + "J");
-        holder.descriptionTV.setText(mData.get(position).getDescription());
+        holder.descriptionTV.setText("Description : " + mData.get(position).getDescription());
+
+        //TODO startedDateTV' text need to be implemented inside the object instead
+        holder.startedDateTV.setText("Début : " + DateUtils.calculateDateOfToday());
     }
 
     @Override
@@ -51,6 +55,7 @@ public class ObjectivesAdapter extends RecyclerView.Adapter<ObjectivesAdapter.My
         TextView typeTV;
         TextView durationTV;
         TextView descriptionTV;
+        TextView startedDateTV;
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -59,6 +64,7 @@ public class ObjectivesAdapter extends RecyclerView.Adapter<ObjectivesAdapter.My
             typeTV = itemView.findViewById(R.id.objectives_item_type);
             durationTV = itemView.findViewById(R.id.objectives_item_duration);
             descriptionTV = itemView.findViewById(R.id.objectives_item_description);
+            startedDateTV = itemView.findViewById(R.id.objectives_item_start_date);
         }
     }
 }
