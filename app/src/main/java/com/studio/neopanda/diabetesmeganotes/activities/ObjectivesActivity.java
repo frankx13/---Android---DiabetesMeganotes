@@ -150,6 +150,7 @@ public class ObjectivesActivity extends AppCompatActivity {
                 if (objectives.size() > 9) {
                     Toast.makeText(ObjectivesActivity.this, "Limite d'objectifs atteinte (9).", Toast.LENGTH_SHORT).show();
                 } else {
+
                     addObjectiveBtn.setVisibility(View.GONE);
                     objectivesScroller.setVisibility(View.GONE);
                     newObjectiveCustomTV.setVisibility(View.VISIBLE);
