@@ -10,7 +10,7 @@ import com.studio.neopanda.diabetesmeganotes.models.Alert;
 import com.studio.neopanda.diabetesmeganotes.models.CurrentUser;
 import com.studio.neopanda.diabetesmeganotes.models.GlycemyBinder;
 import com.studio.neopanda.diabetesmeganotes.models.InsulinBinder;
-import com.studio.neopanda.diabetesmeganotes.models.Objective;
+import com.studio.neopanda.diabetesmeganotes.models.ObjectiveBinder;
 import com.studio.neopanda.diabetesmeganotes.models.User;
 import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
 
@@ -20,7 +20,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // DB version
-    private static final int DATABASE_VERSION = 19;
+    private static final int DATABASE_VERSION = 22;
     private static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CURRENT_USERS =
@@ -63,8 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                     SQliteDatabase.Users.COLUMN_NAME_INSULIN_ID + " INTEGER," +
                     SQliteDatabase.Users.COLUMN_NAME_NOTE_ID + " INTEGER," +
                     SQliteDatabase.Users.COLUMN_NAME_OBJECTIVES_ID + " INTEGER," +
-                    SQliteDatabase.Users.COLUMN_NAME_ALERTS_ID + " INTEGER," +
-                    "FOREIGN KEY (" + SQliteDatabase.Users.COLUMN_NAME_ALERTS_ID + ") REFERENCES " + SQliteDatabase.Objectives._ID + ")";
+                    SQliteDatabase.Users.COLUMN_NAME_ALERTS_ID + " INTEGER)";
 
     private static final String SQL_DELETE_ENTRIES_USERS =
             "DROP TABLE IF EXISTS " + SQliteDatabase.Users.TABLE_NAME;
@@ -78,16 +77,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES_NOTEBINDER =
             "DROP TABLE IF EXISTS " + DataBinder.DataNote.TABLE_NAME;
 
-    private static final String SQL_CREATE_ENTRIES_OBJECTIVES =
-            "CREATE TABLE " + SQliteDatabase.Objectives.TABLE_NAME + " (" +
-                    SQliteDatabase.Objectives._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    SQliteDatabase.Objectives.COLUMN_NAME_DESCRIPTION + " TEXT," +
-                    SQliteDatabase.Objectives.COLUMN_NAME_DURATION + " INTEGER," +
-                    SQliteDatabase.Objectives.COLUMN_NAME_TYPE + " TEXT," +
-                    SQliteDatabase.Objectives.COLUMN_NAME_DATE + " TEXT)";
+    private static final String SQL_CREATE_ENTRIES_OBJECTIVESBINDER =
+            "CREATE TABLE " + DataBinder.DataObjectives.TABLE_NAME + " (" +
+                    DataBinder.DataObjectives._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    DataBinder.DataObjectives.COLUMN_NAME_DESCRIPTION + " TEXT," +
+                    DataBinder.DataObjectives.COLUMN_NAME_DURATION + " INTEGER," +
+                    DataBinder.DataObjectives.COLUMN_NAME_TYPE + " TEXT," +
+                    DataBinder.DataObjectives.COLUMN_NAME_DATE + " TEXT," +
+                    DataBinder.DataObjectives.COLUMN_NAME_DATA_ID + " TEXT)";
 
-    private static final String SQL_DELETE_ENTRIES_OBJECTIVES =
-            "DROP TABLE IF EXISTS " + SQliteDatabase.Objectives.TABLE_NAME;
+    private static final String SQL_DELETE_ENTRIES_OBJECTIVESBINDER =
+            "DROP TABLE IF EXISTS " + DataBinder.DataObjectives.TABLE_NAME;
 
     private static final String SQL_CREATE_ENTRIES_ALERTS =
             "CREATE TABLE " + SQliteDatabase.Alerts.TABLE_NAME + " (" +
@@ -107,24 +107,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES_USERS);
-        db.execSQL(SQL_CREATE_ENTRIES_OBJECTIVES);
         db.execSQL(SQL_CREATE_ENTRIES_ALERTS);
         db.execSQL(SQL_CREATE_ENTRIES_CURRENT_USERS);
         db.execSQL(SQL_CREATE_ENTRIES_GLYCEMYBINDER);
         db.execSQL(SQL_CREATE_ENTRIES_INSULINBINDER);
         db.execSQL(SQL_CREATE_ENTRIES_NOTEBINDER);
+        db.execSQL(SQL_CREATE_ENTRIES_OBJECTIVESBINDER);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_ENTRIES_USERS);
-        db.execSQL(SQL_DELETE_ENTRIES_OBJECTIVES);
         db.execSQL(SQL_DELETE_ENTRIES_ALERTS);
         db.execSQL(SQL_DELETE_ENTRIES_CURRENT_USERS);
         db.execSQL(SQL_DELETE_ENTRIES_GLYCEMYBINDER);
         db.execSQL(SQL_DELETE_ENTRIES_INSULINBINDER);
         db.execSQL(SQL_DELETE_ENTRIES_NOTEBINDER);
+        db.execSQL(SQL_DELETE_ENTRIES_OBJECTIVESBINDER);
         onCreate(db);
     }
 
@@ -411,6 +411,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         int deletedRows = db.delete(DataBinder.DataInsulin.TABLE_NAME, selection, selectionArgs);
     }
 
+    public void deleteObjectiveInDB(String [] selectionArgs){
+        SQLiteDatabase db = getReadableDatabase();
+        // Define 'where' part of query.
+        String selection = DataBinder.DataObjectives._ID + " LIKE ?";
+        // Issue SQL statement => indicate the numbers of rows deleted
+        int deletedRows = db.delete(DataBinder.DataObjectives.TABLE_NAME, selection, selectionArgs);
+    }
+
     public void deleteGlycemyInDB(String[] selectionArgs) {
         SQLiteDatabase db = getReadableDatabase();
         // Define 'where' part of query.
@@ -444,44 +452,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
-    public void writeObjectiveInDB(String date, String duration, String type, String description) {
+    public void writeObjectiveInDB(String date, String duration, String type, String description, String userId) {
         // Gets the data repository in write mode
         SQLiteDatabase db = getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Objectives.COLUMN_NAME_DATE, date);
-        values.put(SQliteDatabase.Objectives.COLUMN_NAME_DURATION, duration);
-        values.put(SQliteDatabase.Objectives.COLUMN_NAME_TYPE, type);
-        values.put(SQliteDatabase.Objectives.COLUMN_NAME_DESCRIPTION, description);
+        values.put(DataBinder.DataObjectives.COLUMN_NAME_DATE, date);
+        values.put(DataBinder.DataObjectives.COLUMN_NAME_DURATION, duration);
+        values.put(DataBinder.DataObjectives.COLUMN_NAME_TYPE, type);
+        values.put(DataBinder.DataObjectives.COLUMN_NAME_DESCRIPTION, description);
+        values.put(DataBinder.DataObjectives.COLUMN_NAME_DATA_ID, userId);
 
         // Insert the new row, returning the primary key value of the new row
-        db.insertOrThrow(SQliteDatabase.Objectives.TABLE_NAME, null, values);
+        db.insertOrThrow(DataBinder.DataObjectives.TABLE_NAME, null, values);
     }
 
-    public List<Objective> getObjectives() {
-        List<Objective> objectiveList = new ArrayList<>();
+    public List<ObjectiveBinder> getObjectives(String userId) {
+        List<ObjectiveBinder> objectiveList = new ArrayList<>();
         SQLiteDatabase sQliteDatabase = getReadableDatabase();
         String[] field = {
-                SQliteDatabase.Objectives.COLUMN_NAME_DATE,
-                SQliteDatabase.Objectives.COLUMN_NAME_TYPE,
-                SQliteDatabase.Objectives.COLUMN_NAME_DURATION,
-                SQliteDatabase.Objectives.COLUMN_NAME_DESCRIPTION};
-        Cursor c = sQliteDatabase.query(SQliteDatabase.Objectives.TABLE_NAME, field,
+                DataBinder.DataObjectives.COLUMN_NAME_DATE,
+                DataBinder.DataObjectives.COLUMN_NAME_TYPE,
+                DataBinder.DataObjectives.COLUMN_NAME_DURATION,
+                DataBinder.DataObjectives.COLUMN_NAME_DESCRIPTION,
+                DataBinder.DataObjectives.COLUMN_NAME_DATA_ID};
+        Cursor c = sQliteDatabase.query(DataBinder.DataObjectives.TABLE_NAME, field,
                 null, null, null, null, null);
 
-        int date = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_DATE);
-        int type = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_TYPE);
-        int duration = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_DURATION);
-        int desc = c.getColumnIndex(SQliteDatabase.Objectives.COLUMN_NAME_DESCRIPTION);
+        int date = c.getColumnIndex(DataBinder.DataObjectives.COLUMN_NAME_DATE);
+        int type = c.getColumnIndex(DataBinder.DataObjectives.COLUMN_NAME_TYPE);
+        int duration = c.getColumnIndex(DataBinder.DataObjectives.COLUMN_NAME_DURATION);
+        int desc = c.getColumnIndex(DataBinder.DataObjectives.COLUMN_NAME_DESCRIPTION);
+        int dataId = c.getColumnIndex(DataBinder.DataObjectives.COLUMN_NAME_DATA_ID);
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             String dateData = c.getString(date);
             String typeData = c.getString(type);
             String durationData = c.getString(duration);
             String descData = c.getString(desc);
+            String idData = c.getString(dataId);
 
-            objectiveList.add(new Objective(dateData, typeData, durationData, descData));
+            if (idData.equals(userId)){
+                objectiveList.add(new ObjectiveBinder(dateData, typeData, durationData, descData, idData));
+            }
         }
 
         getReadableDatabase().close();

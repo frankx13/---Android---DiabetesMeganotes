@@ -19,7 +19,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.adapters.ObjectivesAdapter;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
-import com.studio.neopanda.diabetesmeganotes.models.Objective;
+import com.studio.neopanda.diabetesmeganotes.models.ObjectiveBinder;
 import com.studio.neopanda.diabetesmeganotes.utils.DateUtils;
 import com.studio.neopanda.diabetesmeganotes.utils.Utils;
 
@@ -90,9 +90,10 @@ public class ObjectivesActivity extends AppCompatActivity {
     private String typeObjective = "";
     private String descriptionObjective = "";
     private String todayDate = "";
+    private String userId = "";
     private int typeObjectiveSelector = 0;
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
-    private List<Objective> objectives;
+    private List<ObjectiveBinder> objectives;
     private boolean isTableNotEmpty = false;
     private int idEntry = 0;
     private ObjectivesAdapter adapter;
@@ -107,6 +108,7 @@ public class ObjectivesActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         objectives = new ArrayList<>();
+        userId = dbHelper.getActiveUserInDB().get(0).getUsername();
 
         Utils.backToDashboard(titleApp, this, ObjectivesActivity.this);
 
@@ -147,10 +149,9 @@ public class ObjectivesActivity extends AppCompatActivity {
         addObjectiveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (objectives.size() > 9) {
+                if (objectives.size() > 8) {
                     Toast.makeText(ObjectivesActivity.this, "Limite d'objectifs atteinte (9).", Toast.LENGTH_SHORT).show();
                 } else {
-
                     addObjectiveBtn.setVisibility(View.GONE);
                     objectivesScroller.setVisibility(View.GONE);
                     newObjectiveCustomTV.setVisibility(View.VISIBLE);
@@ -194,7 +195,7 @@ public class ObjectivesActivity extends AppCompatActivity {
                                     descriptionObjective = inputObjectiveDescription.getEditableText().toString();
                                     todayDate = DateUtils.calculateDateOfToday();
 
-                                    dbHelper.writeObjectiveInDB(todayDate, deadlineObjective, typeObjective, descriptionObjective);
+                                    dbHelper.writeObjectiveInDB(todayDate, deadlineObjective, typeObjective, descriptionObjective, userId);
 
                                     newObjectiveContainer.setVisibility(View.GONE);
                                     containerValidationBtns.setVisibility(View.GONE);
@@ -238,7 +239,7 @@ public class ObjectivesActivity extends AppCompatActivity {
         firstPack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Alimentation", "Une courte diète pour booster votre corps!");
+                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Alimentation", "Une courte diète pour booster votre corps!", userId);
                 packChosen = true;
                 packChosenEnd();
             }
@@ -246,7 +247,7 @@ public class ObjectivesActivity extends AppCompatActivity {
         secondPack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Sport", "Un petit entrainement pour vous remettre dans le bain!");
+                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Sport", "Un petit entrainement pour vous remettre dans le bain!", userId);
                 packChosen = true;
                 packChosenEnd();
             }
@@ -254,7 +255,7 @@ public class ObjectivesActivity extends AppCompatActivity {
         thirdPack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Insulin", "Réduction des doses d'insuline faites, vous irez moins souvent à la pharmacie !:)");
+                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Insulin", "Réduction des doses d'insuline faites, vous irez moins souvent à la pharmacie !:)", userId);
                 packChosen = true;
                 packChosenEnd();
             }
@@ -262,7 +263,7 @@ public class ObjectivesActivity extends AppCompatActivity {
         forthPack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Glycemy", "Équilibrez votre diabète en réduisant votre moyenne glycémique hebdomadaire !");
+                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Glycemy", "Équilibrez votre diabète en réduisant votre moyenne glycémique hebdomadaire !", userId);
                 packChosen = true;
                 packChosenEnd();
             }
@@ -280,7 +281,7 @@ public class ObjectivesActivity extends AppCompatActivity {
     }
 
     private void getObjectives() {
-        objectives = dbHelper.getObjectives();
+        objectives = dbHelper.getObjectives(userId);
         if (objectives.isEmpty()) {
             showEntriesObjectives.setVisibility(View.GONE);
         } else {
@@ -293,12 +294,12 @@ public class ObjectivesActivity extends AppCompatActivity {
     }
 
     private void addingIds() {
-        for (Objective o : objectives) {
+        for (ObjectiveBinder o : objectives) {
             o.setIdEntry(idEntry += 1);
         }
     }
 
-    private void loadDataInRV(List<Objective> objectivesList) {
+    private void loadDataInRV(List<ObjectiveBinder> objectivesList) {
         adapter = new ObjectivesAdapter(this, objectivesList);
         recyclerViewObjectives.setAdapter(adapter);
         recyclerViewObjectives.setLayoutManager(new LinearLayoutManager(this));

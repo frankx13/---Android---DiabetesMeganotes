@@ -25,14 +25,6 @@ public class SQliteDatabase {
         public static final String COLUMN_NAME_ALERTS_ID = "Alerts_id";
     }
 
-    public static class Objectives implements BaseColumns {
-        public static final String TABLE_NAME = "Objectives";
-        public static final String COLUMN_NAME_DATE = "Date";
-        public static final String COLUMN_NAME_DURATION = "Durée";
-        public static final String COLUMN_NAME_TYPE = "Type";
-        public static final String COLUMN_NAME_DESCRIPTION = "Description";
-    }
-
     public static class Alerts implements BaseColumns {
         public static final String TABLE_NAME = "Alerts";
         public static final String COLUMN_NAME_START_DATE = "Sdate";

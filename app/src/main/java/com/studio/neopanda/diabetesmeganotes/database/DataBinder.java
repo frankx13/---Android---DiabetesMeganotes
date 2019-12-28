@@ -29,4 +29,13 @@ public class DataBinder {
         public static final String COLUMN_NAME_TEXT = "Text";
         public static final String COLUMN_NAME_DATA_ID = "DataID";
     }
+
+    public static class DataObjectives implements BaseColumns {
+        public static final String TABLE_NAME = "ObjectivesBinder";
+        public static final String COLUMN_NAME_DATE = "Date";
+        public static final String COLUMN_NAME_DURATION = "Durée";
+        public static final String COLUMN_NAME_TYPE = "Type";
+        public static final String COLUMN_NAME_DESCRIPTION = "Description";
+        public static final String COLUMN_NAME_DATA_ID = "DataID";
+    }
 }
