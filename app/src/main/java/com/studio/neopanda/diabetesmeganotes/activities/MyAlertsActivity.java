@@ -1,19 +1,11 @@
 package com.studio.neopanda.diabetesmeganotes.activities;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
+import android.app.AlarmManager;
 import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.transition.Explode;
-import android.transition.Fade;
-import android.transition.Slide;
 import android.view.View;
-import android.view.Window;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -24,21 +16,26 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.adapters.AlertsAdapter;
+import com.studio.neopanda.diabetesmeganotes.adapters.MyAlertReceiver;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
 import com.studio.neopanda.diabetesmeganotes.database.SQliteDatabase;
 import com.studio.neopanda.diabetesmeganotes.models.Alert;
 import com.studio.neopanda.diabetesmeganotes.utils.Utils;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
+import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,6 +43,7 @@ import butterknife.OnClick;
 
 public class MyAlertsActivity extends AppCompatActivity {
 
+    public static final int REQUEST_CODE = 101;
     //UI
     @BindView(R.id.title_app_alerts_TV)
     public TextView titleApp;
@@ -87,7 +85,6 @@ public class MyAlertsActivity extends AppCompatActivity {
     public ImageButton exitJournalBtn;
     @BindView(R.id.rv_container)
     public LinearLayout recyclerContainer;
-
     //DATA
     private String typeAlert = "";
     private String nameAlert = "";
@@ -103,6 +100,7 @@ public class MyAlertsActivity extends AppCompatActivity {
     private boolean insulinSelected = false;
     private boolean glycemySelected = false;
     private boolean isNameConfirmed = false;
+    private long timeInMs;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,10 +112,79 @@ public class MyAlertsActivity extends AppCompatActivity {
 
         Utils.backToDashboard(titleApp, this, MyAlertsActivity.this);
 
+//        searchForAlerts();
+//        activateAlerts();
+
+
         nextBtnMecanic();
         previousBtnMecanic();
-        showNotification("Negaz", "ya fogot' da diabetes pal'");
     }
+
+//    public void setAlarm(){
+//
+//        int hour = 18;
+//        int minute = 15;
+//        String myTime = String.valueOf(hour) + ":" + String.valueOf(minute);
+//
+//        Date date = null;
+//
+//        // today at your defined time Calendar
+//        Calendar customCalendar = new GregorianCalendar();
+//        // set hours and minutes
+//        customCalendar.set(Calendar.HOUR_OF_DAY, hour);
+//        customCalendar.set(Calendar.MINUTE, minute);
+//        customCalendar.set(Calendar.SECOND, 0);
+//        customCalendar.set(Calendar.MILLISECOND, 0);
+//
+//        Date customDate = customCalendar.getTime();
+//
+//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
+//        try {
+//
+//            date = sdf.parse(myTime);
+//
+//        } catch (ParseException e) {
+//
+//            e.printStackTrace();
+//        }
+//
+//        if (date != null) {
+//            timeInMs = customDate.getTime();
+//        }
+//
+//        Intent intent = new Intent(this, MyAlertReceiver.class);
+//        PendingIntent action = PendingIntent.getBroadcast(this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//
+//        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
+//        am.set(AlarmManager.RTC_WAKEUP, timeInMs, action);
+//    }
+
+//    private void triggerAlarm() {
+//        Intent intent = new Intent(this, MyAlertReceiver.class);
+//        PendingIntent.getBroadcast(this, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        /*
+//        1st Param : Context
+//        2nd Param : Integer request code
+//        3rd Param : Wrapped Intent
+//        4th Intent: Flag
+//        */
+//
+//        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+//        /*
+//        Alarm will be triggered approximately after one hour and will be repeated every hour after that
+//        */
+//        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, System.currentTimeMillis() + AlarmManager.INTERVAL_HOUR, AlarmManager.INTERVAL_HOUR, pendingIntent);
+//        /*
+//        1st Param : Type of the Alarm
+//        2nd Param : Time in milliseconds when the alarm will be triggered first
+//        3rd Param : Interval after which alarm will be repeated . You can only use any one of the AlarmManager constants
+//        4th Param :Pending Intent
+//        */
+//
+//        //to cancel alarm
+//        //alarmManager.cancel(pendingIntent);
+//    }
 
     private void showMotionViews() {
         foodSelectionIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_local_pizza_black_24dp));
@@ -416,27 +483,5 @@ public class MyAlertsActivity extends AppCompatActivity {
     private void showNavAddAlertBtn() {
         addAlertNextBtn.setVisibility(View.VISIBLE);
         addAlertPreviousBtn.setVisibility(View.VISIBLE);
-    }
-
-    void showNotification(String title, String message) {
-        //TODO need to implement a worker to handle the notifications properly
-        NotificationManager mNotificationManager =
-                (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel("123",
-                    "D.Meg",
-                    NotificationManager.IMPORTANCE_DEFAULT);
-            channel.setDescription("Hey ma' bro, dan't ya forgot yos' diabetes pal' ?");
-            mNotificationManager.createNotificationChannel(channel);
-        }
-        NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(getApplicationContext(), "123")
-                .setSmallIcon(R.drawable.ic_needle_24dp) // notification icon
-                .setContentTitle(title) // title for notification
-                .setContentText(message)// message for notification
-                .setAutoCancel(true); // clear notification after click
-        Intent intent = new Intent(getApplicationContext(), MyAlertsActivity.class);
-        PendingIntent pi = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        mBuilder.setContentIntent(pi);
-        mNotificationManager.notify(0, mBuilder.build());
     }
 }

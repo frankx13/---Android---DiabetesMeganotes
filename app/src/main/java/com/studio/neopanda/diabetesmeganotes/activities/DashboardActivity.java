@@ -121,7 +121,7 @@ public class DashboardActivity extends AppCompatActivity {
 //                        ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
 //                startActivity(intent);
 //                overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
-                Toast.makeText(DashboardActivity.this, "Available in the next update !", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DashboardActivity.this, "Disponible dans la prochaine mise à jour !", Toast.LENGTH_SHORT).show();
             }
         });
 
