@@ -38,4 +38,17 @@ public class DataBinder {
         public static final String COLUMN_NAME_DESCRIPTION = "Description";
         public static final String COLUMN_NAME_DATA_ID = "DataID";
     }
+
+    public static class DataAlerts implements BaseColumns {
+        public static final String TABLE_NAME = "AlertsBinder";
+        public static final String COLUMN_NAME_START_DATE = "Sdate";
+        public static final String COLUMN_NAME_END_DATE = "Edate";
+        public static final String COLUMN_NAME_TIME_HOUR = "Time";
+        public static final String COLUMN_NAME_NAME = "Name";
+        public static final String COLUMN_NAME_TYPE = "Type";
+        public static final String COLUMN_NAME_DESCRIPTION = "Description";
+        public static final String COLUMN_NAME_DATA_ID = "DataID";
+        public static final String COLUMN_NAME_IS_ACTIVE = "IsActive";
+    }
+
 }

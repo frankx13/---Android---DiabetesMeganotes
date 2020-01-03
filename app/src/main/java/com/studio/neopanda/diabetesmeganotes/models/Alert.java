@@ -7,16 +7,27 @@ public class Alert {
     public String startMoment;//
     public String endMoment;//
     public String hourAlert;
-    public boolean isActive;
+    public String dataID;
+    public String isActive;
     public int idEntry;//
 
-    public Alert(String name, String description, String type, String startMoment, String endMoment, String hourAlert) {
+    public Alert(String name, String description, String type, String startMoment, String endMoment, String hourAlert, String dataID, String isActive) {
         this.name = name;
         this.description = description;
         this.type = type;
         this.startMoment = startMoment;
         this.endMoment = endMoment;
         this.hourAlert = hourAlert;
+        this.dataID = dataID;
+        this.isActive = isActive;
+    }
+
+    public String getDataID() {
+        return dataID;
+    }
+
+    public void setDataID(String dataID) {
+        this.dataID = dataID;
     }
 
     public String getName() {
@@ -67,12 +78,12 @@ public class Alert {
         this.idEntry = idEntry;
     }
 
-    public boolean isActive() {
+    public String getIsActive() {
         return isActive;
     }
 
-    public void setActive(boolean active) {
-        isActive = active;
+    public void setIsActive(String isActive) {
+        this.isActive = isActive;
     }
 
     public String getHourAlert() {

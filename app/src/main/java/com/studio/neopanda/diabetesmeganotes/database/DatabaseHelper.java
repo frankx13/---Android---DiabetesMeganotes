@@ -20,7 +20,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
     //CONSTANTS
     // DB version
-    private static final int DATABASE_VERSION = 22;
+    private static final int DATABASE_VERSION = 4;
     private static final String DATABASE_NAME = "MeganotesReader.db";
 
     private static final String SQL_CREATE_ENTRIES_CURRENT_USERS =
@@ -89,17 +89,20 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE_ENTRIES_OBJECTIVESBINDER =
             "DROP TABLE IF EXISTS " + DataBinder.DataObjectives.TABLE_NAME;
 
-    private static final String SQL_CREATE_ENTRIES_ALERTS =
-            "CREATE TABLE " + SQliteDatabase.Alerts.TABLE_NAME + " (" +
-                    SQliteDatabase.Alerts._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                    SQliteDatabase.Alerts.COLUMN_NAME_START_DATE + " TEXT," +
-                    SQliteDatabase.Alerts.COLUMN_NAME_END_DATE + " TEXT," +
-                    SQliteDatabase.Alerts.COLUMN_NAME_NAME + " TEXT," +
-                    SQliteDatabase.Alerts.COLUMN_NAME_TYPE + " TEXT," +
-                    SQliteDatabase.Alerts.COLUMN_NAME_DESCRIPTION + " TEXT)";
+    private static final String SQL_CREATE_ENTRIES_ALERTSBINDER =
+            "CREATE TABLE " + DataBinder.DataAlerts.TABLE_NAME + " (" +
+                    DataBinder.DataAlerts._ID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                    DataBinder.DataAlerts.COLUMN_NAME_START_DATE + " TEXT," +
+                    DataBinder.DataAlerts.COLUMN_NAME_END_DATE + " TEXT," +
+                    DataBinder.DataAlerts.COLUMN_NAME_NAME + " TEXT," +
+                    DataBinder.DataAlerts.COLUMN_NAME_TYPE + " TEXT," +
+                    DataBinder.DataAlerts.COLUMN_NAME_TIME_HOUR + " TEXT," +
+                    DataBinder.DataAlerts.COLUMN_NAME_DESCRIPTION + " TEXT," +
+                    DataBinder.DataAlerts.COLUMN_NAME_IS_ACTIVE + " TEXT," +
+                    DataBinder.DataAlerts.COLUMN_NAME_DATA_ID + " TEXT)";
 
-    private static final String SQL_DELETE_ENTRIES_ALERTS =
-            "DROP TABLE IF EXISTS " + SQliteDatabase.Alerts.TABLE_NAME;
+    private static final String SQL_DELETE_ENTRIES_ALERTSBINDER =
+            "DROP TABLE IF EXISTS " + DataBinder.DataAlerts.TABLE_NAME;
 
     public DatabaseHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -107,7 +110,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_ENTRIES_USERS);
-        db.execSQL(SQL_CREATE_ENTRIES_ALERTS);
+        db.execSQL(SQL_CREATE_ENTRIES_ALERTSBINDER);
         db.execSQL(SQL_CREATE_ENTRIES_CURRENT_USERS);
         db.execSQL(SQL_CREATE_ENTRIES_GLYCEMYBINDER);
         db.execSQL(SQL_CREATE_ENTRIES_INSULINBINDER);
@@ -119,7 +122,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         // This database is only a cache for online data, so its upgrade policy is
         // to simply to discard the data and start over
         db.execSQL(SQL_DELETE_ENTRIES_USERS);
-        db.execSQL(SQL_DELETE_ENTRIES_ALERTS);
+        db.execSQL(SQL_DELETE_ENTRIES_ALERTSBINDER);
         db.execSQL(SQL_DELETE_ENTRIES_CURRENT_USERS);
         db.execSQL(SQL_DELETE_ENTRIES_GLYCEMYBINDER);
         db.execSQL(SQL_DELETE_ENTRIES_INSULINBINDER);
@@ -504,39 +507,48 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return objectiveList;
     }
 
-    public void writeAlertInDB(String name, String description, String type, String startMoment, String endMoment) {
+    public void writeAlertInDB(String name, String description, String type, String startMoment, String endMoment, String hour, String userId, String isActive) {
         // Gets the data repository in write mode
         SQLiteDatabase db = getWritableDatabase();
 
         // Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-        values.put(SQliteDatabase.Alerts.COLUMN_NAME_START_DATE, startMoment);
-        values.put(SQliteDatabase.Alerts.COLUMN_NAME_END_DATE, endMoment);
-        values.put(SQliteDatabase.Alerts.COLUMN_NAME_TYPE, type);
-        values.put(SQliteDatabase.Alerts.COLUMN_NAME_DESCRIPTION, description);
-        values.put(SQliteDatabase.Alerts.COLUMN_NAME_NAME, name);
+        values.put(DataBinder.DataAlerts.COLUMN_NAME_START_DATE, startMoment);
+        values.put(DataBinder.DataAlerts.COLUMN_NAME_END_DATE, endMoment);
+        values.put(DataBinder.DataAlerts.COLUMN_NAME_TYPE, type);
+        values.put(DataBinder.DataAlerts.COLUMN_NAME_DESCRIPTION, description);
+        values.put(DataBinder.DataAlerts.COLUMN_NAME_NAME, name);
+        values.put(DataBinder.DataAlerts.COLUMN_NAME_TIME_HOUR, hour);
+        values.put(DataBinder.DataAlerts.COLUMN_NAME_DATA_ID, userId);
+        values.put(DataBinder.DataAlerts.COLUMN_NAME_IS_ACTIVE, isActive);
 
         // Insert the new row, returning the primary key value of the new row
-        db.insertOrThrow(SQliteDatabase.Alerts.TABLE_NAME, null, values);
+        db.insertOrThrow(DataBinder.DataAlerts.TABLE_NAME, null, values);
     }
 
-    public List<Alert> getAlerts() {
+    public List<Alert> getAlerts(String userId) {
         List<Alert> alertList = new ArrayList<>();
         SQLiteDatabase sQliteDatabase = getReadableDatabase();
         String[] field = {
-                SQliteDatabase.Alerts.COLUMN_NAME_START_DATE,
-                SQliteDatabase.Alerts.COLUMN_NAME_END_DATE,
-                SQliteDatabase.Alerts.COLUMN_NAME_TYPE,
-                SQliteDatabase.Alerts.COLUMN_NAME_NAME,
-                SQliteDatabase.Alerts.COLUMN_NAME_DESCRIPTION};
-        Cursor c = sQliteDatabase.query(SQliteDatabase.Alerts.TABLE_NAME, field,
+                DataBinder.DataAlerts.COLUMN_NAME_START_DATE,
+                DataBinder.DataAlerts.COLUMN_NAME_END_DATE,
+                DataBinder.DataAlerts.COLUMN_NAME_TYPE,
+                DataBinder.DataAlerts.COLUMN_NAME_NAME,
+                DataBinder.DataAlerts.COLUMN_NAME_DESCRIPTION,
+                DataBinder.DataAlerts.COLUMN_NAME_TIME_HOUR,
+                DataBinder.DataAlerts.COLUMN_NAME_DATA_ID,
+                DataBinder.DataAlerts.COLUMN_NAME_IS_ACTIVE};
+        Cursor c = sQliteDatabase.query(DataBinder.DataAlerts.TABLE_NAME, field,
                 null, null, null, null, null);
 
-        int sdate = c.getColumnIndex(SQliteDatabase.Alerts.COLUMN_NAME_START_DATE);
-        int edate = c.getColumnIndex(SQliteDatabase.Alerts.COLUMN_NAME_END_DATE);
-        int type = c.getColumnIndex(SQliteDatabase.Alerts.COLUMN_NAME_TYPE);
-        int name = c.getColumnIndex(SQliteDatabase.Alerts.COLUMN_NAME_NAME);
-        int description = c.getColumnIndex(SQliteDatabase.Alerts.COLUMN_NAME_DESCRIPTION);
+        int sdate = c.getColumnIndex(DataBinder.DataAlerts.COLUMN_NAME_START_DATE);
+        int edate = c.getColumnIndex(DataBinder.DataAlerts.COLUMN_NAME_END_DATE);
+        int type = c.getColumnIndex(DataBinder.DataAlerts.COLUMN_NAME_TYPE);
+        int name = c.getColumnIndex(DataBinder.DataAlerts.COLUMN_NAME_NAME);
+        int description = c.getColumnIndex(DataBinder.DataAlerts.COLUMN_NAME_DESCRIPTION);
+        int hour = c.getColumnIndex(DataBinder.DataAlerts.COLUMN_NAME_TIME_HOUR);
+        int dataID = c.getColumnIndex(DataBinder.DataAlerts.COLUMN_NAME_DATA_ID);
+        int active = c.getColumnIndex(DataBinder.DataAlerts.COLUMN_NAME_IS_ACTIVE);
 
         for (c.moveToFirst(); !c.isAfterLast(); c.moveToNext()) {
             String sdateData = c.getString(sdate);
@@ -544,9 +556,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             String typeData = c.getString(type);
             String nameData = c.getString(name);
             String descData = c.getString(description);
+            String hourData = c.getString(hour);
+            String idData = c.getString(dataID);
+            String activeData = c.getString(active);
 
             //TODO implement hour input
-            alertList.add(new Alert(nameData, descData, typeData, sdateData, edateData, "10:00"));
+            if (idData.equals(userId)){
+                alertList.add(new Alert(nameData, descData, typeData, sdateData, edateData, hourData, idData, activeData));
+            }
         }
 
         getReadableDatabase().close();
@@ -554,4 +571,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return alertList;
     }
+
+    public void updateAlertStatus(String activityStatus, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues values = new ContentValues();
+        values.put(DataBinder.DataAlerts.COLUMN_NAME_IS_ACTIVE, activityStatus);
+        db.update(DataBinder.DataAlerts.TABLE_NAME, values,
+                DataBinder.DataAlerts._ID + " = ? ", new String[]{Integer.toString(id)});
+    }
+
 }

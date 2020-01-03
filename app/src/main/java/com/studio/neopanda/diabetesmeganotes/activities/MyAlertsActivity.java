@@ -1,8 +1,5 @@
 package com.studio.neopanda.diabetesmeganotes.activities;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
@@ -21,21 +18,15 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.adapters.AlertsAdapter;
-import com.studio.neopanda.diabetesmeganotes.adapters.MyAlertReceiver;
+import com.studio.neopanda.diabetesmeganotes.database.DataBinder;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
-import com.studio.neopanda.diabetesmeganotes.database.SQliteDatabase;
 import com.studio.neopanda.diabetesmeganotes.models.Alert;
 import com.studio.neopanda.diabetesmeganotes.utils.Utils;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -43,7 +34,9 @@ import butterknife.OnClick;
 
 public class MyAlertsActivity extends AppCompatActivity {
 
+    //INSTANCE DATA
     public static final int REQUEST_CODE = 101;
+
     //UI
     @BindView(R.id.title_app_alerts_TV)
     public TextView titleApp;
@@ -85,12 +78,14 @@ public class MyAlertsActivity extends AppCompatActivity {
     public ImageButton exitJournalBtn;
     @BindView(R.id.rv_container)
     public LinearLayout recyclerContainer;
-    //DATA
+
+    // CLASS DATA
     private String typeAlert = "";
     private String nameAlert = "";
     private String descAlert = "";
     private String sdateAlert = "";
     private String edateAlert = "";
+    private String userId = "";
     private List<Alert> alerts;
     private int idEntry = 0;
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
@@ -109,6 +104,7 @@ public class MyAlertsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         alerts = new ArrayList<>();
+        userId = dbHelper.getActiveUserInDB().get(0).getUsername();
 
         Utils.backToDashboard(titleApp, this, MyAlertsActivity.this);
 
@@ -229,7 +225,7 @@ public class MyAlertsActivity extends AppCompatActivity {
     private void loadRV() {
         recyclerView.setVisibility(View.VISIBLE);
         exitJournalBtn.setVisibility(View.VISIBLE);
-        AlertsAdapter adapter = new AlertsAdapter(alerts, this);
+        AlertsAdapter adapter = new AlertsAdapter(alerts, this, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -332,7 +328,7 @@ public class MyAlertsActivity extends AppCompatActivity {
     }
 
     private void writeAlertInDB() {
-        dbHelper.writeAlertInDB(nameAlert, descAlert, typeAlert, sdateAlert, edateAlert);
+        dbHelper.writeAlertInDB(nameAlert, descAlert, typeAlert, sdateAlert, edateAlert, "12", userId, "active");
         nameAlert = "";
         alertNameInput.setText("");
         alertNameInput.clearFocus();
@@ -455,13 +451,15 @@ public class MyAlertsActivity extends AppCompatActivity {
 
     @OnClick({R.id.see_all_alerts_btn})
     public void onClickSeeAllAlertsBtn() {
-        boolean isTableNotEmpty = dbHelper.isTableNotEmpty(SQliteDatabase.Alerts.TABLE_NAME);
+        List<Alert> alertsList;
+        alertsList = dbHelper.getAlerts(userId);
 
-        if (isTableNotEmpty) {
-            alerts.addAll(dbHelper.getAlerts());
+        if (!alertsList.isEmpty()) {
+            alerts.addAll(dbHelper.getAlerts(userId));
             sortingList();
             addingIds();
             loadRV();
+            recyclerView.setVisibility(View.VISIBLE);
             loadExitBtn();
         } else {
             Toast.makeText(this, "Oops! On dirait que vous n'avez aucune alarme programmée.", Toast.LENGTH_LONG).show();
