@@ -1,5 +1,9 @@
 package com.studio.neopanda.diabetesmeganotes.activities;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
@@ -13,16 +17,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.studio.neopanda.diabetesmeganotes.R;
+import com.studio.neopanda.diabetesmeganotes.adapters.AlertReceiver;
 import com.studio.neopanda.diabetesmeganotes.adapters.AlertsAdapter;
+import com.studio.neopanda.diabetesmeganotes.adapters.NotificationsHelper;
 import com.studio.neopanda.diabetesmeganotes.database.DataBinder;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
 import com.studio.neopanda.diabetesmeganotes.models.Alert;
 import com.studio.neopanda.diabetesmeganotes.utils.Utils;
 
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -86,8 +94,11 @@ public class MyAlertsActivity extends AppCompatActivity {
     private String sdateAlert = "";
     private String edateAlert = "";
     private String userId = "";
+    private String nameAlertCache = "";
+    private String descAlertCache = "";
     private List<Alert> alerts;
     private int idEntry = 0;
+    private NotificationsHelper mNotificationHelper;
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
     private int btnCounterSteps = 0;
     private boolean foodSelected = false;
@@ -105,82 +116,29 @@ public class MyAlertsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         alerts = new ArrayList<>();
         userId = dbHelper.getActiveUserInDB().get(0).getUsername();
+        mNotificationHelper = new NotificationsHelper(this);
 
         Utils.backToDashboard(titleApp, this, MyAlertsActivity.this);
-
-//        searchForAlerts();
-//        activateAlerts();
-
 
         nextBtnMecanic();
         previousBtnMecanic();
     }
 
-//    public void setAlarm(){
-//
-//        int hour = 18;
-//        int minute = 15;
-//        String myTime = String.valueOf(hour) + ":" + String.valueOf(minute);
-//
-//        Date date = null;
-//
-//        // today at your defined time Calendar
-//        Calendar customCalendar = new GregorianCalendar();
-//        // set hours and minutes
-//        customCalendar.set(Calendar.HOUR_OF_DAY, hour);
-//        customCalendar.set(Calendar.MINUTE, minute);
-//        customCalendar.set(Calendar.SECOND, 0);
-//        customCalendar.set(Calendar.MILLISECOND, 0);
-//
-//        Date customDate = customCalendar.getTime();
-//
-//        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm", Locale.getDefault());
-//        try {
-//
-//            date = sdf.parse(myTime);
-//
-//        } catch (ParseException e) {
-//
-//            e.printStackTrace();
-//        }
-//
-//        if (date != null) {
-//            timeInMs = customDate.getTime();
-//        }
-//
-//        Intent intent = new Intent(this, MyAlertReceiver.class);
-//        PendingIntent action = PendingIntent.getBroadcast(this, 0,intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//
-//        AlarmManager am = (AlarmManager) getSystemService(ALARM_SERVICE);
-//        am.set(AlarmManager.RTC_WAKEUP, timeInMs, action);
-//    }
+    private void startAlarm(){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
 
-//    private void triggerAlarm() {
-//        Intent intent = new Intent(this, MyAlertReceiver.class);
-//        PendingIntent.getBroadcast(this, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        /*
-//        1st Param : Context
-//        2nd Param : Integer request code
-//        3rd Param : Wrapped Intent
-//        4th Intent: Flag
-//        */
-//
-//        AlarmManager alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
-//        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, REQUEST_CODE, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-//        /*
-//        Alarm will be triggered approximately after one hour and will be repeated every hour after that
-//        */
-//        alarmManager.setInexactRepeating(AlarmManager.ELAPSED_REALTIME_WAKEUP, System.currentTimeMillis() + AlarmManager.INTERVAL_HOUR, AlarmManager.INTERVAL_HOUR, pendingIntent);
-//        /*
-//        1st Param : Type of the Alarm
-//        2nd Param : Time in milliseconds when the alarm will be triggered first
-//        3rd Param : Interval after which alarm will be repeated . You can only use any one of the AlarmManager constants
-//        4th Param :Pending Intent
-//        */
-//
-//        //to cancel alarm
-//        //alarmManager.cancel(pendingIntent);
-//    }
+        alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, 999999999, 999999, pendingIntent);
+    }
+
+    private void cancelAlarm(){
+        AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Intent intent = new Intent(this, AlertReceiver.class);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
+
+        alarmManager.cancel(pendingIntent);
+    }
 
     private void showMotionViews() {
         foodSelectionIV.setImageDrawable(getResources().getDrawable(R.drawable.ic_local_pizza_black_24dp));
@@ -318,17 +276,21 @@ public class MyAlertsActivity extends AppCompatActivity {
                     addAlertNextBtn.setText(getResources().getString(R.string.terminate));
                     btnCounterSteps = 5;
                 } else if (btnCounterSteps == 5) {
+                    nameAlertCache = nameAlert;
+                    descAlertCache = descAlert;
+//                    sendNotificationOnChannel1(nameAlertCache, descAlertCache);
                     writeAlertInDB();
                     hideNewAlertSection();
                     showMainBtns();
                     btnCounterSteps = 0;
+                    startAlarm();
                 }
             }
         });
     }
 
     private void writeAlertInDB() {
-        dbHelper.writeAlertInDB(nameAlert, descAlert, typeAlert, sdateAlert, edateAlert, "12", userId, "active");
+        dbHelper.writeAlertInDB(nameAlert, descAlert, typeAlert, sdateAlert, edateAlert, "12", userId, "inactive");
         nameAlert = "";
         alertNameInput.setText("");
         alertNameInput.clearFocus();
@@ -476,6 +438,16 @@ public class MyAlertsActivity extends AppCompatActivity {
         containerAddAlertNavigation.setAlpha(1.0f);
         textHelper.setAlpha(1.0f);
         showTypeViews();
+    }
+
+    private void sendNotificationOnChannel1(String title, String message) {
+        NotificationCompat.Builder nb = mNotificationHelper.getChannelOneNotification(title, message);
+        mNotificationHelper.getManager().notify(1, nb.build());
+    }
+
+    private void sendNotificationOnChannel2(String title, String message) {
+        NotificationCompat.Builder nb = mNotificationHelper.getChannelTwoNotification(title, message);
+        mNotificationHelper.getManager().notify(2, nb.build());
     }
 
     private void showNavAddAlertBtn() {

@@ -23,6 +23,7 @@
         <activity android:name=".activities.MyAlertsActivity" />
         <activity android:name=".activities.MyGlycemiesActivity" />
         <activity android:name=".activities.ObjectivesActivity" />
+    <receiver android:name=".adapters.AlertReceiver"/>
     </application>
 
 </manifest>

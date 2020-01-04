@@ -16,7 +16,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
 import com.studio.neopanda.diabetesmeganotes.models.Alert;
-import com.studio.neopanda.diabetesmeganotes.utils.UIUtils;
 
 import java.util.List;
 
@@ -46,7 +45,7 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.MyViewHold
     @Override
     public void onBindViewHolder(@NonNull AlertsAdapter.MyViewHolder holder, int position) {
         dbHelper = new DatabaseHelper(mContext);
-        String acti = mData.get(position).getIsActive();
+        isActive = mData.get(position).getIsActive();
 
         holder.sdateTv.setText("Commence le : " + mData.get(position).getStartMoment());
         holder.edateTv.setText("Finit le : " + mData.get(position).getEndMoment());
@@ -55,7 +54,7 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.MyViewHold
         holder.description.setText("Mémo : " + mData.get(position).getDescription());
         holder.number.setText("Alarme n°" + mData.get(position).getIdEntry());
 
-        if (acti.equalsIgnoreCase("active")){
+        if (isActive.equalsIgnoreCase("active")) {
             holder.toggleButton.setChecked(true);
         }
 
@@ -63,11 +62,15 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.MyViewHold
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
-                    isActive = "active";
-                    onClickUpdateEntry(position);
+                    onClickUpdateEntry(position, "active");
                 } else {
-                    isActive = "inactive";
-                    onClickUpdateEntry(position);
+                    onClickUpdateEntry(position, "inactive");
+                }
+
+                if (isActive.equals("active")) {
+                    createAlarm();
+                } else {
+                    disableAlarm();
                 }
             }
         });
@@ -78,17 +81,24 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.MyViewHold
         return mData.size();
     }
 
-    private void onClickUpdateEntry(int position) {
+    private void createAlarm() {
+
+    }
+
+    private void disableAlarm() {
+
+    }
+
+    private void onClickUpdateEntry(int position, String isAlertActive) {
         id = mData.get(position).idEntry;
-        dbHelper.updateAlertStatus(isActive, id);
-        if (isActive.equals("active")){
+        dbHelper.updateAlertStatus(isAlertActive, id);
+        if (isAlertActive.equals("active")) {
             Toast.makeText(mContext, "L'alerte n° " + mData.get(position).idEntry + " a été activée!", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(mContext, "L'alerte n° " + mData.get(position).idEntry + " a été désactivée!", Toast.LENGTH_SHORT).show();
         }
-        mData.get(position).isActive = isActive;
+        mData.get(position).isActive = isAlertActive;
         notifyItemChanged(position);
-        UIUtils.hideKeyboard(activity);
     }
 
     static class MyViewHolder extends RecyclerView.ViewHolder {

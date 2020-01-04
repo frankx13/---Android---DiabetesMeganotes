@@ -3,6 +3,7 @@ package com.studio.neopanda.diabetesmeganotes.activities;
 import android.app.ActivityOptions;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -104,11 +105,15 @@ public class DashboardActivity extends AppCompatActivity {
         alertsBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MyAlertsActivity.class);
-                startActivity(intent,
-                        ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
-                startActivity(intent);
-                overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                    Intent intent = new Intent(getApplicationContext(), MyAlertsActivity.class);
+                    startActivity(intent,
+                            ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
+                    startActivity(intent);
+                    overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
+                } else {
+                    Toast.makeText(DashboardActivity.this, "Votre appareil doit posséder une version logicielle supérieure à 26 pour pouvoir accéder à cette fonctionnalité. Essayez de mettre à jour votre téléphone et réessayez :)", Toast.LENGTH_SHORT).show();
+                }
             }
         });
 
