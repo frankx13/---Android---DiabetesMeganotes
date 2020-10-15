@@ -23,6 +23,7 @@ import com.studio.neopanda.diabetesmeganotes.utils.AverageGlycemyUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 
 public class EntriesInsulinFragment extends Fragment {
@@ -78,7 +79,7 @@ public class EntriesInsulinFragment extends Fragment {
     }
 
     private void initViews() {
-        recyclerViewInsulin = getActivity().findViewById(R.id.recyclerview_insulin_entries);
+        recyclerViewInsulin = Objects.requireNonNull(getActivity()).findViewById(R.id.recyclerview_insulin_entries);
         averageInsulinLevel = getActivity().findViewById(R.id.average_level_insulin_TV);
         containerInsulin = getActivity().findViewById(R.id.container_diary_journal_insulin);
     }
@@ -96,11 +97,8 @@ public class EntriesInsulinFragment extends Fragment {
     }
 
     private void antiUIBreakthrough() {
-        containerInsulin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        containerInsulin.setOnClickListener(v -> {
 
-            }
         });
     }
 

@@ -25,12 +25,10 @@ import com.studio.neopanda.diabetesmeganotes.R;
 import com.studio.neopanda.diabetesmeganotes.adapters.AlertReceiver;
 import com.studio.neopanda.diabetesmeganotes.adapters.AlertsAdapter;
 import com.studio.neopanda.diabetesmeganotes.adapters.NotificationsHelper;
-import com.studio.neopanda.diabetesmeganotes.database.DataBinder;
 import com.studio.neopanda.diabetesmeganotes.database.DatabaseHelper;
 import com.studio.neopanda.diabetesmeganotes.models.Alert;
 import com.studio.neopanda.diabetesmeganotes.utils.Utils;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -124,7 +122,7 @@ public class MyAlertsActivity extends AppCompatActivity {
         previousBtnMecanic();
     }
 
-    private void startAlarm(){
+    private void startAlarm() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
@@ -132,7 +130,7 @@ public class MyAlertsActivity extends AppCompatActivity {
         alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP, 999999999, 999999, pendingIntent);
     }
 
-    private void cancelAlarm(){
+    private void cancelAlarm() {
         AlarmManager alarmManager = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Intent intent = new Intent(this, AlertReceiver.class);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 1, intent, 0);
@@ -158,15 +156,12 @@ public class MyAlertsActivity extends AppCompatActivity {
     }
 
     private void loadExitBtn() {
-        exitJournalBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                recyclerView.setVisibility(View.GONE);
-                recyclerView.setElevation(0.0f);
-                exitJournalBtn.setVisibility(View.GONE);
-                alerts.clear();
-                idEntry = 0;
-            }
+        exitJournalBtn.setOnClickListener(v -> {
+            recyclerView.setVisibility(View.GONE);
+            recyclerView.setElevation(0.0f);
+            exitJournalBtn.setVisibility(View.GONE);
+            alerts.clear();
+            idEntry = 0;
         });
     }
 
@@ -183,108 +178,102 @@ public class MyAlertsActivity extends AppCompatActivity {
     private void loadRV() {
         recyclerView.setVisibility(View.VISIBLE);
         exitJournalBtn.setVisibility(View.VISIBLE);
-        AlertsAdapter adapter = new AlertsAdapter(alerts, this, this);
+        AlertsAdapter adapter = new AlertsAdapter(alerts, this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
     private void previousBtnMecanic() {
-        addAlertPreviousBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (btnCounterSteps == 1) {
-                    typeAlert = "";
-                    isNameConfirmed = false;
-                    textHelper.setText(getResources().getString(R.string.choose_alert_type_tv));
-                    addAlertNextBtn.setText(getResources().getString(R.string.confirm));
-                    cubeSelection.setBackground(getResources().getDrawable(R.drawable.btn_simple));
-                    addAlertPreviousBtn.setVisibility(View.GONE);
-                    showTypeViews();
-                    isNameConfirmed = false;
-                    btnCounterSteps = 0;
-                }
-                if (btnCounterSteps == 2) {
-                    alertDescInput.setVisibility(View.GONE);
-                    textHelper.setText(getResources().getString(R.string.choose_alert_text));
-                    alertNameInput.setVisibility(View.VISIBLE);
-                    btnCounterSteps = 1;
-                }
+        addAlertPreviousBtn.setOnClickListener(v -> {
+            if (btnCounterSteps == 1) {
+                typeAlert = "";
+                isNameConfirmed = false;
+                textHelper.setText(getResources().getString(R.string.choose_alert_type_tv));
+                addAlertNextBtn.setText(getResources().getString(R.string.confirm));
+                cubeSelection.setBackground(getResources().getDrawable(R.drawable.btn_simple));
+                addAlertPreviousBtn.setVisibility(View.GONE);
+                showTypeViews();
+                isNameConfirmed = false;
+                btnCounterSteps = 0;
+            }
+            if (btnCounterSteps == 2) {
+                alertDescInput.setVisibility(View.GONE);
+                textHelper.setText(getResources().getString(R.string.choose_alert_text));
+                alertNameInput.setVisibility(View.VISIBLE);
+                btnCounterSteps = 1;
             }
         });
     }
 
     private void nextBtnMecanic() {
-        addAlertNextBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (btnCounterSteps == 0) {
-                    checkOverlappingViews();
-                    setDescText();
-                    checkTypeSelection();
+        addAlertNextBtn.setOnClickListener(v -> {
+            if (btnCounterSteps == 0) {
+                checkOverlappingViews();
+                setDescText();
+                checkTypeSelection();
 
-                    if (typeAlert.equals("")) {
-                        Toast.makeText(MyAlertsActivity.this, "Vous devez choisir un type d'alerte!", Toast.LENGTH_SHORT).show();
+                if (typeAlert.equals("")) {
+                    Toast.makeText(MyAlertsActivity.this, "Vous devez choisir un type d'alerte!", Toast.LENGTH_SHORT).show();
+                } else {
+                    if (isNameConfirmed && btnCounterSteps == 0) {
+                        textHelper.setText(getResources().getString(R.string.choose_alert_text));
+                        addAlertPreviousBtn.setVisibility(View.VISIBLE);
+                        hideTypeViews();
+                        btnCounterSteps = 1;
+                        isNameConfirmed = false;
                     } else {
-                        if (isNameConfirmed && btnCounterSteps == 0) {
-                            textHelper.setText(getResources().getString(R.string.choose_alert_text));
-                            addAlertPreviousBtn.setVisibility(View.VISIBLE);
-                            hideTypeViews();
-                            btnCounterSteps = 1;
-                            isNameConfirmed = false;
-                        } else {
-                            isNameConfirmed = true;
-                            addAlertNextBtn.setText(getResources().getString(R.string.next));
-                        }
+                        isNameConfirmed = true;
+                        addAlertNextBtn.setText(getResources().getString(R.string.next));
                     }
-                } else if (btnCounterSteps == 1) {
-                    getInputName();
-
-                    if (nameAlert.equals("")) {
-                        Toast.makeText(MyAlertsActivity.this, "Vous devez entrer un nom!", Toast.LENGTH_SHORT).show();
-                    } else if (nameAlert.length() > 15) {
-                        Toast.makeText(MyAlertsActivity.this, "Nom trop long, le maximum est de 15 caractères.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        alertNameInput.setVisibility(View.GONE);
-                        textHelper.setText(getResources().getString(R.string.choose_alert_desc_tv));
-                        alertDescInput.setVisibility(View.VISIBLE);
-                        btnCounterSteps = 2;
-                    }
-                } else if (btnCounterSteps == 2) {
-                    getInputDesc();
-
-                    if (descAlert.equals("")) {
-                        Toast.makeText(MyAlertsActivity.this, "Vous devez entrer une description!", Toast.LENGTH_SHORT).show();
-                    } else if (nameAlert.length() > 75) {
-                        Toast.makeText(MyAlertsActivity.this, "Description trop longue, le maximum est de 75 caractères.", Toast.LENGTH_SHORT).show();
-                    } else {
-                        alertDescInput.setVisibility(View.GONE);
-                        textHelper.setText(getResources().getString(R.string.choose_alert_sdate_tv));
-                        dateInput.setVisibility(View.VISIBLE);
-                        btnCounterSteps = 3;
-                    }
-                } else if (btnCounterSteps == 3) {
-                    getInputSdate();
-
-                    if (sdateAlert.equals("")) {
-                        Toast.makeText(MyAlertsActivity.this, "Vous devez choisir la date de début!", Toast.LENGTH_SHORT).show();
-                    } else {
-                        textHelper.setText(getResources().getString(R.string.choose_alert_edate_tv));
-                        btnCounterSteps = 4;
-                    }
-                } else if (btnCounterSteps == 4) {
-                    getInputEdate();
-                    addAlertNextBtn.setText(getResources().getString(R.string.terminate));
-                    btnCounterSteps = 5;
-                } else if (btnCounterSteps == 5) {
-                    nameAlertCache = nameAlert;
-                    descAlertCache = descAlert;
-//                    sendNotificationOnChannel1(nameAlertCache, descAlertCache);
-                    writeAlertInDB();
-                    hideNewAlertSection();
-                    showMainBtns();
-                    btnCounterSteps = 0;
-                    startAlarm();
                 }
+            } else if (btnCounterSteps == 1) {
+                getInputName();
+
+                if (nameAlert.equals("")) {
+                    Toast.makeText(MyAlertsActivity.this, "Vous devez entrer un nom!", Toast.LENGTH_SHORT).show();
+                } else if (nameAlert.length() > 15) {
+                    Toast.makeText(MyAlertsActivity.this, "Nom trop long, le maximum est de 15 caractères.", Toast.LENGTH_SHORT).show();
+                } else {
+                    alertNameInput.setVisibility(View.GONE);
+                    textHelper.setText(getResources().getString(R.string.choose_alert_desc_tv));
+                    alertDescInput.setVisibility(View.VISIBLE);
+                    btnCounterSteps = 2;
+                }
+            } else if (btnCounterSteps == 2) {
+                getInputDesc();
+
+                if (descAlert.equals("")) {
+                    Toast.makeText(MyAlertsActivity.this, "Vous devez entrer une description!", Toast.LENGTH_SHORT).show();
+                } else if (nameAlert.length() > 75) {
+                    Toast.makeText(MyAlertsActivity.this, "Description trop longue, le maximum est de 75 caractères.", Toast.LENGTH_SHORT).show();
+                } else {
+                    alertDescInput.setVisibility(View.GONE);
+                    textHelper.setText(getResources().getString(R.string.choose_alert_sdate_tv));
+                    dateInput.setVisibility(View.VISIBLE);
+                    btnCounterSteps = 3;
+                }
+            } else if (btnCounterSteps == 3) {
+                getInputSdate();
+
+                if (sdateAlert.equals("")) {
+                    Toast.makeText(MyAlertsActivity.this, "Vous devez choisir la date de début!", Toast.LENGTH_SHORT).show();
+                } else {
+                    textHelper.setText(getResources().getString(R.string.choose_alert_edate_tv));
+                    btnCounterSteps = 4;
+                }
+            } else if (btnCounterSteps == 4) {
+                getInputEdate();
+                addAlertNextBtn.setText(getResources().getString(R.string.terminate));
+                btnCounterSteps = 5;
+            } else if (btnCounterSteps == 5) {
+                nameAlertCache = nameAlert;
+                descAlertCache = descAlert;
+//                    sendNotificationOnChannel1(nameAlertCache, descAlertCache);
+                writeAlertInDB();
+                hideNewAlertSection();
+                showMainBtns();
+                btnCounterSteps = 0;
+                startAlarm();
             }
         });
     }

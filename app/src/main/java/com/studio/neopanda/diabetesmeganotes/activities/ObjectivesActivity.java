@@ -94,9 +94,7 @@ public class ObjectivesActivity extends AppCompatActivity {
     private int typeObjectiveSelector = 0;
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
     private List<ObjectiveBinder> objectives;
-    private boolean isTableNotEmpty = false;
     private int idEntry = 0;
-    private ObjectivesAdapter adapter;
     private boolean packChosen = false;
 
     @SuppressLint("ClickableViewAccessibility")
@@ -113,160 +111,126 @@ public class ObjectivesActivity extends AppCompatActivity {
         Utils.backToDashboard(titleApp, this, ObjectivesActivity.this);
 
         dbHelper.isTableNotEmpty("Objectives");
-        if (!isTableNotEmpty) {
-            getObjectives();
-            if (objectives.size() > 9) {
-                objectives = objectives.subList(0, 9);
-            }
-            sortingList();
-            addingIds();
-
-            loadDataInRV(objectives);
+        boolean isTableNotEmpty = false;
+        getObjectives();
+        if (objectives.size() > 9) {
+            objectives = objectives.subList(0, 9);
         }
+        sortingList();
+        addingIds();
 
-        showEntriesObjectives.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                titleApp.setVisibility(View.GONE);
-                addObjectiveBtn.setVisibility(View.GONE);
-                showEntriesObjectives.setVisibility(View.GONE);
-                objectivesScroller.setVisibility(View.VISIBLE);
-                exitShowObjectivesBtn.setVisibility(View.VISIBLE);
+        loadDataInRV(objectives);
 
-                exitShowObjectivesBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        objectivesScroller.setVisibility(View.GONE);
-                        exitShowObjectivesBtn.setVisibility(View.GONE);
-                        titleApp.setVisibility(View.VISIBLE);
-                        addObjectiveBtn.setVisibility(View.VISIBLE);
-                        showEntriesObjectives.setVisibility(View.VISIBLE);
-                    }
-                });
-            }
+        showEntriesObjectives.setOnClickListener(v -> {
+            titleApp.setVisibility(View.GONE);
+            addObjectiveBtn.setVisibility(View.GONE);
+            showEntriesObjectives.setVisibility(View.GONE);
+            objectivesScroller.setVisibility(View.VISIBLE);
+            exitShowObjectivesBtn.setVisibility(View.VISIBLE);
+
+            exitShowObjectivesBtn.setOnClickListener(v15 -> {
+                objectivesScroller.setVisibility(View.GONE);
+                exitShowObjectivesBtn.setVisibility(View.GONE);
+                titleApp.setVisibility(View.VISIBLE);
+                addObjectiveBtn.setVisibility(View.VISIBLE);
+                showEntriesObjectives.setVisibility(View.VISIBLE);
+            });
         });
 
-        addObjectiveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (objectives.size() > 8) {
-                    Toast.makeText(ObjectivesActivity.this, "Limite d'objectifs atteinte (9).", Toast.LENGTH_SHORT).show();
-                } else {
+        addObjectiveBtn.setOnClickListener(v -> {
+            if (objectives.size() > 8) {
+                Toast.makeText(ObjectivesActivity.this, "Limite d'objectifs atteinte (9).", Toast.LENGTH_SHORT).show();
+            } else {
+                addObjectiveBtn.setVisibility(View.GONE);
+                objectivesScroller.setVisibility(View.GONE);
+                newObjectiveCustomTV.setVisibility(View.VISIBLE);
+                containerCustomNewObjective.setVisibility(View.VISIBLE);
+
+                addCustomObjectiveBtn.setOnClickListener(v14 -> {
+                    newObjectiveCustomTV.setVisibility(View.GONE);
+                    containerCustomNewObjective.setVisibility(View.GONE);
                     addObjectiveBtn.setVisibility(View.GONE);
-                    objectivesScroller.setVisibility(View.GONE);
-                    newObjectiveCustomTV.setVisibility(View.VISIBLE);
-                    containerCustomNewObjective.setVisibility(View.VISIBLE);
-
-                    addCustomObjectiveBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            newObjectiveCustomTV.setVisibility(View.GONE);
-                            containerCustomNewObjective.setVisibility(View.GONE);
-                            addObjectiveBtn.setVisibility(View.GONE);
-                            containerValidationBtns.setVisibility(View.VISIBLE);
-                            newObjectiveContainer.setVisibility(View.VISIBLE);
-                            validateEntryBtn.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    if (inputObjectiveDays.getEditableText().toString().equals("")) {
-                                        Toast.makeText(ObjectivesActivity.this, "Veuillez remplir une durée!", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-
-                                    if (typeObjectiveSelector == 0) {
-                                        Toast.makeText(ObjectivesActivity.this, "Veuillez sélectionnez un type pour continuer!", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    } else if (typeObjectiveSelector == 1) {
-                                        typeObjective = "Food";
-                                    } else if (typeObjectiveSelector == 2) {
-                                        typeObjective = "Sport";
-                                    } else if (typeObjectiveSelector == 3) {
-                                        typeObjective = "Insulin";
-                                    } else if (typeObjectiveSelector == 4) {
-                                        typeObjective = "Glycemy";
-                                    }
-
-                                    if (inputObjectiveDescription.getEditableText().toString().equals("")) {
-                                        Toast.makeText(ObjectivesActivity.this, "Veuillez remplir une description!", Toast.LENGTH_SHORT).show();
-                                        return;
-                                    }
-
-                                    deadlineObjective = inputObjectiveDays.getEditableText().toString();
-                                    descriptionObjective = inputObjectiveDescription.getEditableText().toString();
-                                    todayDate = DateUtils.calculateDateOfToday();
-
-                                    dbHelper.writeObjectiveInDB(todayDate, deadlineObjective, typeObjective, descriptionObjective, userId);
-
-                                    newObjectiveContainer.setVisibility(View.GONE);
-                                    containerValidationBtns.setVisibility(View.GONE);
-                                    addObjectiveBtn.setVisibility(View.VISIBLE);
-
-                                    Toast.makeText(ObjectivesActivity.this, "Objectif ajouté avec succès!", Toast.LENGTH_SHORT).show();
-                                    getObjectives();
-                                }
-                            });
+                    containerValidationBtns.setVisibility(View.VISIBLE);
+                    newObjectiveContainer.setVisibility(View.VISIBLE);
+                    validateEntryBtn.setOnClickListener(v13 -> {
+                        if (inputObjectiveDays.getEditableText().toString().equals("")) {
+                            Toast.makeText(ObjectivesActivity.this, "Veuillez remplir une durée!", Toast.LENGTH_SHORT).show();
+                            return;
                         }
-                    });
 
-                    addPredefObjectiveBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            newObjectiveCustomTV.setVisibility(View.GONE);
-                            containerCustomNewObjective.setVisibility(View.GONE);
-                            addObjectiveBtn.setVisibility(View.GONE);
-                            titleApp.setVisibility(View.GONE);
-                            showEntriesObjectives.setVisibility(View.GONE);
-                            packsScroller.setVisibility(View.VISIBLE);
-
-                            chooseOnePackAndLeave();
+                        if (typeObjectiveSelector == 0) {
+                            Toast.makeText(ObjectivesActivity.this, "Veuillez sélectionnez un type pour continuer!", Toast.LENGTH_SHORT).show();
+                            return;
+                        } else if (typeObjectiveSelector == 1) {
+                            typeObjective = "Food";
+                        } else if (typeObjectiveSelector == 2) {
+                            typeObjective = "Sport";
+                        } else if (typeObjectiveSelector == 3) {
+                            typeObjective = "Insulin";
+                        } else if (typeObjectiveSelector == 4) {
+                            typeObjective = "Glycemy";
                         }
-                    });
 
-                    exitEntryBtn.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            newObjectiveContainer.setVisibility(View.GONE);
-                            containerValidationBtns.setVisibility(View.GONE);
-                            addObjectiveBtn.setVisibility(View.VISIBLE);
+                        if (inputObjectiveDescription.getEditableText().toString().equals("")) {
+                            Toast.makeText(ObjectivesActivity.this, "Veuillez remplir une description!", Toast.LENGTH_SHORT).show();
+                            return;
                         }
+
+                        deadlineObjective = inputObjectiveDays.getEditableText().toString();
+                        descriptionObjective = inputObjectiveDescription.getEditableText().toString();
+                        todayDate = DateUtils.calculateDateOfToday();
+
+                        dbHelper.writeObjectiveInDB(todayDate, deadlineObjective, typeObjective, descriptionObjective, userId);
+
+                        newObjectiveContainer.setVisibility(View.GONE);
+                        containerValidationBtns.setVisibility(View.GONE);
+                        addObjectiveBtn.setVisibility(View.VISIBLE);
+
+                        Toast.makeText(ObjectivesActivity.this, "Objectif ajouté avec succès!", Toast.LENGTH_SHORT).show();
+                        getObjectives();
                     });
-                }
+                });
+
+                addPredefObjectiveBtn.setOnClickListener(v12 -> {
+                    newObjectiveCustomTV.setVisibility(View.GONE);
+                    containerCustomNewObjective.setVisibility(View.GONE);
+                    addObjectiveBtn.setVisibility(View.GONE);
+                    titleApp.setVisibility(View.GONE);
+                    showEntriesObjectives.setVisibility(View.GONE);
+                    packsScroller.setVisibility(View.VISIBLE);
+
+                    chooseOnePackAndLeave();
+                });
+
+                exitEntryBtn.setOnClickListener(v1 -> {
+                    newObjectiveContainer.setVisibility(View.GONE);
+                    containerValidationBtns.setVisibility(View.GONE);
+                    addObjectiveBtn.setVisibility(View.VISIBLE);
+                });
             }
         });
     }
 
     private void chooseOnePackAndLeave() {
-        firstPack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Alimentation", "Une courte diète pour booster votre corps!", userId);
-                packChosen = true;
-                packChosenEnd();
-            }
+        firstPack.setOnClickListener(v -> {
+            dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Alimentation", "Une courte diète pour booster votre corps!", userId);
+            packChosen = true;
+            packChosenEnd();
         });
-        secondPack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Sport", "Un petit entrainement pour vous remettre dans le bain!", userId);
-                packChosen = true;
-                packChosenEnd();
-            }
+        secondPack.setOnClickListener(v -> {
+            dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Sport", "Un petit entrainement pour vous remettre dans le bain!", userId);
+            packChosen = true;
+            packChosenEnd();
         });
-        thirdPack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Insulin", "Réduction des doses d'insuline faites, vous irez moins souvent à la pharmacie !:)", userId);
-                packChosen = true;
-                packChosenEnd();
-            }
+        thirdPack.setOnClickListener(v -> {
+            dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Insulin", "Réduction des doses d'insuline faites, vous irez moins souvent à la pharmacie !:)", userId);
+            packChosen = true;
+            packChosenEnd();
         });
-        forthPack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Glycemy", "Équilibrez votre diabète en réduisant votre moyenne glycémique hebdomadaire !", userId);
-                packChosen = true;
-                packChosenEnd();
-            }
+        forthPack.setOnClickListener(v -> {
+            dbHelper.writeObjectiveInDB(DateUtils.calculateDateOfToday(), "7", "Glycemy", "Équilibrez votre diabète en réduisant votre moyenne glycémique hebdomadaire !", userId);
+            packChosen = true;
+            packChosenEnd();
         });
     }
 
@@ -300,7 +264,7 @@ public class ObjectivesActivity extends AppCompatActivity {
     }
 
     private void loadDataInRV(List<ObjectiveBinder> objectivesList) {
-        adapter = new ObjectivesAdapter(this, objectivesList);
+        ObjectivesAdapter adapter = new ObjectivesAdapter(this, objectivesList);
         recyclerViewObjectives.setAdapter(adapter);
         recyclerViewObjectives.setLayoutManager(new LinearLayoutManager(this));
     }

@@ -8,10 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.UiThread;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,6 +23,7 @@ import com.studio.neopanda.diabetesmeganotes.utils.AverageGlycemyUtils;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 public class EntriesDiaryFragment extends Fragment {
 
@@ -60,7 +59,7 @@ public class EntriesDiaryFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        recyclerView = getActivity().findViewById(R.id.recyclerview_diary_entries);
+        recyclerView = Objects.requireNonNull(getActivity()).findViewById(R.id.recyclerview_diary_entries);
         averageGlycemyLevel = getActivity().findViewById(R.id.average_level_glycemy_TV);
         containerDiary = getActivity().findViewById(R.id.container_diary_journal);
 
@@ -86,11 +85,8 @@ public class EntriesDiaryFragment extends Fragment {
     }
 
     private void antiUIBreakthrough() {
-        containerDiary.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        containerDiary.setOnClickListener(v -> {
 
-            }
         });
     }
 

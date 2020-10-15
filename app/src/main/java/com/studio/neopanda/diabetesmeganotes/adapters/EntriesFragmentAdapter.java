@@ -2,7 +2,6 @@ package com.studio.neopanda.diabetesmeganotes.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,7 +28,6 @@ public class EntriesFragmentAdapter extends RecyclerView.Adapter<EntriesFragment
     private Context mContext;
     private Activity activity;
     private DatabaseHelper dbHelper;
-    private int id;
     private String newGlycemyUpdated;
 
     public EntriesFragmentAdapter(Context context, List<GlycemyBinder> mData, Activity activity) {
@@ -49,55 +47,40 @@ public class EntriesFragmentAdapter extends RecyclerView.Adapter<EntriesFragment
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         dbHelper = new DatabaseHelper(mContext);
-        holder.dateTV.setText("Date : " + mData.get(position).date);
-        holder.levelGlycemyTV.setText("Glycémie : " + mData.get(position).glycemy);
-        holder.idDiary.setText("Analyse n° : " + mData.get(position).id);
+        holder.dateTV.setText(mContext.getResources().getString(R.string.date_entries_unit, mData.get(position).date));
+        holder.levelGlycemyTV.setText(mContext.getResources().getString(R.string.glycemia, mData.get(position).glycemy));
+        holder.idDiary.setText(mContext.getResources().getString(R.string.number_analysis, mData.get(position).id));
 
-        holder.modifyEntryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                holder.containerUpdateEntry.setVisibility(View.VISIBLE);
-                holder.updateEntryBtn.setVisibility(View.VISIBLE);
-                holder.containerActiondEntry.setVisibility(View.GONE);
-                holder.oldUnits.setText(mData.get(position).getGlycemy());
+        holder.modifyEntryBtn.setOnClickListener(v -> {
+            holder.containerUpdateEntry.setVisibility(View.VISIBLE);
+            holder.updateEntryBtn.setVisibility(View.VISIBLE);
+            holder.containerActiondEntry.setVisibility(View.GONE);
+            holder.oldUnits.setText(mData.get(position).getGlycemy());
 
-                holder.updateEntryBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        newGlycemyUpdated = holder.newUnits.getEditableText().toString();
-                        if (newGlycemyUpdated.equals("")) {
-                            Toast.makeText(mContext, "Vous devez quitter la page si vous ne souhaitez pas modifier cette valeur, ou bien en indiquer une nouvelle pour effectuer la modification", Toast.LENGTH_LONG).show();
-                        } else {
-                            onClickUpdateEntry(position);
-                        }
+            holder.updateEntryBtn.setOnClickListener(v1 -> {
+                newGlycemyUpdated = holder.newUnits.getEditableText().toString();
+                if (newGlycemyUpdated.equals("")) {
+                    Toast.makeText(mContext, "Vous devez quitter la page si vous ne souhaitez pas modifier cette valeur, ou bien en indiquer une nouvelle pour effectuer la modification", Toast.LENGTH_LONG).show();
+                } else {
+                    onClickUpdateEntry(position);
+                }
 
-                        holder.containerUpdateEntry.setVisibility(View.GONE);
-                        holder.updateEntryBtn.setVisibility(View.GONE);
-                        holder.containerActiondEntry.setVisibility(View.VISIBLE);
-                    }
-                });
-            }
+                holder.containerUpdateEntry.setVisibility(View.GONE);
+                holder.updateEntryBtn.setVisibility(View.GONE);
+                holder.containerActiondEntry.setVisibility(View.VISIBLE);
+            });
         });
-        holder.deleteEntryBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Use the Builder class for convenient dialog construction
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setMessage(mContext.getResources().getString(R.string.dialog_delete_insulin_entry))
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                String[] itemsToDelete = {String.valueOf(mData.get(position).id)};
-                                onClickDeleteEntry(itemsToDelete, String.valueOf(mData.get(position).id), position);
-                            }
-                        })
-                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-                // Create the AlertDialog object and return it
-                builder.create().show();
-            }
+        holder.deleteEntryBtn.setOnClickListener(v -> {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setMessage(mContext.getResources().getString(R.string.dialog_delete_insulin_entry))
+                    .setPositiveButton(R.string.yes, (dialog, id) -> {
+                        String[] itemsToDelete = {String.valueOf(mData.get(position).id)};
+                        onClickDeleteEntry(itemsToDelete, String.valueOf(mData.get(position).id), position);
+                    })
+                    .setNegativeButton(R.string.no, (dialog, id) -> dialog.dismiss());
+            // Create the AlertDialog object and return it
+            builder.create().show();
         });
     }
 
@@ -107,7 +90,7 @@ public class EntriesFragmentAdapter extends RecyclerView.Adapter<EntriesFragment
     }
 
     private void onClickUpdateEntry(int position) {
-        id = mData.get(position).id;
+        int id = mData.get(position).id;
         dbHelper.updateGlycemyEntry(newGlycemyUpdated, id);
         Toast.makeText(mContext, "L'entrée n° " + mData.get(position).id + " a été modifiée!", Toast.LENGTH_SHORT).show();
         mData.get(position).glycemy = newGlycemyUpdated;

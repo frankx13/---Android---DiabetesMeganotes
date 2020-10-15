@@ -100,4 +100,19 @@
     <string name="second_pack_name">Faire plus de sport \nDurée de 7 jours</string>
     <string name="third_pack_name">Faire moins d\'insuline \nDurée de 7 jours</string>
     <string name="forth_pack_name">Améliorer la glycémie \nDurée de 7 jours</string>
+    <string name="objective_number">Objectif n°%1$d</string>
+    <string name="type">Type : %1$s</string>
+    <string name="duration">Duration : %1$sJ</string>
+    <string name="description">Description : %1$s</string>
+    <string name="start">Début : %1$s</string>
+    <string name="units">Unités : %1$s</string>
+    <string name="date_entries_unit">Date : %1$s</string>
+    <string name="number_analysis">Analyse n° : %1$d</string>
+    <string name="glycemia">Glycémie : %1$s</string>
+    <string name="start_the">Commence le : %1$s</string>
+    <string name="finish_the">Finit le : %1$s</string>
+    <string name="type_alarm">Type : %1$s</string>
+    <string name="name_alarm">Nom : %1$s</string>
+    <string name="memo_alarm">Mémo : %1$s</string>
+    <string name="number_alarm">Alarme n°%1$d</string>
 </resources>

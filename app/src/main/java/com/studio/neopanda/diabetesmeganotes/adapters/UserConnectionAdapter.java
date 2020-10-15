@@ -2,9 +2,7 @@ package com.studio.neopanda.diabetesmeganotes.adapters;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,34 +52,22 @@ public class UserConnectionAdapter extends RecyclerView.Adapter<UserConnectionAd
                 .into(holder.userImg);
 
         holder.username.setText(mData.get(position).getUsername());
-        holder.deleteUserBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Use the Builder class for convenient dialog construction
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                builder.setMessage(mContext.getResources().getString(R.string.dialog_delete_existing_user_confirmation, mData.get(position).getUsername()))
-                        .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                String[] itemsToDelete = {mData.get(position).getUsername()};
-                                onClickDeleteView(itemsToDelete, mData.get(position).getUsername(), position);
-                            }
-                        })
-                        .setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                dialog.dismiss();
-                            }
-                        });
-                // Create the AlertDialog object and return it
-                builder.create().show();
-            }
+        holder.deleteUserBtn.setOnClickListener(v -> {
+            // Use the Builder class for convenient dialog construction
+            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+            builder.setMessage(mContext.getResources().getString(R.string.dialog_delete_existing_user_confirmation, mData.get(position).getUsername()))
+                    .setPositiveButton(R.string.yes, (dialog, id) -> {
+                        String[] itemsToDelete = {mData.get(position).getUsername()};
+                        onClickDeleteView(itemsToDelete, mData.get(position).getUsername(), position);
+                    })
+                    .setNegativeButton(R.string.no, (dialog, id) -> dialog.dismiss());
+            // Create the AlertDialog object and return it
+            builder.create().show();
         });
-        holder.userImg.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dbHelper = new DatabaseHelper(mContext);
-                dbHelper.writeActiveUserInDB(mData.get(position).getUsername(), mData.get(position).getUserImg());
-                loadDashboard();
-            }
+        holder.userImg.setOnClickListener(v -> {
+            dbHelper = new DatabaseHelper(mContext);
+            dbHelper.writeActiveUserInDB(mData.get(position).getUsername(), mData.get(position).getUserImg());
+            loadDashboard();
         });
     }
 
@@ -92,7 +78,7 @@ public class UserConnectionAdapter extends RecyclerView.Adapter<UserConnectionAd
         activity.finish();
     }
 
-    private void onClickDeleteView(String[] itemsToDelete, String usernameDeleted, int position){
+    private void onClickDeleteView(String[] itemsToDelete, String usernameDeleted, int position) {
         dbHelper = new DatabaseHelper(mContext);
         dbHelper.deleteUserInDB(itemsToDelete);
         Toast.makeText(mContext, "The user " + usernameDeleted + " has been deleted!", Toast.LENGTH_SHORT).show();

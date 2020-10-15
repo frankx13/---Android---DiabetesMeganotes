@@ -1,11 +1,9 @@
 package com.studio.neopanda.diabetesmeganotes.adapters;
 
-import android.app.Activity;
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -24,14 +22,11 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.MyViewHold
     private List<Alert> mData;
     private Context mContext;
     private DatabaseHelper dbHelper;
-    private int id;
     private String isActive;
-    private Activity activity;
 
-    public AlertsAdapter(List<Alert> mData, Context mContext, Activity activity) {
+    public AlertsAdapter(List<Alert> mData, Context mContext) {
         this.mData = mData;
         this.mContext = mContext;
-        this.activity = activity;
     }
 
     @NonNull
@@ -47,31 +42,28 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.MyViewHold
         dbHelper = new DatabaseHelper(mContext);
         isActive = mData.get(position).getIsActive();
 
-        holder.sdateTv.setText("Commence le : " + mData.get(position).getStartMoment());
-        holder.edateTv.setText("Finit le : " + mData.get(position).getEndMoment());
-        holder.type.setText("Type : " + mData.get(position).getType());
-        holder.name.setText("Nom : " + mData.get(position).getName());
-        holder.description.setText("Mémo : " + mData.get(position).getDescription());
-        holder.number.setText("Alarme n°" + mData.get(position).getIdEntry());
+        holder.sdateTv.setText(mContext.getResources().getString(R.string.start_the, mData.get(position).getStartMoment()));
+        holder.edateTv.setText(mContext.getResources().getString(R.string.finish_the, mData.get(position).getEndMoment()));
+        holder.type.setText(mContext.getResources().getString(R.string.type_alarm, mData.get(position).getType()));
+        holder.name.setText(mContext.getResources().getString(R.string.name_alarm, mData.get(position).getName()));
+        holder.description.setText(mContext.getResources().getString(R.string.memo_alarm, mData.get(position).getDescription()));
+        holder.number.setText(mContext.getResources().getString(R.string.number_alarm, mData.get(position).getIdEntry()));
 
         if (isActive.equalsIgnoreCase("active")) {
             holder.toggleButton.setChecked(true);
         }
 
-        holder.toggleButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    onClickUpdateEntry(position, "active");
-                } else {
-                    onClickUpdateEntry(position, "inactive");
-                }
+        holder.toggleButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                onClickUpdateEntry(position, "active");
+            } else {
+                onClickUpdateEntry(position, "inactive");
+            }
 
-                if (isActive.equals("active")) {
-                    createAlarm();
-                } else {
-                    disableAlarm();
-                }
+            if (isActive.equals("active")) {
+                createAlarm();
+            } else {
+                disableAlarm();
             }
         });
     }
@@ -90,7 +82,7 @@ public class AlertsAdapter extends RecyclerView.Adapter<AlertsAdapter.MyViewHold
     }
 
     private void onClickUpdateEntry(int position, String isAlertActive) {
-        id = mData.get(position).idEntry;
+        int id = mData.get(position).idEntry;
         dbHelper.updateAlertStatus(isAlertActive, id);
         if (isAlertActive.equals("active")) {
             Toast.makeText(mContext, "L'alerte n° " + mData.get(position).idEntry + " a été activée!", Toast.LENGTH_SHORT).show();

@@ -2,7 +2,6 @@ package com.studio.neopanda.diabetesmeganotes.utils;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.view.MotionEvent;
@@ -34,7 +33,7 @@ public class Utils {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    public static void logoutUser(TextView title, Context context, Activity activity){
+    public static void logoutUser(TextView title, Context context, Activity activity) {
         title.setOnTouchListener((v, event) -> {
             if (event.getAction() == MotionEvent.ACTION_UP) {
                 if (event.getRawX() >= title.getRight() - title.getTotalPaddingRight()) {

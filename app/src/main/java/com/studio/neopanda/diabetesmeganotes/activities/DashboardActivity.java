@@ -63,8 +63,6 @@ public class DashboardActivity extends AppCompatActivity {
     private List<String> listGlycemies;
     private List<Double> listGlycemiesDouble;
     private String targetDate;
-    private String todayDate;
-    private int glycemyColor;
     private String userId;
     private int statsTurns = 0;
     private String note = "";
@@ -91,47 +89,38 @@ public class DashboardActivity extends AppCompatActivity {
             overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
         });
 
-        objectivesBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), ObjectivesActivity.class);
+        objectivesBtn.setOnClickListener(v -> {
+            Intent intent = new Intent(getApplicationContext(), ObjectivesActivity.class);
+            startActivity(intent,
+                    ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
+            startActivity(intent);
+            overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
+        });
+
+        alertsBtn.setOnClickListener(v -> {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                Intent intent = new Intent(getApplicationContext(), MyAlertsActivity.class);
                 startActivity(intent,
                         ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
                 startActivity(intent);
                 overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
+            } else {
+                Toast.makeText(DashboardActivity.this, "Votre appareil doit posséder une version logicielle supérieure à 26 pour pouvoir accéder à cette fonctionnalité. Essayez de mettre à jour votre téléphone et réessayez :)", Toast.LENGTH_SHORT).show();
             }
         });
 
-        alertsBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-                    Intent intent = new Intent(getApplicationContext(), MyAlertsActivity.class);
-                    startActivity(intent,
-                            ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
-                    startActivity(intent);
-                    overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
-                } else {
-                    Toast.makeText(DashboardActivity.this, "Votre appareil doit posséder une version logicielle supérieure à 26 pour pouvoir accéder à cette fonctionnalité. Essayez de mettre à jour votre téléphone et réessayez :)", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        infosBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //TODO V2.0 Release this feature in the next update
+        infosBtn.setOnClickListener(v -> {
+            //TODO V2.0 Release this feature in the next update
 //                Intent intent = new Intent(getApplicationContext(), InformationsActivity.class);
 //                startActivity(intent,
 //                        ActivityOptions.makeSceneTransitionAnimation(DashboardActivity.this).toBundle());
 //                startActivity(intent);
 //                overridePendingTransition(R.anim.go_up_anim, R.anim.go_down_anim);
-                Toast.makeText(DashboardActivity.this, "Disponible dans la prochaine mise à jour !", Toast.LENGTH_SHORT).show();
-            }
+            Toast.makeText(DashboardActivity.this, "Disponible dans la prochaine mise à jour !", Toast.LENGTH_SHORT).show();
         });
 
         //TODO fix the method with GlycemyBinder table
-        loadAverageStats(0);
+        loadAverageStats();
         loadNotes();
     }
 
@@ -148,39 +137,33 @@ public class DashboardActivity extends AppCompatActivity {
             fastNoteTV.setText(getResources().getString(R.string.empty_note_text));
         }
 
-        fastNoteTV.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fastNoteTV.setVisibility(View.GONE);
-                fastNoteEV.setVisibility(View.VISIBLE);
-                fastNoteBtn.setVisibility(View.VISIBLE);
-                fastNoteBtn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        if (noteInDB.equals("")) {
-                            dbHelper.setNoteInDB(fastNoteEV.getEditableText().toString() + " \n\n (Cliquer pour modifier)", userId);
-                        } else {
-                            dbHelper.updateNote(fastNoteEV.getEditableText().toString() + " \n\n (Cliquer pour modifier)", 1);
-                        }
+        fastNoteTV.setOnClickListener(v -> {
+            fastNoteTV.setVisibility(View.GONE);
+            fastNoteEV.setVisibility(View.VISIBLE);
+            fastNoteBtn.setVisibility(View.VISIBLE);
+            fastNoteBtn.setOnClickListener(v1 -> {
+                if (noteInDB.equals("")) {
+                    dbHelper.setNoteInDB(fastNoteEV.getEditableText().toString() + " \n\n (Cliquer pour modifier)", userId);
+                } else {
+                    dbHelper.updateNote(fastNoteEV.getEditableText().toString() + " \n\n (Cliquer pour modifier)", 1);
+                }
 
-                        note = dbHelper.getNote(userId);
-                        fastNoteTV.setText(note);
-                        Toast.makeText(DashboardActivity.this,
-                                "Note enregistrée avec succès !",
-                                Toast.LENGTH_SHORT).show();
+                note = dbHelper.getNote(userId);
+                fastNoteTV.setText(note);
+                Toast.makeText(DashboardActivity.this,
+                        "Note enregistrée avec succès !",
+                        Toast.LENGTH_SHORT).show();
 
-                        fastNoteEV.setVisibility(View.GONE);
-                        fastNoteBtn.setVisibility(View.GONE);
-                        fastNoteTV.setVisibility(View.VISIBLE);
-                    }
-                });
-            }
+                fastNoteEV.setVisibility(View.GONE);
+                fastNoteBtn.setVisibility(View.GONE);
+                fastNoteTV.setVisibility(View.VISIBLE);
+            });
         });
     }
 
     //TODO Fix method with databinder
-    private void loadAverageStats(int statTurn) {
-        todayDate = DateUtils.calculateDateOfToday();
+    private void loadAverageStats() {
+        String todayDate = DateUtils.calculateDateOfToday();
 
         switch (statsTurns) {
             case 0:
@@ -206,6 +189,7 @@ public class DashboardActivity extends AppCompatActivity {
             }
 
             double averageGlycemyLevel = AverageGlycemyUtils.calculateAverageGlycemyAllResults(listGlycemiesDouble);
+            int glycemyColor;
             if (averageGlycemyLevel < 0.80 || averageGlycemyLevel > 2.50) {
                 glycemyColor = 3;
             } else if (averageGlycemyLevel > 1.80) {
@@ -295,7 +279,7 @@ public class DashboardActivity extends AppCompatActivity {
         if (statsTurns <= 2) {
             statsTurns += 1;
             //TODO fix the method with DataBinder
-            loadAverageStats(statsTurns);
+            loadAverageStats();
         }
     }
 

@@ -1,8 +1,5 @@
 package com.studio.neopanda.diabetesmeganotes.activities;
 
-import android.app.Dialog;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -64,10 +61,7 @@ public class MainActivity extends AppCompatActivity {
     //DATA
     private DatabaseHelper dbHelper = new DatabaseHelper(this);
     private boolean isUserTableEmpty = true;
-    private boolean isCurrentUserActive = true;
     private List<User> usersList;
-    private List<CurrentUser> currentUserList;
-    private String[] currentUserArray;
     private String imageResInput;
     private String usernameNewUser;
 
@@ -77,11 +71,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-        currentUserList = new ArrayList<>();
+        List<CurrentUser> currentUserList;
         checkIfCurrentUserExists();
-        currentUserArray = new String [] {"currentUserDefault"};
+        String[] currentUserArray = new String[]{"currentUserDefault"};
         currentUserList = dbHelper.getActiveUserInDB();
-        if (!currentUserList.isEmpty()){
+        if (!currentUserList.isEmpty()) {
             String currentUser = currentUserList.get(0).getUsername();
             currentUserArray[0] = currentUser;
             dbHelper.resetActiveUserInDB(currentUserArray);
@@ -101,105 +95,83 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void checkIfCurrentUserExists() {
-        isCurrentUserActive = dbHelper.isTableNotEmpty("CurrentUser");
+        boolean isCurrentUserActive = dbHelper.isTableNotEmpty("CurrentUser");
     }
 
     private void setImageListeners() {
         //TODO cleanup code and remove the double parsing of types for image resources
-        avatarOne.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageResInput = String.valueOf(R.drawable.ic_avatar_one);
-                avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
-                avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
-            }
+        avatarOne.setOnClickListener(v -> {
+            imageResInput = String.valueOf(R.drawable.ic_avatar_one);
+            avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
+            avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
         });
-        avatarTwo.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageResInput = String.valueOf(R.drawable.ic_avatar_two);
-                avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
-                avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
-            }
+        avatarTwo.setOnClickListener(v -> {
+            imageResInput = String.valueOf(R.drawable.ic_avatar_two);
+            avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
+            avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
         });
-        avatarThree.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageResInput = String.valueOf(R.drawable.ic_avatar_three);
-                avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
-                avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
-            }
+        avatarThree.setOnClickListener(v -> {
+            imageResInput = String.valueOf(R.drawable.ic_avatar_three);
+            avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
+            avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
         });
-        avatarFour.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                imageResInput = String.valueOf(R.drawable.ic_avatar_four);
-                avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
-                avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
-                Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
-            }
+        avatarFour.setOnClickListener(v -> {
+            imageResInput = String.valueOf(R.drawable.ic_avatar_four);
+            avatarOne.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            avatarTwo.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            avatarThree.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple));
+            avatarFour.setImageDrawable(getResources().getDrawable(R.drawable.btn_simple_green));
+            Toast.makeText(getApplicationContext(), "Avatar choisit!", Toast.LENGTH_SHORT).show();
         });
     }
 
     private void onClickNewUser() {
-            newUserBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (usersList.size() < 3) {
-                        containerExistingUser.setVisibility(View.GONE);
-                        setNewUserViews();
-                        validateNewUser.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View v) {
-                                usernameNewUser = usernameInput.getEditableText().toString();
-                                if (!usernameNewUser.equals("") && !imageResInput.equals("")) {
-                                    dbHelper.writeUserssInDB(usernameNewUser, imageResInput);
-                                    usersList = dbHelper.getUsers();
-                                    setMenuViews();
-                                    containerExistingUser.setVisibility(View.VISIBLE);
-                                    loadRecyclerView();
-                                    Toast.makeText(MainActivity.this, "Utilisateur créé!", Toast.LENGTH_SHORT).show();
-                                } else if (usernameNewUser.equals("")) {
-                                    Toast.makeText(MainActivity.this, "Vous devez choisir un nom d'utilisateur!", Toast.LENGTH_SHORT).show();
-                                } else if (usernameNewUser.length() > 20) {
-                                    Toast.makeText(MainActivity.this, "Votre nom d'utilisateur est trop long, 20 caractères max autorisés!", Toast.LENGTH_SHORT).show();
-                                } else {
-                                    Toast.makeText(MainActivity.this, "Vous devez choisir une image!", Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
+        newUserBtn.setOnClickListener(v -> {
+            if (usersList.size() < 3) {
+                containerExistingUser.setVisibility(View.GONE);
+                setNewUserViews();
+                validateNewUser.setOnClickListener(v1 -> {
+                    usernameNewUser = usernameInput.getEditableText().toString();
+                    if (!usernameNewUser.equals("") && !imageResInput.equals("")) {
+                        dbHelper.writeUserssInDB(usernameNewUser, imageResInput);
+                        usersList = dbHelper.getUsers();
+                        setMenuViews();
+                        containerExistingUser.setVisibility(View.VISIBLE);
+                        loadRecyclerView();
+                        Toast.makeText(MainActivity.this, "Utilisateur créé!", Toast.LENGTH_SHORT).show();
+                    } else if (usernameNewUser.equals("")) {
+                        Toast.makeText(MainActivity.this, "Vous devez choisir un nom d'utilisateur!", Toast.LENGTH_SHORT).show();
+                    } else if (usernameNewUser.length() > 20) {
+                        Toast.makeText(MainActivity.this, "Votre nom d'utilisateur est trop long, 20 caractères max autorisés!", Toast.LENGTH_SHORT).show();
                     } else {
-                        onCreateDialog();
+                        Toast.makeText(MainActivity.this, "Vous devez choisir une image!", Toast.LENGTH_SHORT).show();
                     }
-                }
-            });
+                });
+            } else {
+                onCreateDialog();
+            }
+        });
     }
 
     public void onCreateDialog() {
         // Use the Builder class for convenient dialog construction
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage(R.string.dialog_delete_existing_user)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        loopThroughRV();
-                    }
-                });
+                .setPositiveButton(R.string.ok, (dialog, id) -> loopThroughRV());
         // Create the AlertDialog object and return it
         builder.create().show();
     }
 
-    private void loopThroughRV(){
+    private void loopThroughRV() {
         for (int i = 0; i < recyclerView.getChildCount(); i++) {
             recyclerView.getChildAt(i).findViewById(R.id.delete_user_btn).setVisibility(View.VISIBLE);
         }

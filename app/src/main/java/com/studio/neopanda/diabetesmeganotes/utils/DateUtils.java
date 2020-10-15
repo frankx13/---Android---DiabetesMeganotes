@@ -40,12 +40,12 @@ public class DateUtils {
         }
 
         if (yearsCounter > 0) {
-            yearsToReach = Integer.valueOf(year) - yearsCounter;
+            yearsToReach = year - yearsCounter;
         } else {
             yearsToReach = year;
         }
         if (monthsCounter > 0) {
-            monthsToReach = Integer.valueOf(month) - monthsCounter;
+            monthsToReach = month - monthsCounter;
             if (monthsToReach < 0) {
                 monthsToReach = monthsToReach + 12;
             }

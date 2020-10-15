@@ -87,22 +87,20 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     }
 
     private void setExitFragmentsBtn() {
-        exitDiaryJournalBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Fragment fragment = null;
-                if (fragmentID == 1) {
-                    fragment = new EntriesDiaryFragment();
-                } else if (fragmentID == 2) {
-                    fragment = new EntriesInsulinFragment();
-                }
-
-                FragmentManager manager = getSupportFragmentManager();
-                FragmentTransaction transaction = manager.beginTransaction();
-                transaction.remove(fragment).commit();
-                journalContainer.setVisibility(View.GONE);
-                exitDiaryJournalBtn.setVisibility(View.GONE);
+        exitDiaryJournalBtn.setOnClickListener(v -> {
+            Fragment fragment = null;
+            if (fragmentID == 1) {
+                fragment = new EntriesDiaryFragment();
+            } else if (fragmentID == 2) {
+                fragment = new EntriesInsulinFragment();
             }
+
+            FragmentManager manager = getSupportFragmentManager();
+            FragmentTransaction transaction = manager.beginTransaction();
+            assert fragment != null;
+            transaction.remove(fragment).commit();
+            journalContainer.setVisibility(View.GONE);
+            exitDiaryJournalBtn.setVisibility(View.GONE);
         });
     }
 
@@ -111,33 +109,13 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     }
 
     private void manageInjections() {
-        addInsulinBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickAddInsulinBtn();
-            }
-        });
-        viewEntriesInsulinBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickViewInsulinBtn();
-            }
-        });
+        addInsulinBtn.setOnClickListener(v -> onClickAddInsulinBtn());
+        viewEntriesInsulinBtn.setOnClickListener(v -> onClickViewInsulinBtn());
     }
 
     private void manageGlycemies() {
-        addGlycemyBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickAddEntryBtn();
-            }
-        });
-        viewAllEntriesBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onClickViewEntriesBtn();
-            }
-        });
+        addGlycemyBtn.setOnClickListener(v -> onClickAddEntryBtn());
+        viewAllEntriesBtn.setOnClickListener(v -> onClickViewEntriesBtn());
     }
 
     private void onClickViewInsulinBtn() {
@@ -157,28 +135,22 @@ public class MyGlycemiesActivity extends AppCompatActivity {
     private void onClickAddInsulinBtn() {
         containerInsulinUnitsInput.setVisibility(View.VISIBLE);
 
-        containerInsulinUnitsInput.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //Empty block to avoid click non-desired effects
-            }
+        containerInsulinUnitsInput.setOnClickListener(v -> {
+            //Empty block to avoid click non-desired effects
         });
 
-        validateInsulinInput.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                newInsulinUnits = insulinUnitsInput.getEditableText().toString();
+        validateInsulinInput.setOnClickListener(v -> {
+            newInsulinUnits = insulinUnitsInput.getEditableText().toString();
 
-                if (newInsulinUnits.length() > 2) {
-                    Toast.makeText(MyGlycemiesActivity.this, "Trop de chiffres, veuillez réessayer.", Toast.LENGTH_SHORT).show();
-                } else if (newInsulinUnits.length() == 1 || newInsulinUnits.length() == 2) {
-                    dbHelper.bindInsulinData(newInsulinUnits, userID);
-                    Toast.makeText(MyGlycemiesActivity.this, "Unités renseignées avec succès !", Toast.LENGTH_SHORT).show();
-                    UIUtils.hideKeyboard(MyGlycemiesActivity.this);
-                    containerInsulinUnitsInput.setVisibility(View.GONE);
-                } else {
-                    Toast.makeText(MyGlycemiesActivity.this, "Le nombre d'unités ne peut pas être nul, veuillez réessayer.", Toast.LENGTH_SHORT).show();
-                }
+            if (newInsulinUnits.length() > 2) {
+                Toast.makeText(MyGlycemiesActivity.this, "Trop de chiffres, veuillez réessayer.", Toast.LENGTH_SHORT).show();
+            } else if (newInsulinUnits.length() == 1 || newInsulinUnits.length() == 2) {
+                dbHelper.bindInsulinData(newInsulinUnits, userID);
+                Toast.makeText(MyGlycemiesActivity.this, "Unités renseignées avec succès !", Toast.LENGTH_SHORT).show();
+                UIUtils.hideKeyboard(MyGlycemiesActivity.this);
+                containerInsulinUnitsInput.setVisibility(View.GONE);
+            } else {
+                Toast.makeText(MyGlycemiesActivity.this, "Le nombre d'unités ne peut pas être nul, veuillez réessayer.", Toast.LENGTH_SHORT).show();
             }
         });
 
